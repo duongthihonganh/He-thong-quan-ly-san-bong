@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý đặt sân bóng</title>
+    <title>Quản lý Đặt Sân - Nhân Viên</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: auto;
         }
         .field-btn {
@@ -29,17 +29,23 @@
             padding: 10px;
             border: 1px solid #ccc;
         }
+        .delete-btn {
+            margin-left: 10px;
+            color: red;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Quản lý đặt sân bóng</h1>
+        <h1>Hệ Thống Quản Lý Đặt Sân</h1>
+        <h2>Chọn môn thể thao</h2>
+        <select id="sport-select" onchange="updateFieldOptions()">
+            <option value="football">Bóng đá</option>
+            <option value="pickleball">Pickleball</option>
+        </select>
         <h2>Chọn sân</h2>
-        <div id="field-buttons">
-            <button class="field-btn" onclick="selectField(1)">Sân A</button>
-            <button class="field-btn" onclick="selectField(2)">Sân B</button>
-            <button class="field-btn" onclick="selectField(3)">Sân C</button>
-        </div>
+        <div id="field-buttons"></div>
         <h2>Chọn ngày</h2>
         <input type="date" id="date-picker">
         <button onclick="bookField()">Đặt sân</button>
@@ -48,13 +54,37 @@
     </div>
     
     <script>
+        const fields = {
+            football: [
+                { id: 1, name: "Sân Bóng Đá 5 Người", price: "200,000 VND/h" },
+                { id: 2, name: "Sân Bóng Đá 7 Người", price: "300,000 VND/h" }
+            ],
+            pickleball: [
+                { id: 3, name: "Sân Pickleball Tiêu Chuẩn", price: "150,000 VND/h" },
+                { id: 4, name: "Sân Pickleball Cao Cấp", price: "250,000 VND/h" }
+            ]
+        };
+        
         let selectedField = null;
         let bookings = [];
 
+        function updateFieldOptions() {
+            const sport = document.getElementById("sport-select").value;
+            const fieldButtons = document.getElementById("field-buttons");
+            fieldButtons.innerHTML = "";
+            fields[sport].forEach(field => {
+                const btn = document.createElement("button");
+                btn.className = "field-btn";
+                btn.textContent = `${field.name} - ${field.price}`;
+                btn.onclick = () => selectField(field.id);
+                fieldButtons.appendChild(btn);
+            });
+        }
+        
         function selectField(fieldId) {
-            selectedField = fieldId;
+            selectedField = fields[document.getElementById("sport-select").value].find(f => f.id === fieldId);
             document.querySelectorAll('.field-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.field-btn')[fieldId - 1].classList.add('active');
+            event.target.classList.add('active');
         }
 
         function bookField() {
@@ -67,14 +97,23 @@
             updateBookingList();
         }
 
+        function deleteBooking(index) {
+            bookings.splice(index, 1);
+            updateBookingList();
+        }
+
         function updateBookingList() {
             const bookingList = document.getElementById('booking-list');
             if (bookings.length === 0) {
                 bookingList.innerHTML = 'Chưa có lịch đặt.';
             } else {
-                bookingList.innerHTML = bookings.map(b => `Sân ${b.field} - ${b.date}`).join('<br>');
+                bookingList.innerHTML = bookings.map((b, index) => 
+                    `${b.field.name} (${b.field.price}) - ${b.date} <span class="delete-btn" onclick="deleteBooking(${index})">X</span>`
+                ).join('<br>');
             }
         }
+
+        updateFieldOptions();
     </script>
 </body>
 </html>
