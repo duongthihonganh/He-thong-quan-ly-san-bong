@@ -1,48 +1,43 @@
-# He-thong-quan-ly-san-bong
-1. Giới thiệu 
+# HỆ THỐNG QUẢN LÝ SÂN BÓNG
 
-Hệ thống quản lý sân bóng giúp nhân viên, quản lý và chủ sân có thể quản lý lịch đặt sân, khách hàng, doanh thu và tình trạng sân một cách dễ dàng và hiệu quả.
+## 1. Giới Thiệu  
+Hệ thống quản lý sân bóng giúp nhân viên, quản lý và chủ sân dễ dàng theo dõi và vận hành sân bóng, bao gồm:  
+- Quản lý sân bóng và trạng thái sân.  
+- Quản lý lịch đặt sân, tránh trùng lịch.  
+- Quản lý khách hàng, nhân viên và thanh toán.  
+- Báo cáo thống kê doanh thu và tình trạng sân.  
 
-2. Yêu cầu khách hàng 
-2.1. Quản lý sân bóng 
-Nhân viên có thể xem danh sách các sân mini và sân lớn.
+**Lưu ý:** Hệ thống chỉ dành cho nhân viên, khách hàng không thể đặt sân trực tiếp qua hệ thống.  
 
-Hệ thống hiển thị trạng thái từng sân (Trống, Đã đặt, Đang bảo trì).
+---
 
-Hỗ trợ ghép sân nhỏ thành sân lớn theo yêu cầu khách.
+## 2. Tính Năng Chính  
 
-2.2. Quản lý lịch đặt sân 
-Nhân viên nhập thông tin đặt sân theo yêu cầu khách (khách không đặt trực tiếp).
+### 2.1. Quản Lý Sân Bóng  
+- Danh sách các sân mini và sân lớn.  
+- Trạng thái sân: **Trống, Đã đặt, Đang bảo trì**.  
+- Hỗ trợ ghép nhiều sân nhỏ thành sân lớn theo yêu cầu.  
 
-Tránh trùng lịch đặt sân.
+### 2.2. Quản Lý Lịch Đặt Sân  
+- Nhân viên nhập đặt sân cho khách.  
+- Kiểm tra & ngăn chặn đặt trùng lịch.  
+- Hiển thị lịch đặt sân theo ngày, tuần, tháng.  
+- Hủy hoặc chỉnh sửa lịch đặt khi cần.  
 
-Hiển thị lịch đặt sân theo ngày/tuần/tháng.
+### 2.3. Quản Lý Thanh Toán  
+- Hỗ trợ thanh toán qua **Tiền mặt, Chuyển khoản, Momo, QR Code**.  
+- Theo dõi đặt cọc & công nợ.  
+- Xuất hóa đơn nếu cần.  
 
-Hủy hoặc đổi lịch đặt sân khi cần.
+### 2.4. Quản Lý Khách Hàng  
+- Lưu trữ thông tin khách hàng (**Tên, SĐT, Lịch sử đặt sân**).  
+- Ghi chú khách hàng thân thiết hoặc khách hay hủy sân.  
 
-2.3. Quản lý thanh toán 
-Ghi nhận thanh toán từ khách (Tiền mặt, Chuyển khoản, Momo, QR Code).
+### 2.5. Quản Lý Nhân Viên  
+- Phân quyền: **Lễ tân, Quản lý, Kế toán**.  
+- Theo dõi lịch sử thao tác của từng nhân viên.  
 
-Quản lý đặt cọc và công nợ.
-
-Xuất hóa đơn nếu cần.
-
-2.4. Quản lý khách hàng 
-Lưu thông tin khách hàng (Tên, SĐT, Lịch sử đặt sân).
-
-Ghi chú khách hàng thân thiết hoặc khách hay hủy sân.
-
-2.5. Quản lý nhân viên 
-Phân quyền nhân viên (Lễ tân, Quản lý, Kế toán).
-
-Theo dõi ai đã thực hiện đặt sân hoặc thu tiền.
-
-2.6. Báo cáo & Thống kê 
-Xem doanh thu theo ngày/tháng.
-
-Thống kê lượt đặt sân để tối ưu kinh doanh.
-
-Báo cáo tình trạng sử dụng sân theo thời gian.
-
-
-
+### 2.6. Báo Cáo & Thống Kê  
+- Xem doanh thu theo ngày, tháng.  
+- Thống kê lượt đặt sân giúp tối ưu kinh doanh.  
+- Báo cáo tình trạng sử dụng sân theo thời gian.  
