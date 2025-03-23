@@ -142,7 +142,7 @@ Tổng hợp doanh thu theo :
 - loại sân
 - Thời gian cao điểm/ thấp điểm
 - Hình thức thuê ( giờ/ buổi/ tháng, lẻ/định kì)
-### 3.6.2 Báo cáo chi phí ( số tiền chi ra )
+#### 3.6.2 Báo cáo chi phí ( số tiền chi ra )
 Quản lý các khoản chi phí hàng tháng: 
 - Tiền điện, nước
 - Chi phí bảo trì sân
