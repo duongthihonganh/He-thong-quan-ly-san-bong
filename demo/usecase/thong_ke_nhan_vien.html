@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống kê nhân viên sân bóng</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #FFC107;
+            color: #000000;
+        }
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #000000;
+        }
+        .chart-container {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Thống kê nhân viên sân bóng</h2>
+        
+        <div class="chart-container">
+            <h3 class="text-center">Số giờ làm việc chi tiết của nhân viên</h3>
+            <canvas id="employeeChart"></canvas>
+        </div>
+
+        <div class="chart-container mt-4">
+            <h3 class="text-center">Mức lương nhân viên</h3>
+            <canvas id="salaryChart"></canvas>
+        </div>
+        
+        <a href="/demo/trangchu.html" class="btn btn-secondary mt-3">Quay lại</a>
+    </div>
+    
+    <script>
+        var ctx1 = document.getElementById('employeeChart').getContext('2d');
+        var employeeChart = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Nguyễn Văn A', 'Trần Thị B', 'Phạm Văn C', 'Lê Thị D', 'Hoàng Văn E'],
+                datasets: [{
+                    label: 'Số giờ làm việc trong tuần',
+                    data: [40, 35, 45, 38, 42],
+                    backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#F4A261', '#2A9D8F'],
+                    borderWidth: 1
+                },
+                {
+                    label: 'Số giờ làm việc trong tháng',
+                    data: [160, 140, 180, 152, 168],
+                    backgroundColor: ['#C70039', '#900C3F', '#581845', '#FFBD33', '#28A745'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        var ctx2 = document.getElementById('salaryChart').getContext('2d');
+        var salaryChart = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Nguyễn Văn A', 'Trần Thị B', 'Phạm Văn C', 'Lê Thị D', 'Hoàng Văn E'],
+                datasets: [{
+                    label: 'Mức lương (triệu VNĐ)',
+                    data: [10, 9, 11, 9.5, 10.2],
+                    backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#F4A261', '#2A9D8F'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

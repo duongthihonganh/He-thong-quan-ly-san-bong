@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sân bóng</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #FFC107;
+            color: #000000;
+        }
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #000000;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Quản lý sân bóng</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Sân</th>
+                    <th>Tên Sân</th>
+                    <th>Loại Sân</th>
+                    <th>Trạng Thái</th>
+                    <th>Giá Thuê (VNĐ/giờ)</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Sân 1</td>
+                    <td>5 người</td>
+                    <td>Trống</td>
+                    <td>200,000</td>
+                    <td><button class="btn btn-primary">Chỉnh sửa</button></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Sân 2</td>
+                    <td>7 người</td>
+                    <td>Đã đặt</td>
+                    <td>300,000</td>
+                    <td><button class="btn btn-primary">Chỉnh sửa</button></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Sân 3</td>
+                    <td>11 người</td>
+                    <td>Trống</td>
+                    <td>500,000</td>
+                    <td><button class="btn btn-primary">Chỉnh sửa</button></td>
+                </tr>
+                 <tr>
+                    <td>4</td>
+                    <td>Sân 4</td>
+                    <td>7 người</td>
+                    <td>Trống</td>
+                    <td>200,000</td>
+                    <td><button class="btn btn-primary">Chỉnh sửa</button></td>
+                </tr>
+                 <tr>
+                    <td>5</td>
+                    <td>Sân 5</td>
+                    <td>7 người</td>
+                    <td>Trống</td>
+                    <td>200,000</td>
+                    <td><button class="btn btn-primary">Chỉnh sửa</button></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <a href="/demo/trangchu.html" class="btn btn-secondary mt-3">Quay lại</a>
+    </div>
+</body>
+</html>
