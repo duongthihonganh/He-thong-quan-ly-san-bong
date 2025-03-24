@@ -35,12 +35,16 @@ Hệ thống quản lý sân bóng giúp nhân viên, quản lý và chủ sân 
 
 ### 2.5. Quản Lý Nhân Viên  
 - Phân quyền: **Lễ tân, Quản lý, Kế toán**.  
-- Theo dõi lịch sử thao tác của từng nhân viên.  
+- Theo dõi lịch sử thao tác của từng nhân viên.
 
 ### 2.6. Báo Cáo & Thống Kê  
 - Xem doanh thu theo ngày, tháng.  
 - Thống kê lượt đặt sân giúp tối ưu kinh doanh.  
 - Báo cáo tình trạng sử dụng sân theo thời gian.
+### 2.7 Quản lý dịch vụ đi kèm
+- Quản lý dịch vụ đi kèm
+- Quản lý đặt dịch vụ đi kèm
+- Quản lý giá cả dịch vụ
 ## 3. Chi tiết các tính năng 
 ### 3.1 Quản lý sân bóng
 #### 3.1.1 Danh sách sân bóng 
@@ -142,6 +146,7 @@ Tổng hợp doanh thu theo :
 - loại sân
 - Thời gian cao điểm/ thấp điểm
 - Hình thức thuê ( giờ/ buổi/ tháng, lẻ/định kì)
+- Các loại dịch vụ kèm theo 
 #### 3.6.2 Báo cáo chi phí ( số tiền chi ra )
 Quản lý các khoản chi phí hàng tháng: 
 - Tiền điện, nước
@@ -157,5 +162,17 @@ Phát hiện giờ cao điểm và thấp điểm đặt sân
 #### 3.6.4 Báo cáo tình trạng sân
 Xem số lần bảo trì sân 
 Phát hiện sân ít được thuê để có thể tối ưu được kinh doanh
+### 3.7 Quản lý dịch vụ đi kèm
+#### 3.7.1 Quản lý dịch vụ đi kèm
+- Phân loại và nhóm các dịch vụ:
+- Mô tả dịch vụ: Cung cấp thông tin chi tiết của dịch vụ ( Tên, giá cả, ưu đãi...)
+- Cập nhật trạng thái dịch vụ ( có sẵn, đã đặt, không còn cung cấp)
+- Cập nhật giá cả cho các dịch vụ
+- Phân tích tình hình dịch vụ
+#### 3.7.2 Quản lý đặt dịch vụ
+- Nhân viên nhập đặt dịch vụ
+- Thông tin khách hàng đặt dịch vụ
+- Quản lý lịch sử đặt dịch vụ
+- Xóa hoặc thêm dịch vụ 
 
 
