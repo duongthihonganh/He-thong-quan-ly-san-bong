@@ -168,11 +168,14 @@ Phát hiện sân ít được thuê để có thể tối ưu được kinh doa
 - Mô tả dịch vụ: Cung cấp thông tin chi tiết của dịch vụ ( Tên, giá cả, ưu đãi...)
 - Cập nhật trạng thái dịch vụ ( có sẵn, đã đặt, không còn cung cấp)
 - Cập nhật giá cả cho các dịch vụ
-- Phân tích tình hình dịch vụ
+- Phân tích tình hình sử dụng dịch vụ
 #### 3.7.2 Quản lý đặt dịch vụ
 - Nhân viên nhập đặt dịch vụ
 - Thông tin khách hàng đặt dịch vụ
 - Quản lý lịch sử đặt dịch vụ
-- Xóa hoặc thêm dịch vụ 
+- Xóa hoặc thêm dịch vụ
+#### 3.7.3 Quản lý tồn kho
+- Theo dõi tồn kho
+- Cảnh báo khi số lượng hàng còn trong kho thấp hơn ngưỡng nhất định 
 
 
