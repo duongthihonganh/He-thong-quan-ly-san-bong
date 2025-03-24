@@ -4,53 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Đặt Sân - Nhân Viên</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
+            background-color: #FFC107;
+            color: #000000;
         }
         .container {
-            max-width: 800px;
-            margin: auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
         .field-btn {
             margin: 5px;
-            padding: 10px;
-            cursor: pointer;
-            border: none;
-            background-color: lightgray;
-        }
-        .field-btn.active {
-            background-color: blue;
-            color: white;
         }
         .booking-list {
             margin-top: 20px;
             padding: 10px;
             border: 1px solid #ccc;
-        }
-        .delete-btn {
-            margin-left: 10px;
-            color: red;
-            cursor: pointer;
+            background: #f8f9fa;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Hệ Thống Quản Lý Đặt Sân</h1>
-        <h2>Chọn môn thể thao</h2>
-        <select id="sport-select" onchange="updateFieldOptions()">
-            <option value="football">Bóng đá</option>
-            <option value="pickleball">Pickleball</option>
-        </select>
-        <h2>Chọn sân</h2>
-        <div id="field-buttons"></div>
-        <h2>Chọn ngày</h2>
-        <input type="date" id="date-picker">
-        <button onclick="bookField()">Đặt sân</button>
-        <h2>Lịch đặt sân</h2>
-        <div id="booking-list" class="booking-list">Chưa có lịch đặt.</div>
+    <div class="container mt-4">
+        <h2 class="text-center">Hệ Thống Quản Lý Đặt Sân</h2>
+        
+        <div class="mb-3">
+            <label for="sport-select" class="form-label">Chọn môn thể thao</label>
+            <select id="sport-select" class="form-select" onchange="updateFieldOptions()">
+                <option value="football">Bóng đá</option>
+                <option value="pickleball">Pickleball</option>
+            </select>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Chọn sân</label>
+            <div id="field-buttons" class="d-flex flex-wrap"></div>
+        </div>
+        
+        <div class="mb-3">
+            <label for="date-picker" class="form-label">Chọn ngày</label>
+            <input type="date" id="date-picker" class="form-control">
+        </div>
+        
+        <button class="btn btn-primary w-100" onclick="bookField()">Đặt sân</button>
+        
+        <h2 class="text-center mt-4">Lịch đặt sân</h2>
+        <div id="booking-list" class="booking-list text-center">Chưa có lịch đặt.</div>
     </div>
     
     <script>
@@ -74,17 +76,17 @@
             fieldButtons.innerHTML = "";
             fields[sport].forEach(field => {
                 const btn = document.createElement("button");
-                btn.className = "field-btn";
+                btn.className = "btn btn-outline-primary field-btn";
                 btn.textContent = `${field.name} - ${field.price}`;
-                btn.onclick = () => selectField(field.id);
+                btn.onclick = () => selectField(field.id, btn);
                 fieldButtons.appendChild(btn);
             });
         }
         
-        function selectField(fieldId) {
+        function selectField(fieldId, button) {
             selectedField = fields[document.getElementById("sport-select").value].find(f => f.id === fieldId);
-            document.querySelectorAll('.field-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            document.querySelectorAll('.field-btn').forEach(btn => btn.classList.remove('btn-primary'));
+            button.classList.add('btn-primary');
         }
 
         function bookField() {
@@ -108,8 +110,11 @@
                 bookingList.innerHTML = 'Chưa có lịch đặt.';
             } else {
                 bookingList.innerHTML = bookings.map((b, index) => 
-                    `${b.field.name} (${b.field.price}) - ${b.date} <span class="delete-btn" onclick="deleteBooking(${index})">X</span>`
-                ).join('<br>');
+                    `<div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                        ${b.field.name} (${b.field.price}) - ${b.date} 
+                        <button class="btn btn-danger btn-sm" onclick="deleteBooking(${index})">Xóa</button>
+                    </div>`
+                ).join('');
             }
         }
 
