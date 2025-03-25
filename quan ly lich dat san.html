@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Lịch Đặt Sân</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fffde7; /* Màu vàng nhạt */
+            color: #333;
+        }
+
+        header {
+            background-color: #ffc107; /* Màu vàng */
+            color: #333;
+            padding: 1rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #ffb300; /* Màu vàng đậm hơn */
+        }
+
+        nav ul li {
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        section {
+            padding: 2rem;
+            margin: 1rem auto;
+            background-color: #fff8e1; /* Màu vàng sáng hơn */
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            width: 80%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            margin-bottom: 1.5rem;
+        }
+
+        label, input, button {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        input {
+            padding: 0.5rem;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            color: #fff;
+            background-color: #ffc107;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ffb300;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #ffc107;
+            color: #333;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Quản Lý Lịch Đặt Sân</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#dat-san">Đặt Sân</a></li>
+            <li><a href="#quan-ly-lich">Quản Lý Lịch Đặt</a></li>
+            <li><a href="#huy-chinh-sua">Hủy/Chỉnh Sửa Lịch Đặt</a></li>
+        </ul>
+    </nav>
+
+    <section id="dat-san">
+        <h2>Đặt Sân</h2>
+        <form action="/dat-san" method="post">
+            <label for="info">Nhập thông tin đặt sân:</label>
+            <input type="text" id="info" name="info" required>
+            <button type="submit">Xác nhận đặt sân</button>
+        </form>
+    </section><section id="quan-ly-lich">
+        <h2>Quản Lý Lịch Đặt</h2>
+        <form action="/tim-kiem" method="get">
+            <label for="search">Tìm kiếm lịch đặt:</label>
+            <input type="text" id="search" name="search">
+            <button type="submit">Tìm kiếm</button>
+        </form>
+        <div id="hien-thi">
+            <h3>Hiển thị lịch đặt</h3>
+            <p>Danh sách lịch đặt sẽ hiển thị ở đây.</p>
+        </div>
+    </section>
+
+    <section id="huy-chinh-sua">
+        <h2>Hủy/Chỉnh Sửa Lịch Đặt</h2>
+        <form action="/huy-lich" method="post">
+            <label for="cancel-id">Nhập ID lịch đặt cần hủy:</label>
+            <input type="text" id="cancel-id" name="cancel-id" required>
+            <button type="submit">Hủy lịch đặt</button>
+        </form>
+        <form action="/chinh-sua" method="post">
+            <label for="edit-id">Nhập ID lịch đặt cần chỉnh sửa:</label>
+            <input type="text" id="edit-id" name="edit-id" required>
+            <button type="submit">Chỉnh sửa lịch đặt</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Quản Lý Lịch Đặt Sân</p>
+    </footer>
+</body>
+</html>
