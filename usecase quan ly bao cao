@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Doanh Thu</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #1e1e2f; margin: 0; padding: 20px; text-align: center; color: #ffffff; }
+        .container { max-width: 900px; margin: auto; background: #2a2a3b; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); display: none; }
+        canvas { max-width: 100%; }
+        button { padding: 10px 20px; margin: 10px 0; cursor: pointer; border: none; background: #ff9800; color: white; border-radius: 5px; font-size: 16px; }
+        button:hover { background: #e68900; }
+        .login-container { text-align: center; margin-top: 50px; background: #2a2a3b; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); max-width: 400px; margin: auto; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #555; border-radius: 5px; background: #3a3a4a; color: #fff; }
+        h2 { color: #ff9800; }
+        select { padding: 10px; border-radius: 5px; border: 1px solid #555; background: #3a3a4a; color: #fff; }
+        label { color: #ffcc80; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Đăng Nhập</h2>
+        <input type="text" id="username" placeholder="Tên đăng nhập">
+        <input type="password" id="password" placeholder="Mật khẩu">
+        <button onclick="login()">Đăng Nhập</button>
+        <p id="loginMessage" style="color: red;"></p>
+    </div>
+
+    <div class="container" id="dashboard">
+        <h2>Báo Cáo Doanh Thu</h2>
+        <label for="date">Chọn ngày:</label>
+        <input type="date" id="date" onchange="fetchDailyReport()">
+        <div id="dailyReport"></div>
+        
+        <h2>Thống Kê Doanh Thu</h2>
+        <label for="timeRange">Chọn phạm vi:</label>
+        <select id="timeRange" onchange="fetchRevenueStats()">
+            <option value="month">Tháng</option>
+            <option value="quarter">Quý</option>
+            <option value="year">Năm</option>
+        </select>
+        <canvas id="revenueChart"></canvas>
+        
+        <h2>Dự Báo Doanh Thu</h2>
+        <button onclick="predictRevenue()">Dự Báo</button>
+        <canvas id="forecastChart"></canvas>
+    </div>
+
+    <script>
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            if (username === "admin" && password === "123456") {
+                document.querySelector(".login-container").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+            } else {
+                document.getElementById("loginMessage").innerText = "Tên đăng nhập hoặc mật khẩu không đúng!";
+            }
+        }
+
+        function fetchDailyReport() {
+            const date = document.getElementById("date").value;
+            document.getElementById("dailyReport").innerHTML = `Báo cáo doanh thu ngày ${date}: Tổng 5,000,000 VNĐ`;
+        }
+
+        function fetchRevenueStats() {
+            const ctx = document.getElementById("revenueChart").getContext("2d");
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: ["Tháng 1", "Tháng 2", "Tháng 3"],
+                    datasets: [{ label: "Doanh thu", data: [5000000, 7000000, 9000000], borderColor: "#ffcc80", fill: false }]
+                }
+            });
+        }
+
+        function predictRevenue() {
+            const ctx = document.getElementById("forecastChart").getContext("2d");
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: ["Tháng tới", "2 tháng tới", "3 tháng tới"],
+                    datasets: [{ label: "Dự báo", data: [10000000, 12000000, 15000000], backgroundColor: "#ff9800" }]
+                }
+            });
+        }
+    </script>
+</body>
+</html>
