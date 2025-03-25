@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Dịch Vụ Đi Kèm</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000; /* Nền màu đen */
+            color: #ffd700; /* Màu chữ vàng */
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #1a1a1a; /* Màu nền đen nhạt */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Ánh sáng vàng */
+            max-width: 900px;
+            margin: auto;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #ffd700; /* Tiêu đề màu vàng */
+        }
+        .btn-primary {
+            background-color: #ffd700; /* Nút màu vàng */
+            color: #000000;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #e6c200; /* Vàng sậm khi hover */
+        }
+        input, select, textarea {
+            background-color: #333333; /* Màu nền đen nhạt */
+            color: #ffd700; /* Chữ màu vàng */
+            border: 1px solid #ffd700; /* Viền vàng */
+            border-radius: 5px;
+        }
+        input::placeholder {
+            color: #e6e6e6; /* Placeholder xám */
+        }
+        table {
+            background-color: #1a1a1a;
+            color: #ffd700;
+            margin-top: 20px;
+        }
+        .table-primary {
+            background-color: #ffd700; /* Nền vàng */
+            color: #000000; /* Chữ đen */
+        }
+        .alert {
+            font-size: 14px;
+            background-color: #ffd700; /* Nền thông báo vàng */
+            color: #000000; /* Chữ đen */
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Quản Lý Dịch Vụ Đi Kèm</h1>
+
+        <!-- Đăng nhập -->
+        <h2 class="section-title">1. Đăng Nhập</h2>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="username" class="form-label">Tên Đăng Nhập:</label>
+                <input type="text" id="username" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Mật Khẩu:</label>
+                <input type="password" id="password" class="form-control">
+            </div>
+            <button type="button" class="btn btn-primary w-100" onclick="login()">Đăng Nhập</button>
+        </form>
+        <div id="loginMessage" class="mt-3"></div>
+
+        <!-- Quản lý dịch vụ -->
+        <h2 class="section-title">2. Cập Nhật Danh Sách Dịch Vụ</h2>
+        <form id="serviceForm">
+            <div class="mb-3">
+                <label for="serviceName" class="form-label">Tên Dịch Vụ:</label>
+                <input type="text" id="serviceName" class="form-control" placeholder="Ví dụ: Cho thuê bóng">
+            </div>
+            <div class="mb-3">
+                <label for="serviceDescription" class="form-label">Mô Tả:</label>
+                <input type="text" id="serviceDescription" class="form-control" placeholder="Ví dụ: Bóng đá tiêu chuẩn">
+            </div>
+            <div class="mb-3">
+                <label for="servicePrice" class="form-label">Giá:</label>
+                <input type="number" id="servicePrice" class="form-control" placeholder="Nhập giá dịch vụ">
+            </div>
+            <div class="mb-3">
+                <label for="serviceStatus" class="form-label">Trạng Thái:</label>
+                <select id="serviceStatus" class="form-select">
+                    <option value="Còn hàng">Còn hàng</option>
+                    <option value="Hết hàng">Hết hàng</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary w-100" onclick="addService()">Thêm Dịch Vụ</button>
+        </form>
+        <div id="serviceResult" class="mt-3"></div>
+
+        <h3 class="section-title">Danh Sách Dịch Vụ</h3>
+        <table class="table table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>Tên Dịch Vụ</th>
+                    <th>Mô Tả</th>
+                    <th>Giá</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody id="serviceList">
+                <!-- Dịch vụ sẽ được hiển thị ở đây -->
+            </tbody>
+        </table>
+
+        <!-- Báo cáo doanh thu -->
+        <h2 class="section-title">3. Báo Cáo Doanh Thu</h2>
+        <div id="reportSection">
+            <p>Tổng Doanh Thu: <b id="totalRevenue">0 VNĐ</b></p>
+        </div>
+    </div>
+
+    <script>
+        const services = [];
+        let totalRevenue = 0;
+
+        // Đăng nhập
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            if (username === "admin" && password === "123456") {
+                document.getElementById("loginMessage").innerHTML = `<div class="alert alert-success">Đăng nhập thành công!</div>`;
+                document.getElementById("loginForm").style.display = "none";
+            } else {
+                document.getElementById("loginMessage").innerHTML = `<div class="alert alert-danger">Tên đăng nhập hoặc mật khẩu không đúng!</div>`;
+            }
+        }
+
+        // Thêm dịch vụ
+        function addService() {
+            const name = document.getElementById("serviceName").value.trim();
+            const description = document.getElementById("serviceDescription").value.trim();
+            const price = parseInt(document.getElementById("servicePrice").value);
+            const status = document.getElementById("serviceStatus").value;
+
+            if (name && description && price) {
+                services.push({ name, description, price, status });
+                updateServiceList();
+                document.getElementById("serviceResult").innerHTML = `<div class="alert alert-success">Dịch vụ đã được thêm thành công!</div>`;
+                document.getElementById("serviceForm").reset();
+            } else {
+                alert("Vui lòng nhập đầy đủ thông tin!");
+            }
+        }
+
+        // Cập nhật danh sách dịch vụ
+        function updateServiceList() {
+            const serviceList = document.getElementById("serviceList");
+            serviceList.innerHTML = services.map((service, index) => `
+                <tr>
+                    <td>${service.name}</td>
+                    <td>${service.description}</td>
+                    <td>${service.price.toLocaleString()} VNĐ</td>
+                    <td>${service.status}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" onclick="removeService(${index})">Xóa</button>
+                    </td>
+                </tr>
+            `).join("");
+            calculateRevenue();
+        }
+
+        // Xóa dịch vụ
+        function removeService(index) {
+            services.splice(index, 1);
+            updateServiceList();
+        }
+
+        // Tính tổng doanh thu
+        function calculateRevenue() {
+            totalRevenue = services.reduce((sum, service) => sum + service.price, 0);
+            document.getElementById("totalRevenue").innerText = `${totalRevenue.toLocaleString()} VNĐ`;
+        }
+    </script>
+</body>
+</html>
