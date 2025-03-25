@@ -3,71 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập</title>
+    <title>Quản lý Đặt Sân - Đăng Nhập</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: url('/demo/image/hinh-nen-bong-da.jpg') no-repeat center center/cover;
+            background-color: #FFC107;
+            color: #000000;
         }
-        .login-container {
-            background: white;
+        .container {
+            background: #ffffff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .login-container h2 {
-            text-align: center;
-        }
-        .login-container input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .login-container button {
-            width: 95%;
-            padding: 10px;
-            background: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-        }
-        .login-container button:hover {
-            background: #0056b3;
+            max-width: 400px;
+            margin-top: 100px;
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Đăng nhập</h2>
-        <input type="text" id="username" placeholder="Tên đăng nhập">
-        <input type="password" id="password" placeholder="Mật khẩu">
-        <button onclick="login()">Đăng nhập</button>
+    <div class="container text-center" id="login-container">
+        <h2>Đăng Nhập</h2>
+        <div class="mb-3">
+            <input type="text" id="username" class="form-control" placeholder="Tên đăng nhập">
+        </div>
+        <div class="mb-3">
+            <input type="password" id="password" class="form-control" placeholder="Mật khẩu">
+        </div>
+        <button class="btn btn-primary w-100" onclick="login()">Đăng Nhập</button>
     </div>
 
+    <div class="container mt-4 d-none" id="booking-container">
+        <h2 class="text-center">Hệ Thống Quản Lý Đặt Sân</h2>
+        <button class="btn btn-danger mb-3" onclick="logout()">Đăng Xuất</button>
+        
+        <div class="mb-3">
+            <label for="sport-select" class="form-label">Chọn môn thể thao</label>
+            <select id="sport-select" class="form-select" onchange="updateFieldOptions()">
+                <option value="football">Bóng đá</option>
+                <option value="pickleball">Pickleball</option>
+            </select>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Chọn loại sân</label>
+            <select id="field-type" class="form-select">
+                <option value="standard">Tiêu Chuẩn</option>
+                <option value="premium">Cao Cấp</option>
+            </select>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Chọn sân</label>
+            <div id="field-buttons" class="d-flex flex-wrap"></div>
+        </div>
+        
+        <div class="mb-3">
+            <label for="date-picker" class="form-label">Chọn ngày</label>
+            <input type="date" id="date-picker" class="form-control">
+        </div>
+        
+        <button class="btn btn-primary w-100" onclick="bookField()">Đặt sân</button>
+        
+        <h2 class="text-center mt-4">Lịch đặt sân</h2>
+        <div id="booking-list" class="booking-list text-center">Chưa có lịch đặt.</div>
+    </div>
+    
     <script>
+        const users = { admin: "123456" }; 
         function login() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            
-            if (username === "admin" && password === "123456") {
-                alert("Đăng nhập thành công!");
-                window.location.href = "trangchu.html"; // Chuyển hướng đến trang khác
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (users[username] && users[username] === password) {
+                document.getElementById('login-container').classList.add('d-none');
+                document.getElementById('booking-container').classList.remove('d-none');
             } else {
-                alert("Tên đăng nhập hoặc mật khẩu sai!");
+                alert("Sai tên đăng nhập hoặc mật khẩu!");
             }
+        }
+
+        function logout() {
+            document.getElementById('booking-container').classList.add('d-none');
+            document.getElementById('login-container').classList.remove('d-none');
         }
     </script>
 </body>
