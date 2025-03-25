@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Nhân Viên </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e2f;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: #2a2a3b;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        canvas {
+            max-width: 100%;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            border: none;
+            background: #ff9800;
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #e68900;
+        }
+        h2, h3 {
+            color: #ffcc80;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background: #3a3a4a;
+            color: #fff;
+        }
+        label {
+            color: #ffcc80;
+        }
+        .table-primary {
+            background-color: #ff9800;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Hệ Thống Quản Lý Nhân Viên </h1>
+
+        <!-- Phân Quyền Nhân Viên -->
+        <h2>1. Phân Quyền Nhân Viên</h2>
+        <form id="assignRoleForm">
+            <div class="mb-3">
+                <label for="employeeName">Tên Nhân Viên:</label>
+                <input type="text" id="employeeName" placeholder="Nhập tên nhân viên">
+            </div>
+            <div class="mb-3">
+                <label for="role">Vai Trò:</label>
+                <select id="role">
+                    <option value="Nhân viên">Nhân Viên Thường</option>
+                    <option value="Quản lý">Quản Lý</option>
+                    <option value="Chủ sân">Chủ Sân</option>
+                </select>
+            </div>
+            <button type="button" onclick="assignRole()">Phân Quyền</button>
+        </form>
+        <h3>Danh sách Nhân Viên</h3>
+        <ul id="employeeList" class="list-group">
+            <!-- Danh sách nhân viên -->
+        </ul>
+
+        <!-- Theo Dõi Lịch Sử Hoạt Động -->
+        <h2>2. Theo Dõi Lịch Sử Hoạt Động</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Nhân Viên</th>
+                        <th>Hành Động</th>
+                        <th>Thời Gian</th>
+                    </tr>
+                </thead>
+                <tbody id="activityLog">
+                    <!-- Lịch sử hoạt động -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Quản Lý Doanh Thu -->
+        <h2>3. Quản Lý Doanh Thu</h2>
+        <label for="date">Chọn ngày:</label>
+        <input type="date" id="date" onchange="fetchDailyReport()">
+        <div id="dailyReport"></div>
+        
+        <label for="timeRange">Chọn phạm vi:</label>
+        <select id="timeRange" onchange="fetchRevenueStats()">
+            <option value="month">Tháng</option>
+            <option value="quarter">Quý</option>
+            <option value="year">Năm</option>
+        </select>
+        <canvas id="revenueChart"></canvas>
+
+        <h3>Dự Báo Doanh Thu</h3>
+        <button onclick="predictRevenue()">Dự Báo</button>
+        <canvas id="forecastChart"></canvas>
+    </div>
+
+    <script>
+        const employees = [];
+        const activityLogs = [];
+
+        // Phân quyền nhân viên
+        function assignRole() {
+            const name = document.getElementById("employeeName").value.trim();
+            const role = document.getElementById("role").value;
+
+            if (name) {
+                employees.push({ name, role });
+                updateEmployeeList();
+                logActivity(name, `Phân quyền thành công: ${role}`);
+            } else {
+                alert("Vui lòng nhập tên nhân viên!");
+            }
+        }
+
+        // Cập nhật danh sách nhân viên
+        function updateEmployeeList() {
+            const employeeList = document.getElementById("employeeList");
+            employeeList.innerHTML = employees.map(emp => `
+                <li class="list-group-item">${emp.name} - ${emp.role}</li>
+            `).join("");
+        }
+
+        // Ghi lịch sử hoạt động
+        function logActivity(employee, action) {
+            const timestamp = new Date().toLocaleString();
+            activityLogs.push({ employee, action, timestamp });
+            updateActivityLog();
+        }
+
+        // Hiển thị lịch sử hoạt động
+        function updateActivityLog() {
+            const logTable = document.getElementById("activityLog");
+            logTable.innerHTML = activityLogs.map(log => `
+                <tr>
+                    <td>${log.employee}</td>
+                    <td>${log.action}</td>
+                    <td>${log.timestamp}</td>
+                </tr>
+            `).join("");
+        }
+
+        // Báo cáo doanh thu theo ngày
+        function fetchDailyReport() {
+            const date = document.getElementById("date").value;
+            const dailyReport = document.getElementById("dailyReport");
+            dailyReport.innerHTML = date ? `Báo cáo doanh thu ngày ${date}: Tổng <b>5,000,000 VNĐ</b>` : "Vui lòng chọn ngày.";
+        }
+
+        // Thống kê doanh thu
+        function fetchRevenueStats() {
+            const range = document.getElementById("timeRange").value;
+            const ctx = document.getElementById("revenueChart").getContext("2d");
+            let labels, data;
+
+            if (range === "month") {
+                labels = ["Tháng 1", "Tháng 2", "Tháng 3"];
+                data = [5000000, 7000000, 9000000];
+            } else if (range === "quarter") {
+                labels = ["Quý 1", "Quý 2", "Quý 3"];
+                data = [20000000, 30000000, 25000000];
+            } else {
+                labels = ["2021", "2022", "2023"];
+                data = [100000000, 120000000, 150000000];
+            }
+
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Doanh thu",
+                        data: data,
+                        borderColor: "#ffcc80",
+                        backgroundColor: "rgba(255, 204, 128, 0.2)",
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: "top" }
+                    }
+                }
+            });
+        }
+
+        // Dự báo doanh thu
+        function predictRevenue() {
+            const ctx = document.getElementById("forecastChart").getContext("2d");
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: ["Tháng tới", "2 tháng tới", "3 tháng tới"],
+                    datasets: [{
+                        label: "Dự báo doanh thu",
+                        data: [10000000, 12000000, 15000000],
+                        backgroundColor: "#ff9800"
+                    }]
+                }
+            });
+        }
+    </script>
+</body>
+</html>
