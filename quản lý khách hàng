@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Khách Hàng</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000; 
+            color: #ffd700; 
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); 
+            max-width: 900px;
+            margin: auto;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+        .btn-primary {
+            background-color: #ffd700; 
+            color: #000000; 
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #e6c200; 
+        }
+        .btn-warning {
+            background-color: #f4a700;
+            border: none;
+        }
+        .btn-danger {
+            background-color: #d32f2f;
+            border: none;
+        }
+        input, select, textarea {
+            background-color: #333333; 
+            color: #ffd700; 
+            border: 1px solid #ffd700;
+            border-radius: 5px;
+        }
+        table {
+            background-color: #1a1a1a; 
+            color: #ffd700; 
+        }
+        .table-primary {
+            background-color: #ffd700; 
+            color: #000000;
+        }
+        textarea::placeholder, input::placeholder {
+            color: #e6e6e6;
+        }
+        .alert {
+            font-size: 14px;
+            background-color: #ffd700; 
+            color: #000000; 
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Hệ Thống Quản Lý Khách Hàng</h1>
+
+        <!-- Lưu trữ thông tin khách hàng -->
+        <h2 class="section-title">1. Lưu Trữ Thông Tin Khách Hàng</h2>
+        <form id="customerForm">
+            <div class="mb-3">
+                <label for="customerName" class="form-label">Tên Khách Hàng:</label>
+                <input type="text" id="customerName" class="form-control" placeholder="Nhập tên khách hàng">
+            </div>
+            <div class="mb-3">
+                <label for="customerPhone" class="form-label">Số Điện Thoại:</label>
+                <input type="text" id="customerPhone" class="form-control" placeholder="Nhập số điện thoại">
+            </div>
+            <div class="mb-3">
+                <label for="customerEmail" class="form-label">Email:</label>
+                <input type="email" id="customerEmail" class="form-control" placeholder="Nhập email">
+            </div>
+            <div class="mb-3">
+                <label for="customerNotes" class="form-label">Ghi Chú:</label>
+                <textarea id="customerNotes" class="form-control" placeholder="Ví dụ: Khách hàng thân thiết"></textarea>
+            </div>
+            <button type="button" class="btn btn-primary w-100" onclick="addCustomer()">Lưu Khách Hàng</button>
+        </form>
+        <div id="customerResult" class="mt-3"></div>
+
+        <h3 class="section-title">Danh Sách Khách Hàng</h3>
+        <table class="table table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>Tên Khách Hàng</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Email</th>
+                    <th>Ghi Chú</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody id="customerList">
+                <!-- Khách hàng sẽ được hiển thị ở đây -->
+            </tbody>
+        </table>
+
+        <!-- Quản lý danh sách đen -->
+        <h2 class="section-title">2. Quản Lý Danh Sách Đen</h2>
+        <div id="blacklistSection">
+            <h3 class="section-title">Danh Sách Đen</h3>
+            <ul id="blacklist" class="list-group">
+                <!-- Danh sách đen sẽ được hiển thị ở đây -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const customers = [];
+        const blacklist = [];
+
+      
+        function addCustomer() {
+            const name = document.getElementById("customerName").value.trim();
+            const phone = document.getElementById("customerPhone").value.trim();
+            const email = document.getElementById("customerEmail").value.trim();
+            const notes = document.getElementById("customerNotes").value.trim();
+
+            if (name && phone && email) {
+                customers.push({ name, phone, email, notes });
+                updateCustomerList();
+                document.getElementById("customerResult").innerHTML = `<div class="alert alert-success">Khách hàng đã được lưu thành công!</div>`;
+                document.getElementById("customerForm").reset();
+            } else {
+                alert("Vui lòng nhập đầy đủ thông tin!");
+            }
+        }
+
+        
+        function updateCustomerList() {
+            const customerList = document.getElementById("customerList");
+            customerList.innerHTML = customers.map((customer, index) => `
+                <tr>
+                    <td>${customer.name}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.notes}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="addToBlacklist(${index})">Thêm vào danh sách đen</button>
+                        <button class="btn btn-danger btn-sm" onclick="removeCustomer(${index})">Xóa</button>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+      
+        function removeCustomer(index) {
+            customers.splice(index, 1);
+            updateCustomerList();
+        }
+
+   
+        function addToBlacklist(index) {
+            const customer = customers[index];
+            blacklist.push(customer);
+            updateBlacklist();
+            removeCustomer(index);
+        }
+
+   
+        function updateBlacklist() {
+            const blacklistElement = document.getElementById("blacklist");
+            blacklistElement.innerHTML = blacklist.map(customer => `
+                <li class="list-group-item">${customer.name} - ${customer.phone} (${customer.notes})</li>
+            `).join("");
+        }
+    </script>
+</body>
+</html>
