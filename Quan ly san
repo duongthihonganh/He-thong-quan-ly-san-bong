@@ -3,120 +3,1128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Quản Lý Sân Bóng</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Quản Lý Sân Bóng</title>
+    <style>
+        /* CSS Reset và font */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0d904f, #0a753f);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        /* Đăng nhập */
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .login-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #0d904f;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .login-hint {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: white;
+        }
+        
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .form-actions button {
+            flex: 1;
+        }
+        
+        #add-field-form {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            background-color: #0d904f;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #0a753f;
+        }
+        
+        .btn-full {
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        
+        .btn-disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        /* Field Grid */
+        .field-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .field-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .field-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .field-card.selected {
+            border: 2px solid #0d904f;
+        }
+        
+        .field-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .field-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .field-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-trong {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-da-dat {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-bao-tri {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+        
+        .field-info {
+            margin: 15px 0;
+        }
+        
+        .field-info p {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .field-actions {
+            margin-top: 15px;
+        }
+        
+        .status-actions {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        
+        /* Nội dung khi đặt sân */
+        .booking-info {
+            display: none;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .booking-info input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        /* Trong card */
+        .trong {
+            border-left: 4px solid #28a745;
+        }
+        
+        /* Đã đặt card */
+        .da-dat {
+            border-left: 4px solid #dc3545;
+        }
+        
+        /* Bảo trì card */
+        .bao-tri {
+            border-left: 4px solid #6c757d;
+        }
+        
+        /* Tab cho thông tin bảo trì */
+        .maintenance-info {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .maintenance-info h4 {
+            margin-bottom: 10px;
+            color: #6c757d;
+        }
+        
+        .maintenance-info p {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        /* Các chức năng ghép sân */
+        .merge-options {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .merge-count {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+        
+        .merge-count button {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .merge-count button.active {
+            background-color: #0a753f;
+        }
+        
+        .quality-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .quality-excellent {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .quality-good {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .quality-average {
+            background-color: #ffc107;
+            color: #333;
+        }
+        
+        .quality-poor {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .field-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .dashboard-header button {
+                margin-top: 10px;
+            }
+            
+            .action-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .action-bar button {
+                margin-top: 10px;
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center">Hệ Thống Quản Lý Sân Bóng</h1>
+    <!-- Header -->
+    <div class="header">
+        <h1>Hệ Thống Quản Lý Sân Bóng</h1>
+    </div>
+
+    <!-- Đăng nhập -->
+    <div id="login-section" class="login-container">
+        <h2 class="login-title">Đăng nhập hệ thống</h2>
+        <div class="input-group">
+            <label for="username">Tên đăng nhập</label>
+            <input type="text" id="username" placeholder="Nhập tên đăng nhập">
+        </div>
+        <div class="input-group">
+            <label for="password">Mật khẩu</label>
+            <input type="password" id="password" placeholder="Nhập mật khẩu">
+        </div>
+        <button class="btn btn-full" onclick="login()">Đăng nhập</button>
+        <p class="login-hint">Gợi ý: username = admin, password = 1234</p>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="container dashboard">
+        <div class="dashboard-header">
+            <h2>Quản lý sân bóng</h2>
+            <button class="btn btn-secondary" onclick="logout()">Đăng xuất</button>
+        </div>
+
+        <div class="action-bar">
+            <div>
+                <h3>Danh sách sân bóng</h3>
+                <p id="selected-count">Đã chọn: <span>0</span> sân</p>
+            </div>
+            <div>
+                <button class="btn" onclick="showAddFieldForm()">Thêm sân mới</button>
+                <button id="merge-button" class="btn btn-secondary btn-disabled" onclick="mergeFields()" disabled>Ghép sân</button>
+                <div class="merge-count" style="display: none;">
+                    <button class="btn btn-sm active" onclick="setMergeCount(2)">Ghép 2 sân</button>
+                    <button class="btn btn-sm btn-secondary" onclick="setMergeCount(4)">Ghép 4 sân</button>
+                </div>
+            </div>
+        </div>
         
-        <nav class="nav nav-pills mb-4">
-            <a class="nav-link active" href="#" onclick="showSection(event, 'viewFields')">Xem Danh Sách Sân</a>
-            <a class="nav-link" href="#" onclick="showSection(event, 'checkFieldStatus')">Kiểm Tra Tình Trạng Sân</a>
-            <a class="nav-link" href="#" onclick="showSection(event, 'mergeFields')">Ghép Sân</a>
-            <a class="nav-link" href="#" onclick="showSection(event, 'updateFieldStatus')">Cập Nhật Trạng Thái Sân</a>
-        </nav>
-
-        <div id="viewFields" class="section">
-            <h2>Xem Danh Sách Sân</h2>
-            <input type="text" class="form-control mb-3" id="searchField" placeholder="Tìm kiếm sân..." onkeyup="searchField()">
-            <ul class="list-group mt-3" id="fieldList">
-                <script>
-                    for (let i = 1; i <= 10; i++) {
-                        document.write(`<li class='list-group-item' data-field='Sân ${i}'>Sân ${i} - <span class='status'>Sẵn sàng</span></li>`);
-                    }
-                </script>
-            </ul>
+        <!-- Form thêm sân mới (mặc định ẩn) -->
+        <div id="add-field-form" style="display: none;" class="login-container">
+            <h3 class="login-title">Thêm sân bóng mới</h3>
+            <div class="input-group">
+                <label for="new-field-name">Tên sân</label>
+                <input type="text" id="new-field-name" placeholder="Nhập tên sân" required>
+            </div>
+            <div class="input-group">
+                <label for="new-field-sport">Môn thể thao</label>
+                <select id="new-field-sport">
+                    <option value="Bóng đá">Bóng đá</option>
+                    <option value="Pickleball">Pickleball</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="new-field-type">Loại sân</label>
+                <select id="new-field-type">
+                    <option value="Mini">Mini</option>
+                    <option value="Sân lớn">Sân lớn</option>
+                    <option value="Sân tiêu chuẩn">Sân tiêu chuẩn</option>
+                    <option value="Sân cao cấp">Sân cao cấp</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="new-field-size">Kích thước</label>
+                <input type="text" id="new-field-size" placeholder="VD: 20x40m" required>
+            </div>
+            <div class="input-group">
+                <label for="new-field-capacity">Sức chứa</label>
+                <input type="text" id="new-field-capacity" placeholder="VD: 5 người">
+            </div>
+            <div class="input-group">
+                <label for="new-field-price">Giá thuê</label>
+                <input type="text" id="new-field-price" placeholder="VD: 200,000 VND/giờ" required>
+            </div>
+            <div class="input-group">
+                <label for="new-field-quality">Chất lượng sân</label>
+                <select id="new-field-quality">
+                    <option value="excellent">Xuất sắc</option>
+                    <option value="good">Tốt</option>
+                    <option value="average">Trung bình</option>
+                    <option value="poor">Kém</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button class="btn" onclick="addNewField()">Thêm sân</button>
+                <button class="btn btn-secondary" onclick="hideAddFieldForm()">Hủy</button>
+            </div>
         </div>
 
-        <div id="checkFieldStatus" class="section d-none">
-            <h2>Kiểm Tra Tình Trạng Sân</h2>
-            <select class="form-select mb-3" id="fieldSelect" onchange="updateStatus()">
-                <option value="">Chọn sân</option>
-                <script>
-                    for (let i = 1; i <= 10; i++) {
-                        document.write(`<option value='Sân ${i}'>Sân ${i}</option>`);
-                    }
-                </script>
-            </select>
-            <p class="mt-3">Trạng thái: <strong id="fieldStatus">Chưa chọn</strong></p>
-        </div>
+        <div id="fields" class="field-grid"></div>
+    </div>
 
-        <div id="mergeFields" class="section d-none">
-            <h2>Ghép Sân</h2>
-            <p>Chọn số lượng sân muốn ghép:</p>
-            <button class="btn btn-secondary" onclick="mergeFields(2)">Ghép 2 Sân Mini</button>
-            <button class="btn btn-secondary" onclick="mergeFields(4)">Ghép 4 Sân Mini</button>
-            <p class="mt-3" id="mergeResult"></p>
-        </div>
-
-        <div id="updateFieldStatus" class="section d-none">
-            <h2>Cập Nhật Trạng Thái Sân</h2>
-            <select class="form-select mb-3" id="updateFieldSelect">
-                <option value="">Chọn sân</option>
-                <script>
-                    for (let i = 1; i <= 10; i++) {
-                        document.write(`<option value='Sân ${i}'>Sân ${i}</option>`);
-                    }
-                </script>
-            </select>
-            <select class="form-select mb-3" id="newStatus">
-                <option value="">Chọn trạng thái</option>
-                <option value="Đang sử dụng">Đang sử dụng</option>
-                <option value="Bảo trì">Bảo trì</option>
-                <option value="Sẵn sàng">Sẵn sàng</option>
-            </select>
-            <button class="btn btn-success" onclick="updateFieldStatus()">Cập Nhật</button>
-            <p class="mt-3" id="updateResult"></p>
-        </div>
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2025 Hệ thống quản lý sân bóng | Phát triển bởi Your Company</p>
     </div>
 
     <script>
-        function showSection(event, sectionId) {
-            event.preventDefault();
-            document.querySelectorAll('.section').forEach(section => section.classList.add('d-none'));
-            document.getElementById(sectionId).classList.remove('d-none');
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            event.target.classList.add('active');
-        }
-
-        function searchField() {
-            let input = document.getElementById('searchField').value.toLowerCase();
-            let fields = document.querySelectorAll('#fieldList li');
-            fields.forEach(field => {
-                if (field.textContent.toLowerCase().includes(input)) {
-                    field.style.display = "block";
-                } else {
-                    field.style.display = "none";
+        // Dữ liệu sân bóng
+        const fields = [
+            { 
+                id: 1, 
+                name: "Sân 1", 
+                type: "Mini", 
+                sport: "Bóng đá",
+                size: "20x40m", 
+                capacity: "5 người", 
+                price: "200,000 VND/giờ", 
+                status: "trong", 
+                isMerged: false, 
+                selected: false, 
+                quality: "excellent",
+                bookingInfo: null,
+                maintenance: null
+            },
+            { 
+                id: 2, 
+                name: "Sân 2", 
+                type: "Mini", 
+                sport: "Bóng đá",
+                size: "20x40m", 
+                capacity: "5 người", 
+                price: "200,000 VND/giờ", 
+                status: "da-dat", 
+                isMerged: false, 
+                selected: false, 
+                quality: "good",
+                bookingInfo: {name: "Nguyễn Văn A", phone: "0912345678", time: "18:00 - 20:00"},
+                maintenance: null
+            },
+            { 
+                id: 3, 
+                name: "Sân 3", 
+                type: "Mini", 
+                sport: "Bóng đá",
+                size: "20x40m", 
+                capacity: "5 người", 
+                price: "200,000 VND/giờ", 
+                status: "trong", 
+                isMerged: false, 
+                selected: false, 
+                quality: "excellent",
+                bookingInfo: null,
+                maintenance: null
+            },
+            { 
+                id: 4, 
+                name: "Sân 4", 
+                type: "Mini", 
+                sport: "Bóng đá",
+                size: "20x40m", 
+                capacity: "5 người", 
+                price: "180,000 VND/giờ", 
+                status: "trong", 
+                isMerged: false, 
+                selected: false, 
+                quality: "good",
+                bookingInfo: null,
+                maintenance: null
+            },
+            { 
+                id: 5, 
+                name: "Sân 5", 
+                type: "Standard", 
+                sport: "Bóng đá",
+                size: "30x50m", 
+                capacity: "11 người", 
+                price: "300,000 VND/giờ", 
+                status: "bao-tri", 
+                isMerged: false, 
+                selected: false, 
+                quality: "poor",
+                bookingInfo: null,
+                maintenance: {
+                    repairs: "Thay cỏ nhân tạo, sửa hệ thống thoát nước",
+                    upgrades: "Lắp đặt hệ thống chiếu sáng LED mới",
+                    cost: "15,000,000 VND",
+                    startDate: "15/03/2025",
+                    endDate: "30/03/2025"
                 }
-            });
-        }
-
-        function updateStatus() {
-            let field = document.getElementById('fieldSelect').value;
-            let statusElement = document.querySelector(`#fieldList li[data-field='${field}'] .status`);
-            document.getElementById('fieldStatus').textContent = statusElement ? statusElement.textContent : "Chưa chọn";
-        }
-
-        function mergeFields(number) {
-            document.getElementById('mergeResult').textContent = `Đã ghép thành công ${number} sân mini.`;
-        }
-
-        function updateFieldStatus() {
-            let field = document.getElementById('updateFieldSelect').value;
-            let status = document.getElementById('newStatus').value;
-            if (field && status) {
-                let fieldElement = document.querySelector(`#fieldList li[data-field='${field}'] .status`);
-                if (fieldElement) {
-                    fieldElement.textContent = status;
-                    document.getElementById('updateResult').textContent = `Sân ${field} đã được cập nhật trạng thái: ${status}`;
-                }
-            } else {
-                document.getElementById('updateResult').textContent = "Vui lòng chọn sân và trạng thái mới.";
+            },
+            { 
+                id: 6, 
+                name: "Sân 6", 
+                type: "Standard", 
+                sport: "Bóng đá",
+                size: "30x50m", 
+                capacity: "11 người", 
+                price: "300,000 VND/giờ", 
+                status: "trong", 
+                isMerged: false, 
+                selected: false, 
+                quality: "average",
+                bookingInfo: null,
+                maintenance: null
+            },
+            { 
+                id: 7, 
+                name: "Sân Pickleball 1", 
+                type: "Mini", 
+                sport: "Pickleball",
+                size: "10x20m", 
+                capacity: "4 người", 
+                price: "150,000 VND/giờ", 
+                status: "trong", 
+                isMerged: false, 
+                selected: false, 
+                quality: "excellent",
+                bookingInfo: null,
+                maintenance: null
+            },
+            { 
+                id: 8, 
+                name: "Sân Pickleball 2", 
+                type: "Standard", 
+                sport: "Pickleball",
+                size: "15x30m", 
+                capacity: "8 người", 
+                price: "200,000 VND/giờ", 
+                status: "trong", 
+                isMerged: false, 
+                selected: false, 
+                quality: "good",
+                bookingInfo: null,
+                maintenance: null
+            }
+        ];
+        
+        // Biến toàn cục lưu số lượng sân cần ghép (mặc định là 2)
+        let mergeCount = 2;
+        
+        // Đặt số lượng sân cần ghép (2 hoặc 4)
+        function setMergeCount(count) {
+            if (count === 2 || count === 4) {
+                mergeCount = count;
+                
+                // Cập nhật giao diện nút
+                const mergeCountButtons = document.querySelectorAll('.merge-count button');
+                mergeCountButtons.forEach(button => {
+                    button.classList.add('btn-secondary');
+                    button.classList.remove('active');
+                });
+                
+                // Đánh dấu nút đang chọn
+                document.querySelector(`.merge-count button:nth-child(${count === 2 ? 1 : 2})`).classList.add('active');
+                document.querySelector(`.merge-count button:nth-child(${count === 2 ? 1 : 2})`).classList.remove('btn-secondary');
+                
+                // Hiển thị số lượng cần chọn
+                updateMergeButton();
             }
         }
+
+        // Hiển thị danh sách sân bóng
+        function renderFields() {
+            const fieldContainer = document.getElementById("fields");
+            fieldContainer.innerHTML = "";
+
+            // Lọc ra các sân chưa bị ghép
+            fields.filter(field => !field.isMerged).forEach(field => {
+                const card = document.createElement("div");
+                card.className = `field-card ${field.status} ${field.selected ? 'selected' : ''}`;
+                card.id = `field-${field.id}`;
+                
+                // Hiển thị badge chất lượng sân
+                if (field.quality) {
+                    const qualityBadge = document.createElement("div");
+                    qualityBadge.className = `quality-badge quality-${field.quality}`;
+                    qualityBadge.textContent = field.quality === "excellent" ? "Xuất sắc" : 
+                                              field.quality === "good" ? "Tốt" : 
+                                              field.quality === "average" ? "Trung bình" : "Kém";
+                    card.appendChild(qualityBadge);
+                }
+                
+                // Header của sân
+                const header = document.createElement("div");
+                header.className = "field-header";
+                
+                const nameElem = document.createElement("div");
+                nameElem.className = "field-name";
+                nameElem.textContent = field.name;
+                
+                const statusElem = document.createElement("span");
+                statusElem.className = `field-status status-${field.status}`;
+                statusElem.textContent = field.status === "trong" ? "Trống" : 
+                                         field.status === "da-dat" ? "Đã đặt" : "Bảo trì";
+                
+                header.appendChild(nameElem);
+                header.appendChild(statusElem);
+                card.appendChild(header);
+                
+                // Thông tin sân
+                const info = document.createElement("div");
+                info.className = "field-info";
+                info.innerHTML = `
+                    <p><strong>Môn thể thao:</strong> ${field.sport}</p>
+                    <p><strong>Loại sân:</strong> ${field.type}</p>
+                    <p><strong>Kích thước:</strong> ${field.size}</p>
+                    ${field.capacity ? `<p><strong>Sức chứa:</strong> ${field.capacity}</p>` : ''}
+                    <p><strong>Giá thuê:</strong> ${field.price}</p>
+                `;
+                card.appendChild(info);
+                
+                // Hiển thị thông tin đặt sân (nếu đã đặt)
+                if (field.status === "da-dat" && field.bookingInfo) {
+                    const bookingInfo = document.createElement("div");
+                    bookingInfo.className = "booking-info";
+                    bookingInfo.style.display = "block";
+                    bookingInfo.innerHTML = `
+                        <p><strong>Người đặt:</strong> ${field.bookingInfo.name}</p>
+                        <p><strong>Số điện thoại:</strong> ${field.bookingInfo.phone}</p>
+                        <p><strong>Thời gian:</strong> ${field.bookingInfo.time}</p>
+                    `;
+                    card.appendChild(bookingInfo);
+                }
+                
+                // Hiển thị thông tin bảo trì (nếu đang bảo trì)
+                if (field.status === "bao-tri" && field.maintenance) {
+                    const maintenanceInfo = document.createElement("div");
+                    maintenanceInfo.className = "maintenance-info";
+                    maintenanceInfo.innerHTML = `
+                        <h4>Thông tin bảo trì</h4>
+                        <p><strong>Sửa chữa:</strong> ${field.maintenance.repairs}</p>
+                        <p><strong>Nâng cấp:</strong> ${field.maintenance.upgrades}</p>
+                        <p><strong>Chi phí dự kiến:</strong> ${field.maintenance.cost}</p>
+                        <p><strong>Thời gian:</strong> ${field.maintenance.startDate} - ${field.maintenance.endDate}</p>
+                    `;
+                    card.appendChild(maintenanceInfo);
+                }
+                
+                // Các nút thay đổi trạng thái
+                const actions = document.createElement("div");
+                actions.className = "field-actions";
+                
+                // Các nút thay đổi trạng thái
+                const statusActions = document.createElement("div");
+                statusActions.className = "status-actions";
+                
+                const trongBtn = document.createElement("button");
+                trongBtn.className = `btn btn-sm ${field.status === 'trong' ? '' : 'btn-secondary'}`;
+                trongBtn.textContent = "Trống";
+                trongBtn.onclick = () => changeStatus(field.id, "trong");
+                
+                const daDatBtn = document.createElement("button");
+                daDatBtn.className = `btn btn-sm ${field.status === 'da-dat' ? '' : 'btn-secondary'}`;
+                daDatBtn.textContent = "Đặt sân";
+                daDatBtn.onclick = () => field.status === 'da-dat' ? null : showBookingForm(field.id);
+                
+                const baoTriBtn = document.createElement("button");
+                baoTriBtn.className = `btn btn-sm ${field.status === 'bao-tri' ? '' : 'btn-secondary'}`;
+                baoTriBtn.textContent = "Bảo trì";
+                baoTriBtn.onclick = () => showMaintenanceForm(field.id);
+                
+                statusActions.appendChild(trongBtn);
+                statusActions.appendChild(daDatBtn);
+                statusActions.appendChild(baoTriBtn);
+                actions.appendChild(statusActions);
+                
+                // Form đặt sân (mặc định ẩn)
+                if (field.status !== "da-dat") {
+                    const bookingInfo = document.createElement("div");
+                    bookingInfo.className = "booking-info";
+                    bookingInfo.id = `booking-${field.id}`;
+                    bookingInfo.innerHTML = `
+                        <input type="text" id="name-${field.id}" placeholder="Tên người đặt" required>
+                        <input type="text" id="phone-${field.id}" placeholder="Số điện thoại" required>
+                        <input type="text" id="time-${field.id}" placeholder="Thời gian (vd: 18:00 - 20:00)" required>
+                        <button class="btn btn-sm" onclick="bookField(${field.id})">Xác nhận đặt sân</button>
+                        <button class="btn btn-sm btn-secondary" onclick="hideBookingForm(${field.id})">Hủy</button>
+                    `;
+                    actions.appendChild(bookingInfo);
+                }
+                
+                // Nút chọn để ghép (chỉ hiển thị cho sân trống)
+                if (field.status === "trong") {
+                    const selectBtn = document.createElement("button");
+                    selectBtn.className = "btn btn-full";
+                    selectBtn.style.marginTop = "10px";
+                    selectBtn.textContent = field.selected ? "Bỏ chọn" : "Chọn để ghép";
+                    selectBtn.onclick = () => toggleSelection(field.id);
+                    actions.appendChild(selectBtn);
+                }
+                
+                card.appendChild(actions);
+                fieldContainer.appendChild(card);
+            });
+            
+            // Cập nhật số lượng sân đã chọn
+            updateSelectedCount();
+        }
+        
+        // Hiển thị form bảo trì
+        function showMaintenanceForm(fieldId) {
+            const field = fields.find(f => f.id === fieldId);
+            if (field) {
+                // Hiển thị form nhập thông tin bảo trì
+                let maintenanceInfo = {};
+                
+                if (field.status !== 'bao-tri') {
+                    // Hỏi thông tin bảo trì
+                    const repairs = prompt('Nhập nội dung sửa chữa:', 'Thay mới cỏ nhân tạo');
+                    const upgrades = prompt('Nhập nội dung nâng cấp:', 'Lắp thêm hệ thống chiếu sáng');
+                    const cost = prompt('Chi phí dự kiến:', '5,000,000 VND');
+                    const startDate = prompt('Ngày bắt đầu (dd/mm/yyyy):', '15/03/2025');
+                    const endDate = prompt('Ngày kết thúc (dd/mm/yyyy):', '20/03/2025');
+                    
+                    if (repairs && cost) {
+                        maintenanceInfo = {
+                            repairs,
+                            upgrades,
+                            cost,
+                            startDate,
+                            endDate
+                        };
+                        
+                        field.maintenance = maintenanceInfo;
+                        field.status = 'bao-tri';
+                        
+                        // Nếu sân đang được chọn để ghép, bỏ chọn nó
+                        if (field.selected) {
+                            field.selected = false;
+                        }
+                        
+                        renderFields();
+                    }
+                } else {
+                    // Hỏi có muốn hủy bảo trì không
+                    if (confirm('Bạn muốn hủy trạng thái bảo trì của sân này?')) {
+                        field.status = 'trong';
+                        renderFields();
+                    }
+                }
+            }
+        }
+        
+        // Hiển thị form đặt sân
+        function showBookingForm(fieldId) {
+            const bookingForm = document.getElementById(`booking-${fieldId}`);
+            if (bookingForm) {
+                bookingForm.style.display = "block";
+            }
+        }
+        
+        // Ẩn form đặt sân
+        function hideBookingForm(fieldId) {
+            const bookingForm = document.getElementById(`booking-${fieldId}`);
+            if (bookingForm) {
+                bookingForm.style.display = "none";
+            }
+        }
+        
+        // Xác nhận đặt sân
+        function bookField(fieldId) {
+            const nameInput = document.getElementById(`name-${fieldId}`);
+            const phoneInput = document.getElementById(`phone-${fieldId}`);
+            const timeInput = document.getElementById(`time-${fieldId}`);
+            
+            if (!nameInput.value || !phoneInput.value || !timeInput.value) {
+                alert("Vui lòng nhập đầy đủ thông tin đặt sân!");
+                return;
+            }
+            
+            const field = fields.find(f => f.id === fieldId);
+            if (field) {
+                field.status = "da-dat";
+                field.bookingInfo = {
+                    name: nameInput.value,
+                    phone: phoneInput.value,
+                    time: timeInput.value
+                };
+                
+                // Nếu sân đang được chọn để ghép, bỏ chọn nó
+                if (field.selected) {
+                    field.selected = false;
+                }
+                
+                renderFields();
+                alert(`Đã đặt ${field.name} thành công!`);
+            }
+        }
+        
+        // Thay đổi trạng thái sân
+        function changeStatus(fieldId, newStatus) {
+            const field = fields.find(f => f.id === fieldId);
+            if (field) {
+                // Nếu đang chuyển từ trạng thái đã đặt sang trạng thái khác, xóa thông tin đặt
+                if (field.status === "da-dat" && newStatus !== "da-dat") {
+                    field.bookingInfo = null;
+                }
+                
+                field.status = newStatus;
+                
+                // Nếu chuyển sang trạng thái không phải trống và đang chọn để ghép, bỏ chọn
+                if (newStatus !== "trong" && field.selected) {
+                    field.selected = false;
+                }
+                
+                renderFields();
+            }
+        }
+        
+        // Chọn/bỏ chọn sân để ghép
+        function toggleSelection(fieldId) {
+            const field = fields.find(f => f.id === fieldId);
+            if (field && field.status === "trong") {
+                field.selected = !field.selected;
+                renderFields();
+                updateMergeButton();
+            }
+        }
+        
+        // Cập nhật số lượng sân đã chọn
+        function updateSelectedCount() {
+            const selectedCount = fields.filter(f => f.selected).length;
+            document.querySelector("#selected-count span").textContent = selectedCount;
+            
+            // Cập nhật trạng thái nút ghép sân
+            updateMergeButton();
+        }
+        
+        // Cập nhật trạng thái nút ghép sân
+        function updateMergeButton() {
+            const selectedCount = fields.filter(f => f.selected).length;
+            const mergeButton = document.getElementById("merge-button");
+            const mergeCountButtons = document.querySelector(".merge-count");
+            
+            // Hiển thị tùy chọn ghép 2 hoặc 4 sân khi có ít nhất 1 sân được chọn
+            if (selectedCount >= 1) {
+                mergeCountButtons.style.display = "flex";
+            } else {
+                mergeCountButtons.style.display = "none";
+            }
+            
+            // Kích hoạt nút ghép khi đã chọn đủ số lượng sân cần ghép
+            if (selectedCount >= mergeCount) {
+                mergeButton.classList.remove("btn-disabled");
+                mergeButton.disabled = false;
+                mergeButton.textContent = `Ghép ${mergeCount} sân`;
+            } else {
+                mergeButton.classList.add("btn-disabled");
+                mergeButton.disabled = true;
+                mergeButton.textContent = `Ghép sân (cần chọn ${mergeCount} sân)`;
+            }
+        }
+        
+        // Ghép sân
+        function mergeFields() {
+            const selectedFields = fields.filter(f => f.selected);
+            
+            // Kiểm tra xem đã chọn đủ số lượng sân theo cấu hình chưa
+            if (selectedFields.length >= mergeCount) {
+                // Giới hạn số lượng sân được ghép theo cấu hình mergeCount
+                const fieldsToMerge = selectedFields.slice(0, mergeCount);
+                
+                // Lấy tên các sân đã chọn
+                const fieldNames = fieldsToMerge.map(f => f.name).join(", ");
+                
+                // Đánh dấu các sân đã chọn là đã ghép
+                fieldsToMerge.forEach(field => {
+                    field.isMerged = true;
+                    field.selected = false;
+                });
+                
+                // Thêm sân mới (sân ghép) với kích thước và giá phù hợp
+                const newId = Math.max(...fields.map(f => f.id)) + 1;
+                let newFieldType, newFieldSize, newFieldPrice, newFieldQuality, newFieldCapacity;
+                
+                if (mergeCount === 2) {
+                    newFieldType = "Sân lớn";
+                    newFieldSize = "40x60m";
+                    newFieldPrice = "350,000 VND/giờ";
+                    newFieldQuality = "good";
+                } else { // mergeCount === 4
+                    newFieldType = "Sân tiêu chuẩn";
+                    newFieldSize = "60x90m";
+                    newFieldPrice = "700,000 VND/giờ";
+                    newFieldQuality = "excellent";
+                }
+                
+                // Lấy loại môn thể thao từ sân đầu tiên được ghép
+                const sportType = fieldsToMerge[0].sport;
+                
+                // Tính toán sức chứa dựa trên thông tin từ các sân được ghép
+                if (fieldsToMerge.some(f => f.capacity)) {
+                    const capacityNumbers = fieldsToMerge
+                        .filter(f => f.capacity)
+                        .map(f => parseInt(f.capacity.match(/\d+/)[0]));
+                        
+                    // Nếu có ít nhất một sân có dữ liệu sức chứa
+                    if (capacityNumbers.length > 0) {
+                        let totalCapacity = 0;
+                        
+                        // Đối với sân bóng đá, tổng sức chứa có thể hơi ít hơn tổng các sân nhỏ
+                        // do không gian chồng lấn khi ghép
+                        if (sportType === "Bóng đá") {
+                            totalCapacity = Math.ceil(capacityNumbers.reduce((sum, num) => sum + num, 0) * 0.9);
+                        } else {
+                            totalCapacity = capacityNumbers.reduce((sum, num) => sum + num, 0);
+                        }
+                        
+                        newFieldCapacity = `${totalCapacity} người`;
+                    }
+                }
+                
+                fields.push({
+                    id: newId,
+                    name: `Sân Ghép ${newId}`,
+                    type: newFieldType,
+                    sport: sportType,
+                    size: newFieldSize,
+                    capacity: newFieldCapacity,
+                    price: newFieldPrice,
+                    status: "trong",
+                    isMerged: false,
+                    selected: false,
+                    quality: newFieldQuality,
+                    bookingInfo: null,
+                    maintenance: null
+                });
+                
+                alert(`Đã ghép ${mergeCount} sân (${fieldNames}) thành công! Đã tạo ${newFieldType} mới.`);
+                
+                // Reset mergeCount về 2 sau khi ghép xong
+                setMergeCount(2);
+                
+                renderFields();
+            } else {
+                alert(`Cần chọn đủ ${mergeCount} sân để ghép!`);
+            }
+        }
+        
+        // Đăng nhập
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            
+            if (username === "admin" && password === "1234") {
+                document.getElementById("login-section").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+                renderFields();
+            } else {
+                alert("Sai tên đăng nhập hoặc mật khẩu!");
+            }
+        }
+        
+        // Đăng xuất
+        function logout() {
+            document.getElementById("login-section").style.display = "block";
+            document.getElementById("dashboard").style.display = "none";
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+        }
+        
+        // Hiển thị form thêm sân mới
+        function showAddFieldForm() {
+            document.getElementById("add-field-form").style.display = "block";
+        }
+        
+        // Ẩn form thêm sân mới
+        function hideAddFieldForm() {
+            document.getElementById("add-field-form").style.display = "none";
+        }
+        
+        // Thêm sân mới
+        function addNewField() {
+            const nameInput = document.getElementById("new-field-name");
+            const sportSelect = document.getElementById("new-field-sport");
+            const typeSelect = document.getElementById("new-field-type");
+            const sizeInput = document.getElementById("new-field-size");
+            const capacityInput = document.getElementById("new-field-capacity");
+            const priceInput = document.getElementById("new-field-price");
+            const qualitySelect = document.getElementById("new-field-quality");
+            
+            // Kiểm tra các trường bắt buộc
+            if (!nameInput.value || !sizeInput.value || !priceInput.value) {
+                alert("Vui lòng nhập đầy đủ thông tin sân bóng!");
+                return;
+            }
+            
+            // Tạo ID mới
+            const newId = Math.max(...fields.map(f => f.id)) + 1;
+            
+            // Tạo sân mới
+            const newField = {
+                id: newId,
+                name: nameInput.value,
+                sport: sportSelect.value,
+                type: typeSelect.value,
+                size: sizeInput.value,
+                capacity: capacityInput.value ? `${capacityInput.value}` : undefined,
+                price: priceInput.value,
+                status: "trong",
+                isMerged: false,
+                selected: false,
+                quality: qualitySelect.value,
+                bookingInfo: null,
+                maintenance: null
+            };
+            
+            // Thêm sân mới vào danh sách
+            fields.push(newField);
+            
+            // Cập nhật giao diện
+            renderFields();
+            
+            // Đóng form và hiển thị thông báo
+            hideAddFieldForm();
+            alert(`Đã thêm sân "${nameInput.value}" thành công!`);
+            
+            // Xóa dữ liệu đã nhập trong form
+            nameInput.value = "";
+            sizeInput.value = "";
+            capacityInput.value = "";
+            priceInput.value = "";
+        }
+        
+        // Xử lý sự kiện nhấn Enter để đăng nhập
+        document.getElementById("password").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                login();
+            }
+        });
     </script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
