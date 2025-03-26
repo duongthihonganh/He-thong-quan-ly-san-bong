@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Lý Đặt Sân Thể Thao</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #FFC107;
+            color: #000000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-bottom: 30px;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+            max-width: 1000px;
+            margin-top: 50px;
+        }
+
+        #login-container {
+            max-width: 400px;
+            margin-top: 100px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            font-weight: bold;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 10px 15px;
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-weight: 500;
+        }
+
+        .field-button {
+            min-width: 70px;
+            margin: 5px;
+            font-weight: bold;
+        }
+
+        .booking-list {
+            min-height: 300px;
+        }
+
+        /* Style for selected field */
+        .selected-field {
+            background-color: #28a745;
+            color: white;
+        }
+
+        /* Animation for confirmation message */
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        #confirmation-message {
+            animation: fadeInOut 5s;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 20px;
+                padding: 15px;
+            }
+            
+            #login-container {
+                margin-top: 50px;
+            }
+        }
+
+        /* Styles for the field selection */
+        #field-buttons .btn {
+            min-width: 60px;
+            margin: 5px !important;
+            font-weight: bold;
+        }
+
+        /* Additional styles for booking history table */
+        .table {
+            font-size: 0.9rem;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            position: sticky;
+            top: 0;
+        }
+
+        .bi {
+            margin-right: 5px;
+        }
+        
+        /* Hide dashboard by default */
+        #booking-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Container -->
+    <div class="container text-center" id="login-container">
+        <h2 class="my-4">Đăng Nhập Hệ Thống Đặt Sân</h2>
+        <div class="mb-3">
+            <input type="text" id="username" class="form-control" placeholder="Tên đăng nhập">
+        </div>
+        <div class="mb-3">
+            <input type="password" id="password" class="form-control" placeholder="Mật khẩu">
+        </div>
+        <button class="btn btn-primary w-100" id="login-btn">Đăng Nhập</button>
+        <div class="alert alert-danger mt-3 d-none" id="login-error"></div>
+    </div>
+
+    <!-- Dashboard/Booking Container -->
+    <div class="container mt-4" id="booking-container">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">Hệ Thống Quản Lý Đặt Sân</h2>
+                <button class="btn btn-light" id="logout-btn">
+                    <i class="bi bi-box-arrow-right"></i> Đăng Xuất
+                </button>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking-tab-pane" type="button" role="tab" aria-controls="booking-tab-pane" aria-selected="true">Đặt Sân</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history-tab-pane" type="button" role="tab" aria-controls="history-tab-pane" aria-selected="false">Lịch Sử Đặt Sân</button>
+                    </li>
+                </ul>
+                <div class="tab-content mt-3" id="myTabContent">
+                    <div class="tab-pane fade show active" id="booking-tab-pane" role="tabpanel" aria-labelledby="booking-tab" tabindex="0">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="sport-select" class="form-label">Chọn môn thể thao</label>
+                                    <select id="sport-select" class="form-select">
+                                        <option value="football">Bóng đá</option>
+                                        <option value="pickleball">Pickleball</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="field-type" class="form-label">Chọn loại sân</label>
+                                    <select id="field-type" class="form-select">
+                                        <option value="standard">Tiêu Chuẩn</option>
+                                        <option value="premium">Cao Cấp</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="date-picker" class="form-label">Chọn ngày</label>
+                                    <input type="date" id="date-picker" class="form-control">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="time-picker" class="form-label">Chọn giờ</label>
+                                    <select id="time-picker" class="form-select">
+                                        <option value="07:00">07:00 - 08:00</option>
+                                        <option value="08:00">08:00 - 09:00</option>
+                                        <option value="09:00">09:00 - 10:00</option>
+                                        <option value="10:00">10:00 - 11:00</option>
+                                        <option value="14:00">14:00 - 15:00</option>
+                                        <option value="15:00">15:00 - 16:00</option>
+                                        <option value="16:00">16:00 - 17:00</option>
+                                        <option value="17:00">17:00 - 18:00</option>
+                                        <option value="18:00">18:00 - 19:00</option>
+                                        <option value="19:00">19:00 - 20:00</option>
+                                        <option value="20:00">20:00 - 21:00</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header bg-info text-white">
+                                        <h5 class="mb-0">Thông tin sân</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="alert alert-primary" id="price-info">
+                                            <strong>Giá thuê:</strong> <span id="field-price">300.000 VNĐ</span>/giờ
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Chọn sân (màu xanh: có sẵn, màu đỏ: đã đặt)</label>
+                                            <div id="field-buttons" class="d-flex flex-wrap gap-2"></div>
+                                        </div>
+                                        
+                                        <div class="alert alert-success mt-3 d-none" id="confirmation-message"></div>
+                                        <div class="alert alert-danger mt-3 d-none" id="error-message"></div>
+                                        
+                                        <button class="btn btn-success w-100 mt-3" id="book-btn" disabled>
+                                            <i class="bi bi-calendar-check"></i> Đặt sân
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="history-tab-pane" role="tabpanel" aria-labelledby="history-tab" tabindex="0">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">Lịch sử đặt sân</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="booking-history" class="booking-list">
+                                    <div class="text-center py-5">
+                                        <i class="bi bi-clock-history fs-1"></i>
+                                        <p class="mt-3">Lịch sử đặt sân sẽ hiển thị ở đây</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Field and pricing data
+        const fieldsData = {
+            "football": {
+                "standard": {
+                    "price": 300000,  // Price in VND
+                    "fields": ["F1", "F2", "F3", "F4", "F5"]  // Football fields F1-F5
+                },
+                "premium": {
+                    "price": 500000,  // Price in VND
+                    "fields": ["FP1", "FP2", "FP3"]  // Premium football fields FP1-FP3
+                }
+            },
+            "pickleball": {
+                "standard": {
+                    "price": 150000,  // Price in VND
+                    "fields": ["P1", "P2", "P3", "P4", "P5"]  // Pickleball courts P1-P5
+                },
+                "premium": {
+                    "price": 250000,  // Price in VND
+                    "fields": ["PP1", "PP2", "PP3"]  // Premium pickleball courts PP1-PP3
+                }
+            }
+        };
+
+        // User authentication data
+        const users = {
+            "admin": {
+                "password": "123456",
+                "name": "Quản trị viên"
+            }
+        };
+
+        // Store bookings in memory
+        let bookings = [];
+        let selectedField = null;
+        let loggedInUser = null;
+
+        // Format price to Vietnamese currency format
+        function formatPrice(price) {
+            return new Intl.NumberFormat('vi-VN').format(price);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Login functionality
+            document.getElementById('login-btn').addEventListener('click', login);
+            document.getElementById('password').addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    login();
+                }
+            });
+
+            // Set default date to today
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('date-picker').value = formattedDate;
+            
+            // Initialize other event listeners
+            document.getElementById('sport-select').addEventListener('change', updateFieldOptions);
+            document.getElementById('field-type').addEventListener('change', updateFieldOptions);
+            document.getElementById('date-picker').addEventListener('change', updateFieldOptions);
+            document.getElementById('time-picker').addEventListener('change', updateFieldOptions);
+            document.getElementById('book-btn').addEventListener('click', bookField);
+            document.getElementById('logout-btn').addEventListener('click', logout);
+            
+            // Load booking history when switching to history tab
+            document.getElementById('history-tab').addEventListener('click', loadBookingHistory);
+        });
+
+        // Login function
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showError('Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.');
+                return;
+            }
+
+            if (users[username] && users[username].password === password) {
+                // Login successful
+                loggedInUser = username;
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('booking-container').style.display = 'block';
+                
+                // Initialize field options
+                updateFieldOptions();
+            } else {
+                // Login failed
+                showError('Sai tên đăng nhập hoặc mật khẩu!');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            loggedInUser = null;
+            document.getElementById('login-container').style.display = 'block';
+            document.getElementById('booking-container').style.display = 'none';
+        }
+
+        // Update field options based on selected sport, type, date, and time
+        function updateFieldOptions() {
+            const sport = document.getElementById('sport-select').value;
+            const fieldType = document.getElementById('field-type').value;
+            const date = document.getElementById('date-picker').value;
+            const time = document.getElementById('time-picker').value;
+            
+            // Reset selected field
+            selectedField = null;
+            document.getElementById('book-btn').disabled = true;
+            
+            // Hide any previous messages
+            hideMessages();
+            
+            // Update price display
+            const price = fieldsData[sport][fieldType].price;
+            document.getElementById('field-price').textContent = `${formatPrice(price)} VNĐ`;
+            
+            // Find booked fields for this date and time
+            const bookedFields = bookings.filter(b => 
+                b.date === date && 
+                b.time === time && 
+                b.sport === sport && 
+                b.field_type === fieldType
+            ).map(b => b.field);
+            
+            // Update field buttons
+            const fieldButtonsContainer = document.getElementById('field-buttons');
+            fieldButtonsContainer.innerHTML = '';
+            
+            fieldsData[sport][fieldType].fields.forEach(field => {
+                const isAvailable = !bookedFields.includes(field);
+                const button = document.createElement('button');
+                button.textContent = field;
+                button.className = `btn ${isAvailable ? 'btn-outline-success' : 'btn-outline-danger'} m-1`;
+                button.disabled = !isAvailable;
+                
+                if (isAvailable) {
+                    button.addEventListener('click', function() {
+                        // Deselect previously selected button
+                        const buttons = fieldButtonsContainer.querySelectorAll('.btn-success');
+                        buttons.forEach(btn => {
+                            btn.classList.remove('btn-success');
+                            btn.classList.add('btn-outline-success');
+                        });
+                        
+                        // Select this button
+                        button.classList.remove('btn-outline-success');
+                        button.classList.add('btn-success');
+                        selectedField = field;
+                        
+                        // Enable booking button
+                        document.getElementById('book-btn').disabled = false;
+                    });
+                }
+                
+                fieldButtonsContainer.appendChild(button);
+            });
+        }
+
+        // Book field function
+        function bookField() {
+            if (!selectedField) {
+                showError('Vui lòng chọn sân trước khi đặt.');
+                return;
+            }
+            
+            if (!loggedInUser) {
+                showError('Bạn cần đăng nhập để đặt sân.');
+                return;
+            }
+            
+            const sport = document.getElementById('sport-select').value;
+            const fieldType = document.getElementById('field-type').value;
+            const date = document.getElementById('date-picker').value;
+            const time = document.getElementById('time-picker').value;
+            
+            // Validate date
+            if (!date) {
+                showError('Vui lòng chọn ngày đặt sân.');
+                return;
+            }
+            
+            // Check if field is already booked
+            const isAlreadyBooked = bookings.some(b => 
+                b.sport === sport && 
+                b.field_type === fieldType && 
+                b.field === selectedField && 
+                b.date === date && 
+                b.time === time
+            );
+            
+            if (isAlreadyBooked) {
+                showError('Sân đã được đặt vào thời gian này.');
+                return;
+            }
+            
+            // Calculate price
+            const price = fieldsData[sport][fieldType].price;
+            
+            // Create new booking
+            const newBooking = {
+                id: bookings.length + 1,
+                username: loggedInUser,
+                sport: sport,
+                field_type: fieldType,
+                field: selectedField,
+                date: date,
+                time: time,
+                price: price,
+                created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
+            };
+            
+            // Add to bookings
+            bookings.push(newBooking);
+            
+            // Show confirmation and reset
+            showConfirmation(`Đặt sân thành công! Sân ${selectedField} đã được đặt vào ngày ${date} lúc ${time}.`);
+            selectedField = null;
+            document.getElementById('book-btn').disabled = true;
+            
+            // Refresh available fields
+            updateFieldOptions();
+        }
+
+        // Load booking history
+        function loadBookingHistory() {
+            const historyContainer = document.getElementById('booking-history');
+            
+            if (!loggedInUser) {
+                historyContainer.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+                        <p class="mt-3">Bạn cần đăng nhập để xem lịch sử đặt sân.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Filter bookings for the logged-in user
+            const userBookings = bookings.filter(b => b.username === loggedInUser);
+            
+            if (userBookings.length > 0) {
+                historyContainer.innerHTML = '';
+                const table = document.createElement('table');
+                table.className = 'table table-striped table-hover';
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Môn thể thao</th>
+                            <th>Loại sân</th>
+                            <th>Sân</th>
+                            <th>Ngày</th>
+                            <th>Giờ</th>
+                            <th>Giá</th>
+                            <th>Thời gian đặt</th>
+                        </tr>
+                    </thead>
+                    <tbody id="booking-table-body"></tbody>
+                `;
+                historyContainer.appendChild(table);
+                
+                const tbody = document.getElementById('booking-table-body');
+                userBookings.forEach(booking => {
+                    const tr = document.createElement('tr');
+                    
+                    // Translate sport name
+                    const sportName = booking.sport === 'football' ? 'Bóng đá' : 'Pickleball';
+                    
+                    // Translate field type
+                    const fieldTypeName = booking.field_type === 'standard' ? 'Tiêu chuẩn' : 'Cao cấp';
+                    
+                    tr.innerHTML = `
+                        <td>${booking.id}</td>
+                        <td>${sportName}</td>
+                        <td>${fieldTypeName}</td>
+                        <td>${booking.field}</td>
+                        <td>${booking.date}</td>
+                        <td>${booking.time}</td>
+                        <td>${formatPrice(booking.price)} VNĐ</td>
+                        <td>${booking.created_at}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                historyContainer.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-calendar-x fs-1"></i>
+                        <p class="mt-3">Bạn chưa có lịch đặt sân nào.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Display confirmation message
+        function showConfirmation(message) {
+            const confirmationElement = document.getElementById('confirmation-message');
+            confirmationElement.textContent = message;
+            confirmationElement.classList.remove('d-none');
+            document.getElementById('error-message').classList.add('d-none');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                confirmationElement.classList.add('d-none');
+            }, 5000);
+        }
+
+        // Display error message
+        function showError(message) {
+            const errorContainer = document.getElementById('login-container').style.display === 'block' 
+                ? document.getElementById('login-error')
+                : document.getElementById('error-message');
+            
+            errorContainer.textContent = message;
+            errorContainer.classList.remove('d-none');
+            
+            if (document.getElementById('login-container').style.display !== 'block') {
+                document.getElementById('confirmation-message').classList.add('d-none');
+            }
+        }
+
+        // Hide messages
+        function hideMessages() {
+            document.getElementById('confirmation-message').classList.add('d-none');
+            document.getElementById('error-message').classList.add('d-none');
+        }
+    </script>
+</body>
+</html>

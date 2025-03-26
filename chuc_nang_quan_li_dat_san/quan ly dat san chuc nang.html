@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Đặt Sân - Hệ Thống</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container mt-4" id="booking-container">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">Hệ Thống Quản Lý Đặt Sân</h2>
+                <button class="btn btn-light" id="logout-btn">
+                    <i class="bi bi-box-arrow-right"></i> Đăng Xuất
+                </button>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking-tab-pane" type="button" role="tab" aria-controls="booking-tab-pane" aria-selected="true">Đặt Sân</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history-tab-pane" type="button" role="tab" aria-controls="history-tab-pane" aria-selected="false">Lịch Sử Đặt Sân</button>
+                    </li>
+                </ul>
+                <div class="tab-content mt-3" id="myTabContent">
+                    <div class="tab-pane fade show active" id="booking-tab-pane" role="tabpanel" aria-labelledby="booking-tab" tabindex="0">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="sport-select" class="form-label">Chọn môn thể thao</label>
+                                    <select id="sport-select" class="form-select">
+                                        <option value="football">Bóng đá</option>
+                                        <option value="pickleball">Pickleball</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="field-type" class="form-label">Chọn loại sân</label>
+                                    <select id="field-type" class="form-select">
+                                        <option value="standard">Tiêu Chuẩn</option>
+                                        <option value="premium">Cao Cấp</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="date-picker" class="form-label">Chọn ngày</label>
+                                    <input type="date" id="date-picker" class="form-control">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="time-picker" class="form-label">Chọn giờ</label>
+                                    <select id="time-picker" class="form-select">
+                                        <option value="07:00">07:00 - 08:00</option>
+                                        <option value="08:00">08:00 - 09:00</option>
+                                        <option value="09:00">09:00 - 10:00</option>
+                                        <option value="10:00">10:00 - 11:00</option>
+                                        <option value="14:00">14:00 - 15:00</option>
+                                        <option value="15:00">15:00 - 16:00</option>
+                                        <option value="16:00">16:00 - 17:00</option>
+                                        <option value="17:00">17:00 - 18:00</option>
+                                        <option value="18:00">18:00 - 19:00</option>
+                                        <option value="19:00">19:00 - 20:00</option>
+                                        <option value="20:00">20:00 - 21:00</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header bg-info text-white">
+                                        <h5 class="mb-0">Thông tin sân</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="alert alert-primary" id="price-info">
+                                            <strong>Giá thuê:</strong> <span id="field-price">300.000 VNĐ</span>/giờ
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Chọn sân (màu xanh: có sẵn, màu đỏ: đã đặt)</label>
+                                            <div id="field-buttons" class="d-flex flex-wrap gap-2"></div>
+                                        </div>
+                                        
+                                        <div class="alert alert-success mt-3 d-none" id="confirmation-message"></div>
+                                        <div class="alert alert-danger mt-3 d-none" id="error-message"></div>
+                                        
+                                        <button class="btn btn-success w-100 mt-3" id="book-btn" disabled>
+                                            <i class="bi bi-calendar-check"></i> Đặt sân
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="history-tab-pane" role="tabpanel" aria-labelledby="history-tab" tabindex="0">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">Lịch sử đặt sân</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="booking-history" class="booking-list">
+                                    <div class="text-center py-5">
+                                        <i class="bi bi-clock-history fs-1"></i>
+                                        <p class="mt-3">Đang tải lịch sử đặt sân...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
