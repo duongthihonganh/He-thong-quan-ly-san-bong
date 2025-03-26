@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -15,40 +14,17 @@ html
         }
 
         header {
-            background-color: #ffc107; /* Màu vàng */
+            background-color: #ffc107;
             color: #333;
             padding: 1rem;
             text-align: center;
             font-weight: bold;
         }
 
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            background-color: #ffb300; /* Màu vàng đậm hơn */
-        }
-
-        nav ul li {
-            margin: 0 1rem;
-        }
-
-        nav ul li a {
-            text-decoration: none;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        nav ul li a:hover {
-            text-decoration: underline;
-        }
-
         section {
             padding: 2rem;
-            margin: 1rem auto;
-            background-color: #fff8e1; /* Màu vàng sáng hơn */
+            margin: 2rem auto;
+            background-color: #fff8e1;
             border: 1px solid #ffc107;
             border-radius: 8px;
             width: 80%;
@@ -56,23 +32,19 @@ html
         }
 
         form {
-            margin-bottom: 1.5rem;
-        }
-
-        label, input, button {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
         input {
             padding: 0.5rem;
-            width: 100%;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
 
         button {
-            padding: 0.5rem 1rem;
+            padding: 0.7rem;
             color: #fff;
             background-color: #ffc107;
             border: none;
@@ -81,71 +53,112 @@ html
         }
 
         button:hover {
-            background-color: #ffb300;
+            background-color: #ffa000;
         }
 
-        footer {
+        nav {
+            margin: 1rem 0;
             text-align: center;
-            padding: 1rem;
-            background-color: #ffc107;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            text-decoration: none;
             color: #333;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            color: #ffc107;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Quản Lý Lịch Đặt Sân</h1>
+        Quản Lý Lịch Đặt Sân
     </header>
 
-    <nav>
-        <ul>
-            <li><a href="#dat-san">Đặt Sân</a></li>
-            <li><a href="#quan-ly-lich">Quản Lý Lịch Đặt</a></li>
-            <li><a href="#huy-chinh-sua">Hủy/Chỉnh Sửa Lịch Đặt</a></li>
-        </ul>
-    </nav>
-
-    <section id="dat-san">
-        <h2>Đặt Sân</h2>
-        <form action="/dat-san" method="post">
-            <label for="info">Nhập thông tin đặt sân:</label>
-            <input type="text" id="info" name="info" required>
-            <button type="submit">Xác nhận đặt sân</button>
+    <section id="login-section">
+        <h2>Đăng Nhập</h2>
+        <form id="login-form">
+            <label for="username">Tên đăng nhập:</label>
+            <input type="text" id="username" placeholder="Nhập tên đăng nhập" required>
+            <label for="password">Mật khẩu:</label>
+            <input type="password" id="password" placeholder="Nhập mật khẩu" required>
+            <button type="button" onclick="login()">Đăng nhập</button>
         </form>
     </section>
 
-    <section id="quan-ly-lich">
-        <h2>Quản Lý Lịch Đặt</h2>
-        <form action="/tim-kiem" method="get">
-            <label for="search">Tìm kiếm lịch đặt:</label>
-            <input type="text" id="search" name="search">
-            <button type="submit">Tìm kiếm</button>
-        </form>
-        <div id="hien-thi">
-            <h3>Hiển thị lịch đặt</h3>
-            <p>Danh sách lịch đặt sẽ hiển thị ở đây.</p>
-        </div>
+    <section id="features-section" style="display: none;">
+        <h2>Các Chức Năng</h2>
+        <nav>
+            <ul>
+                <li><a href="#dat-san">Đặt Sân</a></li>
+                <li><a href="#quan-ly-lich">Quản Lý Lịch</a></li>
+                <li><a href="#huy-chinh-sua">Hủy/Chỉnh Sửa</a></li>
+            </ul>
+        </nav>
+
+        <!-- Đặt Sân -->
+        <section id="dat-san">
+            <h3>Đặt Sân</h3>
+            <form action="/book-court" method="post">
+                <label for="court-info">Nhập Thông Tin Đặt Sân:</label>
+                <input type="text" id="court-info" name="court-info" required>
+                <br>
+                <button type="submit">Xác nhận đặt sân</button>
+            </form>
+        </section>
+
+        <!-- Quản Lý Lịch -->
+        <section id="quan-ly-lich">
+            <h3>Quản Lý Lịch</h3>
+            <button onclick="viewBookings()">Hiển Thị Lịch Đặt</button>
+        </section>
+
+        <!-- Hủy/Chỉnh Sửa Lịch -->
+        <section id="huy-chinh-sua">
+            <h3>Hủy/Chỉnh Sửa Lịch Đặt</h3>
+            <button onclick="cancelBooking()">Hủy Lịch Đặt</button>
+            <button onclick="editBooking()">Chỉnh Sửa Lịch Đặt</button>
+        </section>
     </section>
 
-    <section id="huy-chinh-sua">
-        <h2>Hủy/Chỉnh Sửa Lịch Đặt</h2>
-        <form action="/huy-lich" method="post">
-            <label for="cancel-id">Nhập ID lịch đặt cần hủy:</label>
-            <input type="text" id="cancel-id" name="cancel-id" required>
-            <button type="submit">Hủy lịch đặt</button>
-        </form>
-        <form action="/chinh-sua" method="post">
-            <label for="edit-id">Nhập ID lịch đặt cần chỉnh sửa:</label>
-            <input type="text" id="edit-id" name="edit-id" required>
-            <button type="submit">Chỉnh sửa lịch đặt</button>
-        </form>
-    </section>
+    <script>
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
 
-    <footer>
-        <p>&copy; 2025 Quản Lý Lịch Đặt Sân</p>
-    </footer>
+            // Kiểm tra giả lập
+            if (username === "admin" && password === "123456") {
+                alert("Đăng nhập thành công!");
+                document.getElementById("login-section").style.display = "none";
+                document.getElementById("features-section").style.display = "block";
+            } else {
+                alert("Sai tên đăng nhập hoặc mật khẩu!");
+            }
+        }
+
+        function viewBookings() {
+            alert("Hiển thị lịch đặt sân.");
+        }
+
+        function cancelBooking() {
+            alert("Chức năng hủy lịch đặt.");
+        }
+
+        function editBooking() {
+            alert("Chức năng chỉnh sửa lịch đặt.");
+        }
+    </script>
 </body>
 </html>
