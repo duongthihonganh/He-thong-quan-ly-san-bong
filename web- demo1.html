@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Lý Đặt Sân Thể Thao - Dành Cho Nhân Viên</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container-fluid {
+            padding: 0;
+        }
+        #sidebar {
+            min-height: 100vh;
+            background-color: #343a40;
+            color: white;
+            padding-top: 20px;
+        }
+        #sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        #sidebar .nav-link:hover, 
+        #sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        #sidebar .nav-link i {
+            width: 20px;
+            text-align: center;
+            margin-right: 10px;
+        }
+        .content-section {
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .top-bar {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 20px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .form-control, .form-select, .btn, .card {
+            border-radius: 0.5rem;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            font-weight: 600;
+            background-color: rgba(0, 0, 0, 0.03);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+        }
+        
+        .card-title {
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+        .btn-icon {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Calendar styling */
+        #calendar {
+            height: 700px;
+        }
+        
+        .fc-daygrid-day-number, .fc-col-header-cell-cushion {
+            text-decoration: none;
+            color: #333;
+        }
+        
+        .fc-event {
+            cursor: pointer;
+        }
+        
+        /* Booking status badges */
+        .badge-confirmed {
+            background-color: #28a745;
+        }
+        
+        .badge-pending {
+            background-color: #ffc107;
+        }
+        
+        .badge-cancelled {
+            background-color: #dc3545;
+        }
+        
+        /* Hide content areas by default */
+        #dashboard-content, #booking-form-content, #booking-list-content, #calendar-content {
+            display: none;
+        }
+        
+        /* Show dashboard by default */
+        #dashboard-content {
+            display: block;
+        }
+        
+        .summary-card {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border-radius: 0.5rem;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .summary-card .icon {
+            font-size: 3rem;
+            opacity: 0.4;
+        }
+        
+        .summary-card .counter {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .summary-card .label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .booking-table tr {
+            cursor: pointer;
+        }
+        
+        .booking-details {
+            background-color: #f8f9fa;
+        }
+        
+        /* Custom color for each type of field */
+        .field-football {
+            background-color: #28a745 !important;
+            border-color: #28a745 !important;
+        }
+        
+        .field-pickleball {
+            background-color: #fd7e14 !important;
+            border-color: #fd7e14 !important;
+        }
+        
+        /* Login section */
+        #login-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #007bff, #6610f2);
+        }
+        
+        .login-card {
+            width: 400px;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Hide main content initially */
+        #main-content {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="login-section">
+        <div class="card login-card">
+            <div class="card-body p-5">
+                <h3 class="text-center mb-4">Đăng Nhập Hệ Thống</h3>
+                <div class="alert alert-info mb-4">
+                    <i class="bi bi-info-circle"></i> Tài khoản mặc định: <strong>admin</strong> / Mật khẩu: <strong>123456</strong>
+                </div>
+                <div class="mb-3">
+                    <label for="login-username" class="form-label">Tên đăng nhập</label>
+                    <input type="text" id="login-username" class="form-control" placeholder="Nhập tên đăng nhập">
+                </div>
+                <div class="mb-3">
+                    <label for="login-password" class="form-label">Mật khẩu</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="Nhập mật khẩu">
+                </div>
+                <button id="login-btn" class="btn btn-primary w-100 mt-4">Đăng Nhập</button>
+                <div id="login-error" class="alert alert-danger mt-3 d-none"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content (Hidden until login) -->
+    <div id="main-content" class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark">
+                <div class="text-center mb-4">
+                    <h4>Quản Lý Đặt Sân</h4>
+                    <p class="text-light">Dành cho nhân viên</p>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="dashboard-link" href="#">
+                            <i class="bi bi-house-door"></i> Trang Chủ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="booking-form-link" href="#">
+                            <i class="bi bi-calendar-plus"></i> Đặt Sân Mới
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="booking-list-link" href="#">
+                            <i class="bi bi-list-ul"></i> Danh Sách Đặt Sân
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="calendar-link" href="#">
+                            <i class="bi bi-calendar3"></i> Lịch Đặt Sân
+                        </a>
+                    </li>
+                    <li class="nav-item mt-5">
+                        <a class="nav-link" id="logout-btn" href="#">
+                            <i class="bi bi-box-arrow-right"></i> Đăng Xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Main Content Area -->
+            <div class="col-md-9 col-lg-10 ms-sm-auto">
+                <!-- Top Bar -->
+                <div class="top-bar d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">Hệ Thống Quản Lý Đặt Sân Thể Thao</h4>
+                    <div class="user-info">
+                        <img src="https://via.placeholder.com/40" alt="User">
+                        <span id="user-name">Admin</span>
+                    </div>
+                </div>
+                
+                <!-- Dashboard Content -->
+                <div id="dashboard-content" class="content-section">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="summary-card">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="counter" id="total-bookings">0</div>
+                                        <div class="label">Tổng số đặt sân</div>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="bi bi-calendar-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="summary-card" style="background: linear-gradient(45deg, #28a745, #20c997);">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="counter" id="today-bookings">0</div>
+                                        <div class="label">Đặt sân hôm nay</div>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="bi bi-clock"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="summary-card" style="background: linear-gradient(45deg, #fd7e14, #e83e8c);">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="counter" id="upcoming-bookings">0</div>
+                                        <div class="label">Lịch đặt sắp tới</div>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="bi bi-calendar-week"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title">Đặt Sân Gần Đây</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Khách hàng</th>
+                                                    <th>SĐT</th>
+                                                    <th>Sân</th>
+                                                    <th>Ngày</th>
+                                                    <th>Giờ</th>
+                                                    <th>Trạng thái</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="recent-bookings-table">
+                                                <!-- Dynamic content will be loaded here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Booking Form Content -->
+                <div id="booking-form-content" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Đặt Sân Mới</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="booking-form">
+                                <div class="row">
+                                    <!-- Thông tin khách hàng -->
+                                    <div class="col-md-6">
+                                        <div class="card mb-3">
+                                            <div class="card-header bg-primary text-white">
+                                                <h6 class="mb-0">Thông Tin Khách Hàng</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <label for="customer-name" class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                                                    <input type="text" id="customer-name" class="form-control" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="customer-phone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                                                    <input type="tel" id="customer-phone" class="form-control" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="customer-id" class="form-label">Số CMND/CCCD</label>
+                                                    <input type="text" id="customer-id" class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="customer-email" class="form-label">Email</label>
+                                                    <input type="email" id="customer-email" class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="customer-address" class="form-label">Địa chỉ</label>
+                                                    <input type="text" id="customer-address" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Thông tin đặt sân -->
+                                    <div class="col-md-6">
+                                        <div class="card mb-3">
+                                            <div class="card-header bg-success text-white">
+                                                <h6 class="mb-0">Thông Tin Đặt Sân</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <label for="sport-type" class="form-label">Môn thể thao <span class="text-danger">*</span></label>
+                                                    <select id="sport-type" class="form-select" required>
+                                                        <option value="">-- Chọn môn thể thao --</option>
+                                                        <option value="football">Bóng đá</option>
+                                                        <option value="pickleball">Pickleball</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="field-type" class="form-label">Loại sân <span class="text-danger">*</span></label>
+                                                    <select id="field-type" class="form-select" required>
+                                                        <option value="">-- Chọn loại sân --</option>
+                                                        <option value="standard">Tiêu chuẩn</option>
+                                                        <option value="premium">Cao cấp</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="field-select" class="form-label">Sân <span class="text-danger">*</span></label>
+                                                    <select id="field-select" class="form-select" required>
+                                                        <option value="">-- Chọn sân --</option>
+                                                    </select>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="booking-date" class="form-label">Ngày <span class="text-danger">*</span></label>
+                                                        <input type="date" id="booking-date" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="booking-duration" class="form-label">Thời lượng <span class="text-danger">*</span></label>
+                                                        <select id="booking-duration" class="form-select" required>
+                                                            <option value="1">1 giờ</option>
+                                                            <option value="2">2 giờ</option>
+                                                            <option value="3">3 giờ</option>
+                                                            <option value="4">4 giờ</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="booking-time" class="form-label">Giờ bắt đầu <span class="text-danger">*</span></label>
+                                                        <select id="booking-time" class="form-select" required>
+                                                            <option value="07:00">07:00</option>
+                                                            <option value="08:00">08:00</option>
+                                                            <option value="09:00">09:00</option>
+                                                            <option value="10:00">10:00</option>
+                                                            <option value="11:00">11:00</option>
+                                                            <option value="12:00">12:00</option>
+                                                            <option value="13:00">13:00</option>
+                                                            <option value="14:00">14:00</option>
+                                                            <option value="15:00">15:00</option>
+                                                            <option value="16:00">16:00</option>
+                                                            <option value="17:00">17:00</option>
+                                                            <option value="18:00">18:00</option>
+                                                            <option value="19:00">19:00</option>
+                                                            <option value="20:00">20:00</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="booking-status" class="form-label">Trạng thái</label>
+                                                        <select id="booking-status" class="form-select">
+                                                            <option value="confirmed">Đã xác nhận</option>
+                                                            <option value="pending">Chờ xác nhận</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="booking-notes" class="form-label">Ghi chú</label>
+                                                    <textarea id="booking-notes" class="form-control" rows="3"></textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="booking-price" class="form-label">Giá tiền</label>
+                                                    <div class="input-group">
+                                                        <input type="text" id="booking-price" class="form-control" readonly>
+                                                        <span class="input-group-text">VNĐ</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="alert alert-success d-none" id="booking-success"></div>
+                                        <div class="alert alert-danger d-none" id="booking-error"></div>
+                                        <div class="d-flex justify-content-end">
+                                            <button type="button" id="check-availability-btn" class="btn btn-info me-2">
+                                                <i class="bi bi-search"></i> Kiểm tra trống
+                                            </button>
+                                            <button type="button" id="reset-form-btn" class="btn btn-secondary me-2">
+                                                <i class="bi bi-arrow-counterclockwise"></i> Làm mới
+                                            </button>
+                                            <button type="submit" id="submit-booking-btn" class="btn btn-primary">
+                                                <i class="bi bi-save"></i> Lưu đặt sân
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Booking List Content -->
+                <div id="booking-list-content" class="content-section">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Danh Sách Đặt Sân</h5>
+                            <div class="d-flex">
+                                <div class="input-group me-2" style="width: 300px;">
+                                    <input type="text" id="search-booking" class="form-control" placeholder="Tìm kiếm...">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                                <select id="filter-status" class="form-select me-2" style="width: 150px;">
+                                    <option value="all">Tất cả</option>
+                                    <option value="confirmed">Đã xác nhận</option>
+                                    <option value="pending">Chờ xác nhận</option>
+                                    <option value="cancelled">Đã hủy</option>
+                                </select>
+                                <select id="filter-date" class="form-select" style="width: 150px;">
+                                    <option value="all">Tất cả ngày</option>
+                                    <option value="today">Hôm nay</option>
+                                    <option value="tomorrow">Ngày mai</option>
+                                    <option value="week">Tuần này</option>
+                                    <option value="month">Tháng này</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover booking-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Khách hàng</th>
+                                            <th>SĐT</th>
+                                            <th>Môn thể thao</th>
+                                            <th>Sân</th>
+                                            <th>Ngày</th>
+                                            <th>Giờ</th>
+                                            <th>Trạng thái</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="booking-list-table">
+                                        <!-- Dynamic content will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Calendar Content -->
+                <div id="calendar-content" class="content-section">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Lịch Đặt Sân</h5>
+                            <div class="d-flex">
+                                <select id="calendar-view" class="form-select me-2" style="width: 150px;">
+                                    <option value="dayGridMonth">Tháng</option>
+                                    <option value="timeGridWeek">Tuần</option>
+                                    <option value="timeGridDay">Ngày</option>
+                                </select>
+                                <select id="calendar-field" class="form-select" style="width: 150px;">
+                                    <option value="all">Tất cả sân</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Booking Details Modal -->
+    <div class="modal fade" id="booking-details-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi Tiết Đặt Sân</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="booking-details-content">
+                    <!-- Content will be loaded dynamically -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="cancel-booking-btn">Hủy đặt sân</button>
+                    <button type="button" class="btn btn-primary" id="edit-booking-btn">Chỉnh sửa</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cancel Booking Modal -->
+    <div class="modal fade" id="cancel-booking-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Xác Nhận Hủy Đặt Sân</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn hủy đặt sân này không?</p>
+                    <div class="mb-3">
+                        <label for="cancel-reason" class="form-label">Lý do hủy</label>
+                        <textarea id="cancel-reason" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="refund-amount" class="form-label">Số tiền hoàn trả (nếu có)</label>
+                        <div class="input-group">
+                            <input type="number" id="refund-amount" class="form-control" value="0">
+                            <span class="input-group-text">VNĐ</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Không</button>
+                    <button type="button" class="btn btn-danger" id="confirm-cancel-btn">Xác nhận hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add External JS Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script>
+        // Field and pricing data
+        const fieldsData = {
+            "football": {
+                "standard": {
+                    "price": 300000,  // Price in VND
+                    "fields": ["F1", "F2", "F3", "F4", "F5"]  // Football fields F1-F5
+                },
+                "premium": {
+                    "price": 500000,  // Price in VND
+                    "fields": ["FP1", "FP2", "FP3"]  // Premium football fields FP1-FP3
+                }
+            },
+            "pickleball": {
+                "standard": {
+                    "price": 150000,  // Price in VND
+                    "fields": ["P1", "P2", "P3", "P4", "P5"]  // Pickleball courts P1-P5
+                },
+                "premium": {
+                    "price": 250000,  // Price in VND
+                    "fields": ["PP1", "PP2", "PP3"]  // Premium pickleball courts PP1-PP3
+                }
+            }
+        };
+        // User authentication data
+        const users = {
+            "admin": {
+                "password": "123456",
+                "name": "Quản trị viên"
+            }
+        };
+        // Store bookings in memory
+        let bookings = [];
+        let selectedBookingId = null;
+        let loggedInUser = null;
+        let calendar = null;
+        // Format price to Vietnamese currency format
+        function formatPrice(price) {
+            return new Intl.NumberFormat('vi-VN').format(price);
+        }
+        // Format date for display
+        function formatDate(dateString) {
+            const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('vi-VN', options);
+        }
+        
+        // Get status badge
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'confirmed':
+                    return '<span class="badge bg-success">Đã xác nhận</span>';
+                case 'pending':
+                    return '<span class="badge bg-warning text-dark">Chờ xác nhận</span>';
+                case 'cancelled':
+                    return '<span class="badge bg-danger">Đã hủy</span>';
+                default:
+                    return '<span class="badge bg-secondary">Không xác định</span>';
+            }
+        }
+        
+        // Get status text
+        function getStatusText(status) {
+            switch(status) {
+                case 'confirmed':
+                    return 'Đã xác nhận';
+                case 'pending':
+                    return 'Chờ xác nhận';
+                case 'cancelled':
+                    return 'Đã hủy';
+                default:
+                    return 'Không xác định';
+            }
+        }
+        
+        // Get sport name in Vietnamese
+        function getSportName(sport) {
+            switch(sport) {
+                case 'football':
+                    return 'Bóng đá';
+                case 'pickleball':
+                    return 'Pickleball';
+                default:
+                    return sport;
+            }
+        }
+        
+        // Get field type name in Vietnamese
+        function getFieldTypeName(fieldType) {
+            switch(fieldType) {
+                case 'standard':
+                    return 'Tiêu chuẩn';
+                case 'premium':
+                    return 'Cao cấp';
+                default:
+                    return fieldType;
+            }
+        }
+        
+        // Generate a unique ID for bookings
+        function generateBookingId() {
+            return 'BK' + Date.now().toString().substr(-6);
+        }
+        
+        // Calculate end time based on start time and duration
+        function calculateEndTime(startTime, durationHours) {
+            const [hours, minutes] = startTime.split(':').map(Number);
+            const endHours = hours + durationHours;
+            return `${endHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        }
+        
+        // Check if a booking overlaps with existing bookings
+        function checkBookingOverlap(field, date, startTime, endTime, excludeBookingId = null) {
+            return bookings.some(booking => {
+                if (booking.status === 'cancelled') return false;
+                if (excludeBookingId && booking.id === excludeBookingId) return false;
+                
+                if (booking.field === field && booking.date === date) {
+                    const bookingStart = booking.time;
+                    const bookingEnd = calculateEndTime(booking.time, booking.duration);
+                    
+                    // Check if the new booking's time range overlaps with this booking's time range
+                    return (startTime < bookingEnd && endTime > bookingStart);
+                }
+                
+                return false;
+            });
+        }
+        
+        // Initialize the dashboard
+        function initializeDashboard() {
+            updateBookingSummary();
+            loadRecentBookings();
+        }
+        
+        // Update booking summary in dashboard
+        function updateBookingSummary() {
+            const totalBookings = bookings.filter(b => b.status !== 'cancelled').length;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const todayBookings = bookings.filter(b => b.date === today && b.status !== 'cancelled').length;
+            
+            // Upcoming bookings (future dates)
+            const upcomingBookings = bookings.filter(b => b.date > today && b.status !== 'cancelled').length;
+            
+            document.getElementById('total-bookings').textContent = totalBookings;
+            document.getElementById('today-bookings').textContent = todayBookings;
+            document.getElementById('upcoming-bookings').textContent = upcomingBookings;
+        }
+        
+        // Load recent bookings in dashboard
+        function loadRecentBookings() {
+            const recentBookingsTable = document.getElementById('recent-bookings-table');
+            recentBookingsTable.innerHTML = '';
+            
+            // Sort by date and time (most recent first)
+            const sortedBookings = [...bookings].sort((a, b) => {
+                if (a.date !== b.date) return new Date(b.date) - new Date(a.date);
+                return a.time > b.time ? -1 : 1;
+            });
+            
+            // Take only most recent 5 bookings
+            const recentBookings = sortedBookings.slice(0, 5);
+            
+            if (recentBookings.length === 0) {
+                recentBookingsTable.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center">Chưa có đặt sân nào</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            recentBookings.forEach(booking => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-id', booking.id);
+                row.innerHTML = `
+                    <td>${booking.id}</td>
+                    <td>${booking.customer?.name || 'N/A'}</td>
+                    <td>${booking.customer?.phone || 'N/A'}</td>
+                    <td>${booking.field}</td>
+                    <td>${formatDate(booking.date)}</td>
+                    <td>${booking.time}</td>
+                    <td>${getStatusBadge(booking.status)}</td>
+                `;
+                
+                row.addEventListener('click', () => showBookingDetails(booking.id));
+                recentBookingsTable.appendChild(row);
+            });
+        }
+        
+        // Initialize booking form
+        function initializeBookingForm() {
+            // Set default date to today
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('booking-date').value = formattedDate;
+            
+            // Initialize event listeners for the form
+            document.getElementById('sport-type').addEventListener('change', updateFieldOptions);
+            document.getElementById('field-type').addEventListener('change', updateFieldOptions);
+            document.getElementById('booking-form').addEventListener('submit', handleBookingSubmit);
+            document.getElementById('check-availability-btn').addEventListener('click', checkAvailability);
+            document.getElementById('reset-form-btn').addEventListener('click', resetBookingForm);
+            
+            // Update duration and time pickers to calculate and show price
+            document.getElementById('booking-duration').addEventListener('change', updateBookingPrice);
+            document.getElementById('booking-time').addEventListener('change', updateBookingPrice);
+            
+            // Initialize field options
+            updateFieldOptions();
+        }
+        
+        // Update field options based on selected sport and type
+        function updateFieldOptions() {
+            const sportType = document.getElementById('sport-type').value;
+            const fieldType = document.getElementById('field-type').value;
+            const fieldSelect = document.getElementById('field-select');
+            
+            // Clear existing options
+            fieldSelect.innerHTML = '<option value="">-- Chọn sân --</option>';
+            
+            if (!sportType || !fieldType) return;
+            
+            // Add available fields based on sport and field type
+            const fields = fieldsData[sportType][fieldType].fields;
+            fields.forEach(field => {
+                const option = document.createElement('option');
+                option.value = field;
+                option.textContent = field;
+                fieldSelect.appendChild(option);
+            });
+            
+            // Update price display
+            updateBookingPrice();
+        }
+        
+        // Update booking price based on selected options
+        function updateBookingPrice() {
+            const sportType = document.getElementById('sport-type').value;
+            const fieldType = document.getElementById('field-type').value;
+            const duration = parseInt(document.getElementById('booking-duration').value) || 1;
+            
+            let price = 0;
+            if (sportType && fieldType && fieldsData[sportType] && fieldsData[sportType][fieldType]) {
+                price = fieldsData[sportType][fieldType].price * duration;
+            }
+            
+            document.getElementById('booking-price').value = formatPrice(price);
+        }
+        
+        // Check availability of selected field, date, and time
+        function checkAvailability() {
+            const field = document.getElementById('field-select').value;
+            const date = document.getElementById('booking-date').value;
+            const startTime = document.getElementById('booking-time').value;
+            const duration = parseInt(document.getElementById('booking-duration').value) || 1;
+            const endTime = calculateEndTime(startTime, duration);
+            
+            if (!field || !date || !startTime) {
+                showBookingError('Vui lòng chọn đầy đủ thông tin sân, ngày và giờ để kiểm tra');
+                return;
+            }
+            
+            // Check if the field is available at the selected time
+            const isOverlap = checkBookingOverlap(field, date, startTime, endTime);
+            
+            if (isOverlap) {
+                showBookingError(`Sân ${field} đã được đặt vào thời gian này. Vui lòng chọn thời gian khác.`);
+            } else {
+                showBookingSuccess(`Sân ${field} còn trống vào ngày ${formatDate(date)} từ ${startTime} đến ${endTime}.`);
+            }
+        }
+        
+        // Handle booking form submission
+        function handleBookingSubmit(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const sportType = document.getElementById('sport-type').value;
+            const fieldType = document.getElementById('field-type').value;
+            const field = document.getElementById('field-select').value;
+            const date = document.getElementById('booking-date').value;
+            const startTime = document.getElementById('booking-time').value;
+            const duration = parseInt(document.getElementById('booking-duration').value) || 1;
+            const endTime = calculateEndTime(startTime, duration);
+            const status = document.getElementById('booking-status').value;
+            const notes = document.getElementById('booking-notes').value;
+            
+            // Get customer info
+            const customerName = document.getElementById('customer-name').value;
+            const customerPhone = document.getElementById('customer-phone').value;
+            const customerId = document.getElementById('customer-id').value;
+            const customerEmail = document.getElementById('customer-email').value;
+            const customerAddress = document.getElementById('customer-address').value;
+            
+            // Validate required fields
+            if (!sportType || !fieldType || !field || !date || !startTime || !customerName || !customerPhone) {
+                showBookingError('Vui lòng điền đầy đủ các trường bắt buộc');
+                return;
+            }
+            
+            // Check for overlap with existing bookings
+            const isOverlap = checkBookingOverlap(field, date, startTime, endTime);
+            if (isOverlap) {
+                showBookingError(`Sân ${field} đã được đặt vào thời gian này. Vui lòng chọn thời gian khác.`);
+                return;
+            }
+            
+            // Calculate price based on sport, field type, and duration
+            let price = 0;
+            if (fieldsData[sportType] && fieldsData[sportType][fieldType]) {
+                price = fieldsData[sportType][fieldType].price * duration;
+            }
+            
+            // Create new booking object
+            const newBooking = {
+                id: generateBookingId(),
+                sport: sportType,
+                field_type: fieldType,
+                field: field,
+                date: date,
+                time: startTime,
+                duration: duration,
+                end_time: endTime,
+                status: status,
+                price: price,
+                notes: notes,
+                customer: {
+                    name: customerName,
+                    phone: customerPhone,
+                    id_number: customerId,
+                    email: customerEmail,
+                    address: customerAddress
+                },
+                created_by: loggedInUser,
+                created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
+            };
+            
+            // Add booking to the list
+            bookings.push(newBooking);
+            
+            // Show success message
+            showBookingSuccess(`Đặt sân thành công! Sân ${field} đã được đặt vào ngày ${formatDate(date)} từ ${startTime} đến ${endTime}.`);
+            
+            // Reset form fields
+            resetBookingForm();
+            
+            // Update dashboard and booking list
+            updateBookingSummary();
+            loadBookingList();
+            
+            // Update calendar if it's initialized
+            if (calendar) {
+                refreshCalendarEvents();
+            }
+        }
+        
+        // Reset booking form
+        function resetBookingForm() {
+            document.getElementById('booking-form').reset();
+            
+            // Set default date to today
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('booking-date').value = formattedDate;
+            
+            // Clear field select options
+            document.getElementById('field-select').innerHTML = '<option value="">-- Chọn sân --</option>';
+            
+            // Reset price display
+            document.getElementById('booking-price').value = '';
+            
+            // Hide messages
+            document.getElementById('booking-success').classList.add('d-none');
+            document.getElementById('booking-error').classList.add('d-none');
+        }
+        
+        // Show booking success message
+        function showBookingSuccess(message) {
+            const successElement = document.getElementById('booking-success');
+            successElement.textContent = message;
+            successElement.classList.remove('d-none');
+            document.getElementById('booking-error').classList.add('d-none');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                successElement.classList.add('d-none');
+            }, 5000);
+        }
+        
+        // Show booking error message
+        function showBookingError(message) {
+            const errorElement = document.getElementById('booking-error');
+            errorElement.textContent = message;
+            errorElement.classList.remove('d-none');
+            document.getElementById('booking-success').classList.add('d-none');
+        }
+        
+        // Initialize booking list
+        function initializeBookingList() {
+            loadBookingList();
+            
+            // Add event listeners for search and filters
+            document.getElementById('search-booking').addEventListener('input', loadBookingList);
+            document.getElementById('filter-status').addEventListener('change', loadBookingList);
+            document.getElementById('filter-date').addEventListener('change', loadBookingList);
+        }
+        
+        // Load booking list with filters
+        function loadBookingList() {
+            const bookingListTable = document.getElementById('booking-list-table');
+            const searchTerm = document.getElementById('search-booking').value.toLowerCase();
+            const statusFilter = document.getElementById('filter-status').value;
+            const dateFilter = document.getElementById('filter-date').value;
+            
+            // Clear existing rows
+            bookingListTable.innerHTML = '';
+            
+            // Filter bookings based on search term and filters
+            let filteredBookings = bookings.filter(booking => {
+                // Status filter
+                if (statusFilter !== 'all' && booking.status !== statusFilter) return false;
+                
+                // Date filter
+                if (dateFilter !== 'all') {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    
+                    const bookingDate = new Date(booking.date);
+                    bookingDate.setHours(0, 0, 0, 0);
+                    
+                    if (dateFilter === 'today' && bookingDate.getTime() !== today.getTime()) return false;
+                    
+                    if (dateFilter === 'tomorrow' && bookingDate.getTime() !== tomorrow.getTime()) return false;
+                    
+                    if (dateFilter === 'week') {
+                        const weekStart = new Date(today);
+                        weekStart.setDate(today.getDate() - today.getDay());
+                        
+                        const weekEnd = new Date(weekStart);
+                        weekEnd.setDate(weekStart.getDate() + 6);
+                        
+                        if (bookingDate < weekStart || bookingDate > weekEnd) return false;
+                    }
+                    
+                    if (dateFilter === 'month') {
+                        const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+                        const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                        
+                        if (bookingDate < monthStart || bookingDate > monthEnd) return false;
+                    }
+                }
+                
+                // Search term filter (check in customer name, phone, id_number, field, etc.)
+                if (searchTerm) {
+                    return (
+                        booking.id.toLowerCase().includes(searchTerm) ||
+                        (booking.customer?.name || '').toLowerCase().includes(searchTerm) ||
+                        (booking.customer?.phone || '').toLowerCase().includes(searchTerm) ||
+                        (booking.customer?.id_number || '').toLowerCase().includes(searchTerm) ||
+                        booking.field.toLowerCase().includes(searchTerm) ||
+                        getSportName(booking.sport).toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                return true;
+            });
+            
+            // Sort by date and time (most recent first)
+            filteredBookings = filteredBookings.sort((a, b) => {
+                if (a.date !== b.date) return new Date(b.date) - new Date(a.date);
+                return a.time > b.time ? -1 : 1;
+            });
+            
+            // Display filtered bookings
+            if (filteredBookings.length === 0) {
+                bookingListTable.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="text-center">Không tìm thấy đặt sân nào</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            filteredBookings.forEach(booking => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-id', booking.id);
+                row.innerHTML = `
+                    <td>${booking.id}</td>
+                    <td>${booking.customer?.name || 'N/A'}</td>
+                    <td>${booking.customer?.phone || 'N/A'}</td>
+                    <td>${getSportName(booking.sport)}</td>
+                    <td>${booking.field}</td>
+                    <td>${formatDate(booking.date)}</td>
+                    <td>${booking.time} - ${calculateEndTime(booking.time, booking.duration)}</td>
+                    <td>${getStatusBadge(booking.status)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary view-booking-btn">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        ${booking.status !== 'cancelled' ? `
+                            <button class="btn btn-sm btn-warning edit-booking-btn">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger cancel-booking-btn">
+                                <i class="bi bi-x-circle"></i>
+                            </button>
+                        ` : ''}
+                    </td>
+                `;
+                
+                // Add event listeners for row and action buttons
+                row.addEventListener('click', (e) => {
+                    if (!e.target.closest('button')) {
+                        showBookingDetails(booking.id);
+                    }
+                });
+                
+                bookingListTable.appendChild(row);
+            });
+            
+            // Add event listeners for action buttons
+            document.querySelectorAll('.view-booking-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.closest('tr').getAttribute('data-id');
+                    showBookingDetails(id);
+                    e.stopPropagation();
+                });
+            });
+            
+            document.querySelectorAll('.edit-booking-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.closest('tr').getAttribute('data-id');
+                    editBooking(id);
+                    e.stopPropagation();
+                });
+            });
+            
+            document.querySelectorAll('.cancel-booking-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.closest('tr').getAttribute('data-id');
+                    showCancelBookingModal(id);
+                    e.stopPropagation();
+                });
+            });
+        }
+        
+        // Show booking details modal
+        function showBookingDetails(bookingId) {
+            const booking = bookings.find(b => b.id === bookingId);
+            if (!booking) return;
+            
+            selectedBookingId = bookingId;
+            
+            const detailsContent = document.getElementById('booking-details-content');
+            detailsContent.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="mb-3">Thông Tin Khách Hàng</h6>
+                        <p><strong>Họ tên:</strong> ${booking.customer?.name || 'N/A'}</p>
+                        <p><strong>Số điện thoại:</strong> ${booking.customer?.phone || 'N/A'}</p>
+                        <p><strong>Số CMND/CCCD:</strong> ${booking.customer?.id_number || 'N/A'}</p>
+                        <p><strong>Email:</strong> ${booking.customer?.email || 'N/A'}</p>
+                        <p><strong>Địa chỉ:</strong> ${booking.customer?.address || 'N/A'}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="mb-3">Thông Tin Đặt Sân</h6>
+                        <p><strong>Mã đặt sân:</strong> ${booking.id}</p>
+                        <p><strong>Môn thể thao:</strong> ${getSportName(booking.sport)}</p>
+                        <p><strong>Loại sân:</strong> ${getFieldTypeName(booking.field_type)}</p>
+                        <p><strong>Sân:</strong> ${booking.field}</p>
+                        <p><strong>Ngày:</strong> ${formatDate(booking.date)}</p>
+                        <p><strong>Giờ:</strong> ${booking.time} - ${calculateEndTime(booking.time, booking.duration)}</p>
+                        <p><strong>Thời lượng:</strong> ${booking.duration} giờ</p>
+                        <p><strong>Giá tiền:</strong> ${formatPrice(booking.price)} VNĐ</p>
+                        <p><strong>Trạng thái:</strong> ${getStatusText(booking.status)}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6>Ghi chú</h6>
+                        <p>${booking.notes || 'Không có ghi chú'}</p>
+                    </div>
+                </div>
+                ${booking.status === 'cancelled' ? `
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <h6>Lý do hủy</h6>
+                                <p>${booking.cancel_reason || 'Không có lý do được ghi'}</p>
+                                ${booking.refund_amount ? `<p><strong>Số tiền hoàn trả:</strong> ${formatPrice(booking.refund_amount)} VNĐ</p>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                ` : ''}
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6>Thông tin thêm</h6>
+                        <p><strong>Tạo bởi:</strong> ${booking.created_by}</p>
+                        <p><strong>Thời gian tạo:</strong> ${booking.created_at}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Update modal footer buttons based on booking status
+            const cancelBtn = document.getElementById('cancel-booking-btn');
+            const editBtn = document.getElementById('edit-booking-btn');
+            
+            if (booking.status === 'cancelled') {
+                cancelBtn.style.display = 'none';
+                editBtn.style.display = 'none';
+            } else {
+                cancelBtn.style.display = 'block';
+                editBtn.style.display = 'block';
+            }
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('booking-details-modal'));
+            modal.show();
+        }
+        
+        // Show cancel booking modal
+        function showCancelBookingModal(bookingId) {
+            const booking = bookings.find(b => b.id === bookingId);
+            if (!booking) return;
+            
+            selectedBookingId = bookingId;
+            
+            // Reset form fields
+            document.getElementById('cancel-reason').value = '';
+            document.getElementById('refund-amount').value = '0';
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('cancel-booking-modal'));
+            modal.show();
+            
+            // Add event listener for confirm button
+            document.getElementById('confirm-cancel-btn').onclick = confirmCancelBooking;
+        }
+        
+        // Confirm cancel booking
+        function confirmCancelBooking() {
+            const booking = bookings.find(b => b.id === selectedBookingId);
+            if (!booking) return;
+            
+            const cancelReason = document.getElementById('cancel-reason').value;
+            const refundAmount = parseInt(document.getElementById('refund-amount').value) || 0;
+            
+            // Update booking status and add cancel information
+            booking.status = 'cancelled';
+            booking.cancel_reason = cancelReason;
+            booking.refund_amount = refundAmount;
+            booking.cancelled_by = loggedInUser;
+            booking.cancelled_at = new Date().toISOString().replace('T', ' ').substring(0, 19);
+            
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('cancel-booking-modal')).hide();
+            
+            // If details modal is open, close it too
+            if (document.getElementById('booking-details-modal').classList.contains('show')) {
+                bootstrap.Modal.getInstance(document.getElementById('booking-details-modal')).hide();
+            }
+            
+            // Update dashboard and booking list
+            updateBookingSummary();
+            loadBookingList();
+            
+            // Update calendar if it's initialized
+            if (calendar) {
+                refreshCalendarEvents();
+            }
+        }
+        
+        // Edit booking
+        function editBooking(bookingId) {
+            const booking = bookings.find(b => b.id === bookingId);
+            if (!booking) return;
+            
+            // Switch to booking form tab
+            document.getElementById('booking-form-link').click();
+            
+            // Fill form with booking data
+            document.getElementById('customer-name').value = booking.customer?.name || '';
+            document.getElementById('customer-phone').value = booking.customer?.phone || '';
+            document.getElementById('customer-id').value = booking.customer?.id_number || '';
+            document.getElementById('customer-email').value = booking.customer?.email || '';
+            document.getElementById('customer-address').value = booking.customer?.address || '';
+            
+            document.getElementById('sport-type').value = booking.sport;
+            document.getElementById('field-type').value = booking.field_type;
+            
+            // Update field options based on sport and field type
+            updateFieldOptions();
+            
+            document.getElementById('field-select').value = booking.field;
+            document.getElementById('booking-date').value = booking.date;
+            document.getElementById('booking-time').value = booking.time;
+            document.getElementById('booking-duration').value = booking.duration;
+            document.getElementById('booking-status').value = booking.status;
+            document.getElementById('booking-notes').value = booking.notes || '';
+            
+            // Update price display
+            updateBookingPrice();
+            
+            // Additional step: We're editing, not creating a new booking
+            // We need to remove the existing booking from the array
+            bookings = bookings.filter(b => b.id !== bookingId);
+            
+            // Show message to indicate we're editing
+            showBookingSuccess(`Đang chỉnh sửa đặt sân ${bookingId}. Nhấn "Lưu đặt sân" để cập nhật thông tin.`);
+        }
+        
+        // Initialize calendar
+        function initializeCalendar() {
+            // Initialize FullCalendar options
+            const calendarEl = document.getElementById('calendar');
+            
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                locale: 'vi',
+                buttonText: {
+                    today: 'Hôm nay',
+                    month: 'Tháng',
+                    week: 'Tuần',
+                    day: 'Ngày'
+                },
+                events: getCalendarEvents(),
+                eventClick: function(info) {
+                    const bookingId = info.event.id;
+                    showBookingDetails(bookingId);
+                },
+                firstDay: 1, // Monday
+                slotMinTime: '07:00:00',
+                slotMaxTime: '22:00:00',
+                allDaySlot: false,
+                slotDuration: '01:00:00',
+                dayMaxEvents: true
+            });
+            
+            calendar.render();
+            
+            // Add event listeners for view and field filters
+            document.getElementById('calendar-view').addEventListener('change', function(e) {
+                calendar.changeView(e.target.value);
+            });
+            
+            document.getElementById('calendar-field').addEventListener('change', refreshCalendarEvents);
+            
+            // Populate field filter options
+            populateFieldFilterOptions();
+        }
+        
+        // Populate field filter options
+        function populateFieldFilterOptions() {
+            const fieldFilter = document.getElementById('calendar-field');
+            const allFields = new Set();
+            
+            // Add all fields from fieldsData
+            Object.keys(fieldsData).forEach(sport => {
+                Object.keys(fieldsData[sport]).forEach(type => {
+                    fieldsData[sport][type].fields.forEach(field => {
+                        allFields.add(field);
+                    });
+                });
+            });
+            
+            // Add options to select
+            allFields.forEach(field => {
+                const option = document.createElement('option');
+                option.value = field;
+                option.textContent = field;
+                fieldFilter.appendChild(option);
+            });
+        }
+        
+        // Get calendar events from bookings
+        function getCalendarEvents() {
+            const fieldFilter = document.getElementById('calendar-field')?.value || 'all';
+            
+            return bookings
+                .filter(booking => booking.status !== 'cancelled' && (fieldFilter === 'all' || booking.field === fieldFilter))
+                .map(booking => {
+                    // Determine color based on sport type
+                    let backgroundColor;
+                    if (booking.sport === 'football') {
+                        backgroundColor = booking.field_type === 'standard' ? '#28a745' : '#20c997';
+                    } else {
+                        backgroundColor = booking.field_type === 'standard' ? '#fd7e14' : '#e83e8c';
+                    }
+                    
+                    // Create event object
+                    return {
+                        id: booking.id,
+                        title: `${booking.field} - ${booking.customer?.name || 'N/A'}`,
+                        start: `${booking.date}T${booking.time}:00`,
+                        end: `${booking.date}T${calculateEndTime(booking.time, booking.duration)}:00`,
+                        backgroundColor: backgroundColor,
+                        borderColor: backgroundColor,
+                        extendedProps: {
+                            customerId: booking.customer?.id_number,
+                            customerPhone: booking.customer?.phone,
+                            sport: booking.sport,
+                            field: booking.field,
+                            status: booking.status
+                        }
+                    };
+                });
+        }
+        
+        // Refresh calendar events
+        function refreshCalendarEvents() {
+            if (!calendar) return;
+            
+            // Remove all events
+            calendar.getEvents().forEach(event => event.remove());
+            
+            // Add updated events
+            const events = getCalendarEvents();
+            events.forEach(event => calendar.addEvent(event));
+        }
+        
+        // Login function
+        function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!username || !password) {
+                showLoginError('Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.');
+                return;
+            }
+            
+            if (users[username] && users[username].password === password) {
+                // Login successful
+                loggedInUser = username;
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                document.getElementById('user-name').textContent = users[username].name;
+                
+                // Initialize components
+                initializeDashboard();
+                initializeBookingForm();
+                initializeBookingList();
+                initializeCalendar();
+                
+                // Set up navigation links
+                setupNavigationLinks();
+            } else {
+                // Login failed
+                showLoginError('Sai tên đăng nhập hoặc mật khẩu!');
+            }
+        }
+        
+        // Show login error
+        function showLoginError(message) {
+            const errorElement = document.getElementById('login-error');
+            errorElement.textContent = message;
+            errorElement.classList.remove('d-none');
+        }
+        
+        // Set up navigation links
+        function setupNavigationLinks() {
+            // Dashboard link
+            document.getElementById('dashboard-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active link
+                document.querySelectorAll('#sidebar .nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show dashboard content, hide others
+                document.getElementById('dashboard-content').style.display = 'block';
+                document.getElementById('booking-form-content').style.display = 'none';
+                document.getElementById('booking-list-content').style.display = 'none';
+                document.getElementById('calendar-content').style.display = 'none';
+                
+                // Refresh dashboard data
+                updateBookingSummary();
+                loadRecentBookings();
+            });
+            
+            // Booking form link
+            document.getElementById('booking-form-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active link
+                document.querySelectorAll('#sidebar .nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show booking form content, hide others
+                document.getElementById('dashboard-content').style.display = 'none';
+                document.getElementById('booking-form-content').style.display = 'block';
+                document.getElementById('booking-list-content').style.display = 'none';
+                document.getElementById('calendar-content').style.display = 'none';
+            });
+            
+            // Booking list link
+            document.getElementById('booking-list-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active link
+                document.querySelectorAll('#sidebar .nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show booking list content, hide others
+                document.getElementById('dashboard-content').style.display = 'none';
+                document.getElementById('booking-form-content').style.display = 'none';
+                document.getElementById('booking-list-content').style.display = 'block';
+                document.getElementById('calendar-content').style.display = 'none';
+                
+                // Refresh booking list
+                loadBookingList();
+            });
+            
+            // Calendar link
+            document.getElementById('calendar-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active link
+                document.querySelectorAll('#sidebar .nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show calendar content, hide others
+                document.getElementById('dashboard-content').style.display = 'none';
+                document.getElementById('booking-form-content').style.display = 'none';
+                document.getElementById('booking-list-content').style.display = 'none';
+                document.getElementById('calendar-content').style.display = 'block';
+                
+                // Refresh calendar size and events
+                calendar.updateSize();
+                refreshCalendarEvents();
+            });
+            
+            // Logout link
+            document.getElementById('logout-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Logout
+                loggedInUser = null;
+                document.getElementById('login-section').style.display = 'flex';
+                document.getElementById('main-content').style.display = 'none';
+                
+                // Clear login form
+                document.getElementById('login-username').value = '';
+                document.getElementById('login-password').value = '';
+                document.getElementById('login-error').classList.add('d-none');
+            });
+        }
+        
+        // Initialize app on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up login button
+            document.getElementById('login-btn').addEventListener('click', login);
+            document.getElementById('login-password').addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+            
+            // Set cancel booking event listener
+            document.getElementById('edit-booking-btn').addEventListener('click', function() {
+                const bookingId = selectedBookingId;
+                
+                // Close modal
+                bootstrap.Modal.getInstance(document.getElementById('booking-details-modal')).hide();
+                
+                // Edit booking
+                editBooking(bookingId);
+            });
+        });
+    </script>
+</body>
+</html>
