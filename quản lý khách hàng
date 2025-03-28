@@ -3,184 +3,1154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Khách Hàng</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Quản lý Khách hàng - Hệ thống Quản lý Cơ sở Thể thao</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #000000; 
-            color: #ffd700; 
-            margin: 0;
-            padding: 20px;
+        .bg-primary {
+            background-color: #1d4ed8;
         }
-        .container {
-            background-color: #1a1a1a;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); 
-            max-width: 900px;
-            margin: auto;
+        .text-primary {
+            color: #1d4ed8;
         }
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            color: #ffd700;
+        .border-primary {
+            border-color: #1d4ed8;
         }
-        .btn-primary {
-            background-color: #ffd700; 
-            color: #000000; 
-            border: none;
+        .hover\:bg-blue-600:hover {
+            background-color: #2563eb;
         }
-        .btn-primary:hover {
-            background-color: #e6c200; 
+        .hover\:text-primary:hover {
+            color: #1d4ed8;
         }
-        .btn-warning {
-            background-color: #f4a700;
-            border: none;
+        .bg-secondary {
+            background-color: #ef4444;
         }
-        .btn-danger {
-            background-color: #d32f2f;
-            border: none;
+        .hover\:bg-red-700:hover {
+            background-color: #b91c1c;
         }
-        input, select, textarea {
-            background-color: #333333; 
-            color: #ffd700; 
-            border: 1px solid #ffd700;
-            border-radius: 5px;
+        .tag-normal {
+            background-color: #E5E7EB;
+            color: #374151;
         }
-        table {
-            background-color: #1a1a1a; 
-            color: #ffd700; 
+        .tag-vip {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
         }
-        .table-primary {
-            background-color: #ffd700; 
-            color: #000000;
+        .tag-blacklist {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
         }
-        textarea::placeholder, input::placeholder {
-            color: #e6e6e6;
+        .status-active {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
         }
-        .alert {
-            font-size: 14px;
-            background-color: #ffd700; 
-            color: #000000; 
-            border: none;
+        .status-inactive {
+            background-color: rgba(156, 163, 175, 0.1);
+            color: #6b7280;
+        }
+        .dot {
+            height: 8px;
+            width: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .dot-green {
+            background-color: #10b981;
+        }
+        .dot-yellow {
+            background-color: #f59e0b;
+        }
+        .dot-red {
+            background-color: #ef4444;
+        }
+        .dot-gray {
+            background-color: #6b7280;
+        }
+        .tab-active {
+            color: #1d4ed8;
+            border-bottom: 2px solid #1d4ed8;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1 class="text-center">Hệ Thống Quản Lý Khách Hàng</h1>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar - Desktop -->
+        <aside class="w-64 bg-white shadow-md hidden md:block">
+            <div class="p-4 bg-primary text-white">
+                <h1 class="text-xl font-bold">Quản lý Khách hàng</h1>
+            </div>
+            <nav class="mt-4">
+                <ul>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">dashboard</span>
+                            <span>Tổng quan</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 bg-blue-50 text-primary border-l-4 border-primary">
+                            <span class="material-icons mr-2">people</span>
+                            <span>Quản lý Khách hàng</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">inventory_2</span>
+                            <span>Quản lý Dịch vụ</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">event_available</span>
+                            <span>Đặt sân</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">receipt_long</span>
+                            <span>Hóa đơn</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">history</span>
+                            <span>Lịch sử giao dịch</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">assessment</span>
+                            <span>Báo cáo</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">settings</span>
+                            <span>Cài đặt</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
 
-        <!-- Lưu trữ thông tin khách hàng -->
-        <h2 class="section-title">1. Lưu Trữ Thông Tin Khách Hàng</h2>
-        <form id="customerForm">
-            <div class="mb-3">
-                <label for="customerName" class="form-label">Tên Khách Hàng:</label>
-                <input type="text" id="customerName" class="form-control" placeholder="Nhập tên khách hàng">
-            </div>
-            <div class="mb-3">
-                <label for="customerPhone" class="form-label">Số Điện Thoại:</label>
-                <input type="text" id="customerPhone" class="form-control" placeholder="Nhập số điện thoại">
-            </div>
-            <div class="mb-3">
-                <label for="customerEmail" class="form-label">Email:</label>
-                <input type="email" id="customerEmail" class="form-control" placeholder="Nhập email">
-            </div>
-            <div class="mb-3">
-                <label for="customerNotes" class="form-label">Ghi Chú:</label>
-                <textarea id="customerNotes" class="form-control" placeholder="Ví dụ: Khách hàng thân thiết"></textarea>
-            </div>
-            <button type="button" class="btn btn-primary w-100" onclick="addCustomer()">Lưu Khách Hàng</button>
-        </form>
-        <div id="customerResult" class="mt-3"></div>
+        <!-- Main Content -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm">
+                <div class="flex items-center justify-between p-4">
+                    <button class="md:hidden text-gray-600">
+                        <span class="material-icons">menu</span>
+                    </button>
+                    <div class="flex items-center space-x-4">
+                        <button class="text-gray-600">
+                            <span class="material-icons">notifications</span>
+                        </button>
+                        <div class="flex items-center">
+                            <div class="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center">
+                                <span class="material-icons text-sm">person</span>
+                            </div>
+                            <span class="ml-2 text-sm font-medium text-gray-700">Trần Văn Quản lý</span>
+                            <span class="material-icons text-gray-400 ml-1">arrow_drop_down</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
 
-        <h3 class="section-title">Danh Sách Khách Hàng</h3>
-        <table class="table table-bordered">
-            <thead class="table-primary">
-                <tr>
-                    <th>Tên Khách Hàng</th>
-                    <th>Số Điện Thoại</th>
-                    <th>Email</th>
-                    <th>Ghi Chú</th>
-                    <th>Hành Động</th>
-                </tr>
-            </thead>
-            <tbody id="customerList">
-                <!-- Khách hàng sẽ được hiển thị ở đây -->
-            </tbody>
-        </table>
+            <!-- Page Content -->
+            <div class="p-6">
+                <!-- Page Header -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800 mb-1">Quản lý Khách hàng</h1>
+                        <p class="text-gray-600">Quản lý thông tin và lịch sử giao dịch của khách hàng</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex space-x-3">
+                        <button id="btnAddCustomer" class="bg-primary text-white px-4 py-2 rounded-md flex items-center hover:bg-blue-600 transition-colors">
+                            <span class="material-icons mr-1">add</span>
+                            Thêm Khách hàng
+                        </button>
+                    </div>
+                </div>
 
-        <!-- Quản lý danh sách đen -->
-        <h2 class="section-title">2. Quản Lý Danh Sách Đen</h2>
-        <div id="blacklistSection">
-            <h3 class="section-title">Danh Sách Đen</h3>
-            <ul id="blacklist" class="list-group">
-                <!-- Danh sách đen sẽ được hiển thị ở đây -->
-            </ul>
+                <!-- Search & Filter Section -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                        <div class="flex flex-col md:flex-row md:items-center mb-4 md:mb-0">
+                            <div class="relative w-full md:w-96">
+                                <input type="text" placeholder="Tìm kiếm khách hàng..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full">
+                                <span class="material-icons absolute left-3 top-2 text-gray-400">search</span>
+                            </div>
+                            <button class="mt-2 md:mt-0 md:ml-2 px-4 py-2 border border-gray-300 rounded-md text-gray-700 flex items-center">
+                                <span class="material-icons mr-1 text-gray-500">filter_list</span>
+                                Lọc
+                            </button>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-500">Trạng thái:</span>
+                            <button class="px-3 py-1 text-sm border border-gray-300 rounded-md bg-white text-gray-700">Tất cả</button>
+                            <button class="px-3 py-1 text-sm border border-primary rounded-md bg-blue-50 text-primary">Hoạt động</button>
+                            <button class="px-3 py-1 text-sm border border-gray-300 rounded-md bg-white text-gray-700">Không hoạt động</button>
+                        </div>
+                    </div>
+
+                    <div class="border-b border-gray-200">
+                        <ul class="flex -mb-px">
+                            <li class="mr-2">
+                                <button class="inline-block py-2 px-4 tab-active">
+                                    Tất cả
+                                </button>
+                            </li>
+                            <li class="mr-2">
+                                <button class="inline-block py-2 px-4 text-gray-500 hover:text-gray-700">
+                                    Khách VIP
+                                </button>
+                            </li>
+                            <li class="mr-2">
+                                <button class="inline-block py-2 px-4 text-gray-500 hover:text-gray-700">
+                                    Danh sách đen
+                                </button>
+                            </li>
+                            <li class="mr-2">
+                                <button class="inline-block py-2 px-4 text-gray-500 hover:text-gray-700">
+                                    Khách thường xuyên
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Customer Table -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            Mã KH
+                                            <span class="material-icons ml-1 text-xs">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            Khách hàng
+                                            <span class="material-icons ml-1 text-xs">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            Liên hệ
+                                            <span class="material-icons ml-1 text-xs">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            Loại KH
+                                            <span class="material-icons ml-1 text-xs">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            Lần cuối sử dụng dịch vụ
+                                            <span class="material-icons ml-1 text-xs">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            Trạng thái
+                                            <span class="material-icons ml-1 text-xs">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Tác vụ
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <!-- Customer 1: Regular -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        KH001
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                                <span class="material-icons text-primary">person</span>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Nguyễn Văn A</div>
+                                                <div class="text-xs text-gray-500">Ngày đăng ký: 15/01/2025</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div>
+                                            <div class="flex items-center mb-1">
+                                                <span class="material-icons text-xs mr-1">phone</span>
+                                                <span>0912345678</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <span class="material-icons text-xs mr-1">email</span>
+                                                <span>nguyenvana@email.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 rounded-full text-xs tag-normal">
+                                            Thường
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        24/03/2025
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 rounded-full text-xs status-active">
+                                            Hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-blue-700 mr-3">
+                                            <span class="material-icons">visibility</span>
+                                        </button>
+                                        <button class="text-gray-600 hover:text-blue-700 mr-3">
+                                            <span class="material-icons">edit</span>
+                                        </button>
+                                        <button class="text-secondary hover:text-red-700">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Customer 2: VIP -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        KH002
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center mr-3">
+                                                <span class="material-icons text-yellow-600">person</span>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Trần Thị B</div>
+                                                <div class="text-xs text-gray-500">Ngày đăng ký: 20/12/2024</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div>
+                                            <div class="flex items-center mb-1">
+                                                <span class="material-icons text-xs mr-1">phone</span>
+                                                <span>0923456789</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <span class="material-icons text-xs mr-1">email</span>
+                                                <span>tranthib@email.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 rounded-full text-xs tag-vip">
+                                            VIP
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        26/03/2025
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 rounded-full text-xs status-active">
+                                            Hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-blue-700 mr-3">
+                                            <span class="material-icons">visibility</span>
+                                        </button>
+                                        <button class="text-gray-600 hover:text-blue-700 mr-3">
+                                            <span class="material-icons">edit</span>
+                                        </button>
+                                        <button class="text-secondary hover:text-red-700">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Customer 3: Blacklist -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        KH003
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                                                <span class="material-icons text-red-600">person</span>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Lê Văn C</div>
+                                                <div class="text-xs text-gray-500">Ngày đăng ký: 05/02/2025</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div>
+                                            <div class="flex items-center mb-1">
+                                                <span class="material-icons text-xs mr-1">phone</span>
+                                                <span>0934567890</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <span class="material-icons text-xs mr-1">email</span>
+                                                <span>levanc@email.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 rounded-full text-xs tag-blacklist">
+                                            Danh sách đen
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        10/03/2025
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 rounded-full text-xs status-inactive">
+                                            Bị chặn
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-blue-700 mr-3">
+                                            <span class="material-icons">visibility</span>
+                                        </button>
+                                        <button class="text-gray-600 hover:text-blue-700 mr-3">
+                                            <span class="material-icons">edit</span>
+                                        </button>
+                                        <button class="text-secondary hover:text-red-700">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Customer 4: Regular -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        KH004
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                                <span class="material-icons text-primary">person</span>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Phạm Thị D</div>
+                                                <div class="text-xs text-gray-500">Ngày đăng ký: 10/02/2025</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div>
+                                            <div class="flex items-center mb-1">
+                                                <span class="material-icons text-xs mr-1">phone</span>
+                                                <span>0945678901</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <span class="material-icons text-xs mr-1">email</span>
+                                                <span>phamthid@email.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 rounded-full text-xs tag-normal">
+                                            Thường
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        20/03/2025
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 rounded-full text-xs status-active">
+                                            Hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-blue-700 mr-3">
+                                            <span class="material-icons">visibility</span>
+                                        </button>
+                                        <button class="text-gray-600 hover:text-blue-700 mr-3">
+                                            <span class="material-icons">edit</span>
+                                        </button>
+                                        <button class="text-secondary hover:text-red-700">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Customer 5: VIP -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        KH005
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center mr-3">
+                                                <span class="material-icons text-yellow-600">person</span>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Hoàng Văn E</div>
+                                                <div class="text-xs text-gray-500">Ngày đăng ký: 25/01/2025</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div>
+                                            <div class="flex items-center mb-1">
+                                                <span class="material-icons text-xs mr-1">phone</span>
+                                                <span>0956789012</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <span class="material-icons text-xs mr-1">email</span>
+                                                <span>hoangvane@email.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 rounded-full text-xs tag-vip">
+                                            VIP
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        27/03/2025
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 rounded-full text-xs status-active">
+                                            Hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-blue-700 mr-3">
+                                            <span class="material-icons">visibility</span>
+                                        </button>
+                                        <button class="text-gray-600 hover:text-blue-700 mr-3">
+                                            <span class="material-icons">edit</span>
+                                        </button>
+                                        <button class="text-secondary hover:text-red-700">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Customer 6: Regular Inactive -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        KH006
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                <span class="material-icons text-gray-500">person</span>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Vũ Thị F</div>
+                                                <div class="text-xs text-gray-500">Ngày đăng ký: 30/12/2024</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div>
+                                            <div class="flex items-center mb-1">
+                                                <span class="material-icons text-xs mr-1">phone</span>
+                                                <span>0967890123</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <span class="material-icons text-xs mr-1">email</span>
+                                                <span>vuthif@email.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 rounded-full text-xs tag-normal">
+                                            Thường
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        01/02/2025
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 rounded-full text-xs status-inactive">
+                                            Không hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-blue-700 mr-3">
+                                            <span class="material-icons">visibility</span>
+                                        </button>
+                                        <button class="text-gray-600 hover:text-blue-700 mr-3">
+                                            <span class="material-icons">edit</span>
+                                        </button>
+                                        <button class="text-secondary hover:text-red-700">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                        <div class="flex-1 flex justify-between sm:hidden">
+                            <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Trước
+                            </button>
+                            <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Tiếp
+                            </button>
+                        </div>
+                        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <p class="text-sm text-gray-700">
+                                    Hiển thị <span class="font-medium">1</span> đến <span class="font-medium">6</span> của <span class="font-medium">10</span> khách hàng
+                                </p>
+                            </div>
+                            <div>
+                                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                    <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                        <span class="sr-only">Trước</span>
+                                        <span class="material-icons text-sm">chevron_left</span>
+                                    </button>
+                                    <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white">
+                                        1
+                                    </button>
+                                    <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                        2
+                                    </button>
+                                    <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                        <span class="sr-only">Tiếp</span>
+                                        <span class="material-icons text-sm">chevron_right</span>
+                                    </button>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Tổng khách hàng</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">10</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="material-icons text-primary">people</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-sm text-green-600 flex items-center">
+                                <span class="material-icons text-sm">arrow_upward</span>
+                                <span>3</span>
+                            </span>
+                            <span class="text-sm text-gray-500 ml-2">so với tháng trước</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Khách hàng VIP</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">2</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <span class="material-icons text-yellow-600">stars</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-sm text-green-600 flex items-center">
+                                <span class="material-icons text-sm">arrow_upward</span>
+                                <span>1</span>
+                            </span>
+                            <span class="text-sm text-gray-500 ml-2">so với tháng trước</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Danh sách đen</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">1</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                                <span class="material-icons text-red-600">block</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-sm text-gray-500 flex items-center">
+                                <span class="material-icons text-sm">remove</span>
+                                <span>0</span>
+                            </span>
+                            <span class="text-sm text-gray-500 ml-2">so với tháng trước</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Khách không hoạt động</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">2</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                                <span class="material-icons text-gray-600">hourglass_empty</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-sm text-red-600 flex items-center">
+                                <span class="material-icons text-sm">arrow_upward</span>
+                                <span>1</span>
+                            </span>
+                            <span class="text-sm text-gray-500 ml-2">so với tháng trước</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Customer Modal (Hidden by default) -->
+    <div id="customerModal" class="hidden fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Thêm Khách hàng Mới
+                            </h3>
+                            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="customer-code" class="block text-sm font-medium text-gray-700">Mã khách hàng</label>
+                                    <input type="text" name="customer-code" id="customer-code" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="VD: KH007" disabled value="KH007">
+                                    <p class="mt-1 text-xs text-gray-500">Mã sẽ được tạo tự động</p>
+                                </div>
+                                <div>
+                                    <label for="customer-name" class="block text-sm font-medium text-gray-700">Họ và tên</label>
+                                    <input type="text" name="customer-name" id="customer-name" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Họ và tên khách hàng">
+                                </div>
+                                <div>
+                                    <label for="customer-phone" class="block text-sm font-medium text-gray-700">Số điện thoại</label>
+                                    <input type="tel" name="customer-phone" id="customer-phone" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="VD: 0912345678">
+                                </div>
+                                <div>
+                                    <label for="customer-email" class="block text-sm font-medium text-gray-700">Email</label>
+                                    <input type="email" name="customer-email" id="customer-email" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="VD: email@example.com">
+                                </div>
+                                <div>
+                                    <label for="customer-type" class="block text-sm font-medium text-gray-700">Loại khách hàng</label>
+                                    <select id="customer-type" name="customer-type" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                        <option value="regular">Thường</option>
+                                        <option value="vip">VIP</option>
+                                        <option value="blacklist">Danh sách đen</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="customer-status" class="block text-sm font-medium text-gray-700">Trạng thái</label>
+                                    <select id="customer-status" name="customer-status" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                        <option value="active">Hoạt động</option>
+                                        <option value="inactive">Không hoạt động</option>
+                                        <option value="blocked">Bị chặn</option>
+                                    </select>
+                                </div>
+                                <div class="col-span-1 md:col-span-2">
+                                    <label for="customer-address" class="block text-sm font-medium text-gray-700">Địa chỉ</label>
+                                    <input type="text" name="customer-address" id="customer-address" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Địa chỉ khách hàng">
+                                </div>
+                                <div class="col-span-1 md:col-span-2">
+                                    <label for="customer-notes" class="block text-sm font-medium text-gray-700">Ghi chú</label>
+                                    <textarea id="customer-notes" name="customer-notes" rows="3" class="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Thông tin bổ sung về khách hàng"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Lưu
+                    </button>
+                    <button type="button" id="closeCustomerModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Hủy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Detail Modal (Hidden by default) -->
+    <div id="customerDetailModal" class="hidden fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="flex items-center justify-between mb-5">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 flex items-center" id="modal-title">
+                            Chi tiết Khách hàng
+                            <span class="ml-2 px-2 py-1 rounded-full text-xs tag-vip">VIP</span>
+                        </h3>
+                        <button id="closeDetailModal" class="text-gray-400 hover:text-gray-500">
+                            <span class="material-icons">close</span>
+                        </button>
+                    </div>
+
+                    <div class="border-b border-gray-200 mb-6">
+                        <ul class="flex flex-wrap -mb-px">
+                            <li class="mr-2">
+                                <button class="inline-block p-4 border-b-2 border-primary font-medium text-sm text-primary">
+                                    Thông tin cá nhân
+                                </button>
+                            </li>
+                            <li class="mr-2">
+                                <button class="inline-block p-4 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                    Lịch sử giao dịch
+                                </button>
+                            </li>
+                            <li class="mr-2">
+                                <button class="inline-block p-4 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                    Ghi chú
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Personal Information Tab Content -->
+                    <div>
+                        <div class="flex flex-col md:flex-row">
+                            <div class="md:w-1/3 p-4">
+                                <div class="bg-gray-100 p-6 rounded-lg flex flex-col items-center">
+                                    <div class="h-24 w-24 rounded-full bg-yellow-100 flex items-center justify-center mb-4">
+                                        <span class="material-icons text-yellow-600 text-4xl">person</span>
+                                    </div>
+                                    <h4 class="text-lg font-medium">Trần Thị B</h4>
+                                    <p class="text-sm text-gray-500">Mã KH: KH002</p>
+                                    <div class="mt-4 w-full">
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-sm text-gray-500">Khách hàng từ:</span>
+                                            <span class="text-sm font-medium">20/12/2024</span>
+                                        </div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-sm text-gray-500">Loại KH:</span>
+                                            <span class="text-sm font-medium text-yellow-600">VIP</span>
+                                        </div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-sm text-gray-500">Trạng thái:</span>
+                                            <span class="text-sm font-medium text-green-600">Hoạt động</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="md:w-2/3 p-4">
+                                <div class="mb-6">
+                                    <h4 class="text-lg font-medium mb-4">Thông tin liên hệ</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="flex items-start">
+                                            <span class="material-icons text-gray-400 mr-2">phone</span>
+                                            <div>
+                                                <p class="text-sm font-medium">Số điện thoại</p>
+                                                <p class="text-sm text-gray-600">0923456789</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="material-icons text-gray-400 mr-2">email</span>
+                                            <div>
+                                                <p class="text-sm font-medium">Email</p>
+                                                <p class="text-sm text-gray-600">tranthib@email.com</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start md:col-span-2">
+                                            <span class="material-icons text-gray-400 mr-2">home</span>
+                                            <div>
+                                                <p class="text-sm font-medium">Địa chỉ</p>
+                                                <p class="text-sm text-gray-600">123 Đường Lê Lợi, Quận 1, TP.HCM</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 class="text-lg font-medium mb-4">Thống kê</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div class="bg-blue-50 p-4 rounded-lg">
+                                            <p class="text-sm text-gray-500">Tổng đơn hàng</p>
+                                            <p class="text-2xl font-bold text-primary">24</p>
+                                        </div>
+                                        <div class="bg-green-50 p-4 rounded-lg">
+                                            <p class="text-sm text-gray-500">Tổng chi tiêu</p>
+                                            <p class="text-2xl font-bold text-green-600">4.520.000 ₫</p>
+                                        </div>
+                                        <div class="bg-purple-50 p-4 rounded-lg">
+                                            <p class="text-sm text-gray-500">Lần gần nhất</p>
+                                            <p class="text-2xl font-bold text-purple-600">26/03/2025</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transaction History Tab Content (Hidden by default) -->
+                    <div class="hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Mã giao dịch
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Ngày
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Loại
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Dịch vụ
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Tổng tiền
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Trạng thái
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            GD00123
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            26/03/2025
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Đặt sân</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            Sân bóng đá số 3 (2 giờ)
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            300.000 ₫
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            <span class="px-2 py-1 rounded-full text-xs status-active">Thành công</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            GD00115
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            20/03/2025
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs">Dịch vụ</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            Thuê áo (5 bộ), Nước khoáng (10 chai)
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            225.000 ₫
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            <span class="px-2 py-1 rounded-full text-xs status-active">Thành công</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            GD00098
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            15/03/2025
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Đặt sân</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            Sân bóng đá số 2 (2 giờ)
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            300.000 ₫
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            <span class="px-2 py-1 rounded-full text-xs status-active">Thành công</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Notes Tab Content (Hidden by default) -->
+                    <div class="hidden">
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-lg font-medium">Ghi chú</h4>
+                                <button class="px-2 py-1 bg-primary text-white text-sm rounded-md flex items-center">
+                                    <span class="material-icons text-sm mr-1">add</span>
+                                    Thêm ghi chú
+                                </button>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div class="flex items-center">
+                                            <span class="material-icons text-yellow-600 mr-2">star</span>
+                                            <h5 class="font-medium">Khách hàng VIP</h5>
+                                        </div>
+                                        <div class="text-xs text-gray-500">25/01/2025</div>
+                                    </div>
+                                    <p class="text-sm text-gray-700">Khách hàng rất thân thiết, luôn đặt sân đúng giờ và thanh toán đầy đủ. Nên ưu tiên đặt sân khi có yêu cầu.</p>
+                                </div>
+                                
+                                <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div class="flex items-center">
+                                            <span class="material-icons text-blue-600 mr-2">info</span>
+                                            <h5 class="font-medium">Thông tin đội bóng</h5>
+                                        </div>
+                                        <div class="text-xs text-gray-500">20/01/2025</div>
+                                    </div>
+                                    <p class="text-sm text-gray-700">Khách hàng có đội bóng 7 người, thường đặt sân vào chiều thứ 7 hàng tuần.</p>
+                                </div>
+                                
+                                <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div class="flex items-center">
+                                            <span class="material-icons text-green-600 mr-2">event_available</span>
+                                            <h5 class="font-medium">Lịch đặt sân cố định</h5>
+                                        </div>
+                                        <div class="text-xs text-gray-500">15/01/2025</div>
+                                    </div>
+                                    <p class="text-sm text-gray-700">Khách hàng này có lịch đặt sân cố định vào mỗi tối thứ 4 và thứ 7 từ 18h-20h.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-between">
+                    <div>
+                        <button type="button" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-500 text-base font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:w-auto sm:text-sm">
+                            <span class="material-icons text-sm mr-1">stars</span>
+                            Đánh dấu VIP
+                        </button>
+                        <button type="button" class="ml-3 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-500 text-base font-medium text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:w-auto sm:text-sm">
+                            <span class="material-icons text-sm mr-1">block</span>
+                            Thêm vào danh sách đen
+                        </button>
+                    </div>
+                    <button type="button" class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:w-auto sm:text-sm">
+                        Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal (Hidden by default) -->
+    <div id="deleteModal" class="hidden fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <span class="material-icons text-red-600">warning</span>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Xác nhận xóa
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500">
+                                    Bạn có chắc chắn muốn xóa khách hàng này không? Hành động này không thể hoàn tác và sẽ xóa vĩnh viễn tất cả dữ liệu liên quan đến khách hàng này.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-secondary text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Xóa
+                    </button>
+                    <button type="button" id="closeDeleteModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Hủy
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        const customers = [];
-        const blacklist = [];
+        // Show/Hide Customer Modal
+        document.getElementById('btnAddCustomer').addEventListener('click', function() {
+            document.getElementById('customerModal').classList.remove('hidden');
+        });
 
-      
-        function addCustomer() {
-            const name = document.getElementById("customerName").value.trim();
-            const phone = document.getElementById("customerPhone").value.trim();
-            const email = document.getElementById("customerEmail").value.trim();
-            const notes = document.getElementById("customerNotes").value.trim();
+        document.getElementById('closeCustomerModal')?.addEventListener('click', function() {
+            document.getElementById('customerModal').classList.add('hidden');
+        });
 
-            if (name && phone && email) {
-                customers.push({ name, phone, email, notes });
-                updateCustomerList();
-                document.getElementById("customerResult").innerHTML = `<div class="alert alert-success">Khách hàng đã được lưu thành công!</div>`;
-                document.getElementById("customerForm").reset();
-            } else {
-                alert("Vui lòng nhập đầy đủ thông tin!");
-            }
-        }
+        // Show/Hide Customer Detail Modal
+        const viewButtons = document.querySelectorAll('.text-primary.hover\\:text-blue-700');
+        viewButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('customerDetailModal').classList.remove('hidden');
+            });
+        });
 
+        document.getElementById('closeDetailModal')?.addEventListener('click', function() {
+            document.getElementById('customerDetailModal').classList.add('hidden');
+        });
+
+        // Show/Hide Delete Modal
+        const deleteButtons = document.querySelectorAll('.text-secondary.hover\\:text-red-700');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('deleteModal').classList.remove('hidden');
+            });
+        });
+
+        document.getElementById('closeDeleteModal')?.addEventListener('click', function() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        });
+
+        // Tab switching in customer detail modal
+        const tabButtons = document.querySelectorAll('#customerDetailModal .border-b-2');
+        const tabContents = document.querySelectorAll('#customerDetailModal > div > div:nth-child(4), #customerDetailModal > div > div:nth-child(5), #customerDetailModal > div > div:nth-child(6)');
         
-        function updateCustomerList() {
-            const customerList = document.getElementById("customerList");
-            customerList.innerHTML = customers.map((customer, index) => `
-                <tr>
-                    <td>${customer.name}</td>
-                    <td>${customer.phone}</td>
-                    <td>${customer.email}</td>
-                    <td>${customer.notes}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" onclick="addToBlacklist(${index})">Thêm vào danh sách đen</button>
-                        <button class="btn btn-danger btn-sm" onclick="removeCustomer(${index})">Xóa</button>
-                    </td>
-                </tr>
-            `).join("");
-        }
-
-      
-        function removeCustomer(index) {
-            customers.splice(index, 1);
-            updateCustomerList();
-        }
-
-   
-        function addToBlacklist(index) {
-            const customer = customers[index];
-            blacklist.push(customer);
-            updateBlacklist();
-            removeCustomer(index);
-        }
-
-   
-        function updateBlacklist() {
-            const blacklistElement = document.getElementById("blacklist");
-            blacklistElement.innerHTML = blacklist.map(customer => `
-                <li class="list-group-item">${customer.name} - ${customer.phone} (${customer.notes})</li>
-            `).join("");
-        }
+        tabButtons.forEach((button, index) => {
+            button.addEventListener('click', function() {
+                // Hide all tab contents
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // Remove active state from all tabs
+                tabButtons.forEach(tab => {
+                    tab.classList.remove('border-primary', 'text-primary');
+                    tab.classList.add('border-transparent', 'text-gray-500');
+                });
+                
+                // Show selected tab content
+                tabContents[index].classList.remove('hidden');
+                
+                // Set active state on selected tab
+                this.classList.remove('border-transparent', 'text-gray-500');
+                this.classList.add('border-primary', 'text-primary');
+            });
+        });
     </script>
 </body>
 </html>
