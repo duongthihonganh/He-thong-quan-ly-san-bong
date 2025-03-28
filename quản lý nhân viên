@@ -3,229 +3,697 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Nhân Viên </title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Hệ thống Quản lý Nhân viên - Cơ sở Thể thao</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1e1e2f;
-            color: #ffffff;
-            margin: 0;
-            padding: 20px;
+        .bg-primary {
+            background-color: #1d4ed8;
         }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            background: #2a2a3b;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        .text-primary {
+            color: #1d4ed8;
         }
-        canvas {
-            max-width: 100%;
+        .border-primary {
+            border-color: #1d4ed8;
         }
-        button {
-            padding: 10px 20px;
-            margin: 10px 0;
-            cursor: pointer;
-            border: none;
-            background: #ff9800;
-            color: white;
-            border-radius: 5px;
-            font-size: 16px;
+        .hover\:bg-blue-600:hover {
+            background-color: #2563eb;
         }
-        button:hover {
-            background: #e68900;
+        .hover\:text-primary:hover {
+            color: #1d4ed8;
         }
-        h2, h3 {
-            color: #ffcc80;
+        .bg-secondary {
+            background-color: #ef4444;
         }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #555;
-            border-radius: 5px;
-            background: #3a3a4a;
-            color: #fff;
+        .hover\:bg-red-700:hover {
+            background-color: #b91c1c;
         }
-        label {
-            color: #ffcc80;
+        .status-on-time {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
         }
-        .table-primary {
-            background-color: #ff9800;
-            color: #fff;
+        .status-late {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+        .status-absent {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        .dot {
+            height: 8px;
+            width: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .dot-green {
+            background-color: #10b981;
+        }
+        .dot-yellow {
+            background-color: #f59e0b;
+        }
+        .dot-red {
+            background-color: #ef4444;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1 class="text-center">Hệ Thống Quản Lý Nhân Viên </h1>
-
-        <!-- Phân Quyền Nhân Viên -->
-        <h2>1. Phân Quyền Nhân Viên</h2>
-        <form id="assignRoleForm">
-            <div class="mb-3">
-                <label for="employeeName">Tên Nhân Viên:</label>
-                <input type="text" id="employeeName" placeholder="Nhập tên nhân viên">
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar - Desktop -->
+        <aside class="w-64 bg-white shadow-md hidden md:block">
+            <div class="p-4 bg-primary text-white">
+                <h1 class="text-xl font-bold">Quản lý Nhân viên</h1>
             </div>
-            <div class="mb-3">
-                <label for="role">Vai Trò:</label>
-                <select id="role">
-                    <option value="Nhân viên">Nhân Viên Thường</option>
-                    <option value="Quản lý">Quản Lý</option>
-                    <option value="Chủ sân">Chủ Sân</option>
-                </select>
-            </div>
-            <button type="button" onclick="assignRole()">Phân Quyền</button>
-        </form>
-        <h3>Danh sách Nhân Viên</h3>
-        <ul id="employeeList" class="list-group">
-            <!-- Danh sách nhân viên -->
-        </ul>
+            <nav class="mt-4">
+                <ul>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 bg-blue-50 text-primary border-l-4 border-primary">
+                            <span class="material-icons mr-2">dashboard</span>
+                            <span>Tổng quan</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">people</span>
+                            <span>Danh sách nhân viên</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">history</span>
+                            <span>Lịch sử hoạt động</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">schedule</span>
+                            <span>Chấm công</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">assignment</span>
+                            <span>Phân công việc</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">assessment</span>
+                            <span>Báo cáo</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">settings</span>
+                            <span>Cài đặt</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
 
-        <!-- Theo Dõi Lịch Sử Hoạt Động -->
-        <h2>2. Theo Dõi Lịch Sử Hoạt Động</h2>
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead class="table-primary">
-                    <tr>
-                        <th>Nhân Viên</th>
-                        <th>Hành Động</th>
-                        <th>Thời Gian</th>
-                    </tr>
-                </thead>
-                <tbody id="activityLog">
-                    <!-- Lịch sử hoạt động -->
-                </tbody>
-            </table>
+        <!-- Main Content -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm">
+                <div class="flex items-center justify-between p-4">
+                    <button class="md:hidden text-gray-600">
+                        <span class="material-icons">menu</span>
+                    </button>
+                    <div class="flex items-center space-x-4">
+                        <button class="text-gray-600">
+                            <span class="material-icons">notifications</span>
+                        </button>
+                        <div class="flex items-center">
+                            <div class="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center">
+                                <span class="material-icons text-sm">person</span>
+                            </div>
+                            <span class="ml-2 text-sm font-medium text-gray-700">Nguyễn Minh Quản lý</span>
+                            <span class="material-icons text-gray-400 ml-1">arrow_drop_down</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="p-6">
+                <!-- Page Header -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800 mb-1">Tổng quan</h1>
+                        <p class="text-gray-600">Thông tin tổng quan về hoạt động của nhân viên</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex space-x-3">
+                        <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center">
+                            <span class="material-icons mr-1 text-gray-500">filter_list</span>
+                            Lọc
+                        </button>
+                        <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center">
+                            <span class="material-icons mr-1 text-gray-500">calendar_today</span>
+                            Tháng 3, 2025
+                        </button>
+                        <button class="bg-primary text-white px-4 py-2 rounded-md flex items-center hover:bg-blue-600 transition-colors">
+                            <span class="material-icons mr-1">download</span>
+                            Tải xuống
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Status Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Tổng nhân viên</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">16</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="material-icons text-primary">people</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-sm text-green-600 flex items-center">
+                                <span class="material-icons text-sm">arrow_upward</span>
+                                <span>2</span>
+                            </span>
+                            <span class="text-sm text-gray-500 ml-2">so với tháng trước</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Tỷ lệ đi làm đúng giờ</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">92%</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                <span class="material-icons text-green-600">check_circle</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-sm text-green-600 flex items-center">
+                                <span class="material-icons text-sm">arrow_upward</span>
+                                <span>5%</span>
+                            </span>
+                            <span class="text-sm text-gray-500 ml-2">so với tháng trước</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Tỷ lệ đi làm muộn</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">6%</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <span class="material-icons text-yellow-600">warning</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-sm text-red-600 flex items-center">
+                                <span class="material-icons text-sm">arrow_upward</span>
+                                <span>2%</span>
+                            </span>
+                            <span class="text-sm text-gray-500 ml-2">so với tháng trước</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Tỷ lệ vắng mặt</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">2%</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                                <span class="material-icons text-red-600">error</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-sm text-green-600 flex items-center">
+                                <span class="material-icons text-sm">arrow_downward</span>
+                                <span>1%</span>
+                            </span>
+                            <span class="text-sm text-gray-500 ml-2">so với tháng trước</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity History Section -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-lg font-bold text-gray-800">Lịch sử hoạt động gần đây</h2>
+                        <a href="#" class="text-primary text-sm flex items-center">
+                            Xem tất cả
+                            <span class="material-icons text-sm ml-1">chevron_right</span>
+                        </a>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Nhân viên
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Thời gian
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Hoạt động
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Chi tiết
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Trạng thái
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                <span class="material-icons text-sm text-gray-500">person</span>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Nguyễn Văn A</div>
+                                                <div class="text-xs text-gray-500">Nhân viên sân 1</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        28/03/2025, 08:30
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Đặt sân</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">
+                                        Đặt sân số 3 cho khách hàng Lê Văn B, thời gian 10:00-12:00, đã thanh toán.
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <span class="px-2 py-1 rounded-full text-xs status-on-time">Thành công</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                <span class="material-icons text-sm text-gray-500">person</span>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Trần Thị B</div>
+                                                <div class="text-xs text-gray-500">Thu ngân</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        28/03/2025, 09:15
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Thanh toán</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">
+                                        Xử lý thanh toán cho dịch vụ thuê áo quần, nước uống, tổng tiền 350.000đ.
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <span class="px-2 py-1 rounded-full text-xs status-on-time">Thành công</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                <span class="material-icons text-sm text-gray-500">person</span>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Hoàng Văn C</div>
+                                                <div class="text-xs text-gray-500">Nhân viên sân 2</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        28/03/2025, 10:20
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Hỗ trợ KH</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">
+                                        Giải quyết khiếu nại về vấn đề thiết bị hư hỏng, đã đổi thiết bị mới.
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <span class="px-2 py-1 rounded-full text-xs status-on-time">Thành công</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                <span class="material-icons text-sm text-gray-500">person</span>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Lê Thị D</div>
+                                                <div class="text-xs text-gray-500">Nhân viên sân 3</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        28/03/2025, 11:45
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Hủy sân</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">
+                                        Hủy đặt sân số 5 cho khách hàng Phạm Văn E, đã hoàn tiền 70%.
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <span class="px-2 py-1 rounded-full text-xs status-late">Cần phê duyệt</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                <span class="material-icons text-sm text-gray-500">person</span>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Phan Văn F</div>
+                                                <div class="text-xs text-gray-500">Nhân viên bảo trì</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        28/03/2025, 14:30
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs">Bảo trì</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">
+                                        Bảo trì thiết bị chiếu sáng sân số 4, đã thay 2 bóng đèn.
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <span class="px-2 py-1 rounded-full text-xs status-on-time">Hoàn thành</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Attendance and Staff Section -->
+                <div class="flex flex-col lg:flex-row gap-6">
+                    <!-- Attendance Section -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 lg:w-1/2">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-lg font-bold text-gray-800">Chuyên cần nhân viên</h2>
+                            <a href="#" class="text-primary text-sm flex items-center">
+                                Chi tiết
+                                <span class="material-icons text-sm ml-1">chevron_right</span>
+                            </a>
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <span class="dot dot-green"></span>
+                                    <span class="text-sm">Đúng giờ</span>
+                                </div>
+                                <span class="text-sm font-medium">92%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 92%"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <span class="dot dot-yellow"></span>
+                                    <span class="text-sm">Đi muộn</span>
+                                </div>
+                                <span class="text-sm font-medium">6%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 6%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <span class="dot dot-red"></span>
+                                    <span class="text-sm">Vắng mặt</span>
+                                </div>
+                                <span class="text-sm font-medium">2%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-red-500 h-2 rounded-full" style="width: 2%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Staff Section -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 lg:w-1/2">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-lg font-bold text-gray-800">Nhân viên xuất sắc</h2>
+                            <a href="#" class="text-primary text-sm flex items-center">
+                                Xem tất cả
+                                <span class="material-icons text-sm ml-1">chevron_right</span>
+                            </a>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                        <span class="material-icons text-primary">person</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium">Nguyễn Văn A</div>
+                                        <div class="text-xs text-gray-500">Nhân viên sân 1</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm font-medium text-gray-900">98%</div>
+                                    <div class="text-xs text-green-600">Chuyên cần</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                        <span class="material-icons text-primary">person</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium">Trần Thị B</div>
+                                        <div class="text-xs text-gray-500">Thu ngân</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm font-medium text-gray-900">97%</div>
+                                    <div class="text-xs text-green-600">Chuyên cần</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                        <span class="material-icons text-primary">person</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium">Lê Thị D</div>
+                                        <div class="text-xs text-gray-500">Nhân viên sân 3</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm font-medium text-gray-900">95%</div>
+                                    <div class="text-xs text-green-600">Chuyên cần</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Task Assignment Modal (Hidden by default) -->
+    <div id="taskModal" class="hidden fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Phân công công việc
+                            </h3>
+                            <div class="mt-4">
+                                <div class="mb-4">
+                                    <label for="employee" class="block text-sm font-medium text-gray-700 mb-1">Nhân viên</label>
+                                    <select id="employee" name="employee" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                                        <option value="">Chọn nhân viên</option>
+                                        <option value="1">Nguyễn Văn A</option>
+                                        <option value="2">Trần Thị B</option>
+                                        <option value="3">Hoàng Văn C</option>
+                                        <option value="4">Lê Thị D</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="task-type" class="block text-sm font-medium text-gray-700 mb-1">Loại công việc</label>
+                                    <select id="task-type" name="task-type" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                                        <option value="">Chọn loại công việc</option>
+                                        <option value="booking">Quản lý đặt sân</option>
+                                        <option value="maintenance">Bảo trì thiết bị</option>
+                                        <option value="customer-service">Hỗ trợ khách hàng</option>
+                                        <option value="cashier">Thu ngân</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Ngày thực hiện</label>
+                                    <input type="date" id="date" name="date" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                                </div>
+
+                                <div class="mb-4 grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="start-time" class="block text-sm font-medium text-gray-700 mb-1">Giờ bắt đầu</label>
+                                        <input type="time" id="start-time" name="start-time" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                                    </div>
+                                    <div>
+                                        <label for="end-time" class="block text-sm font-medium text-gray-700 mb-1">Giờ kết thúc</label>
+                                        <input type="time" id="end-time" name="end-time" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Mô tả công việc</label>
+                                    <textarea id="description" name="description" rows="3" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm" placeholder="Mô tả chi tiết công việc cần thực hiện..."></textarea>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Mức độ ưu tiên</label>
+                                    <div class="flex space-x-4">
+                                        <div class="flex items-center">
+                                            <input id="priority-low" name="priority" type="radio" value="low" class="focus:ring-primary h-4 w-4 text-primary border-gray-300">
+                                            <label for="priority-low" class="ml-2 block text-sm text-gray-700">Thấp</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="priority-medium" name="priority" type="radio" value="medium" class="focus:ring-primary h-4 w-4 text-primary border-gray-300">
+                                            <label for="priority-medium" class="ml-2 block text-sm text-gray-700">Trung bình</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="priority-high" name="priority" type="radio" value="high" class="focus:ring-primary h-4 w-4 text-primary border-gray-300">
+                                            <label for="priority-high" class="ml-2 block text-sm text-gray-700">Cao</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
+                        Phân công
+                    </button>
+                    <button type="button" id="closeTaskModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Hủy
+                    </button>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <!-- Quản Lý Doanh Thu -->
-        <h2>3. Quản Lý Doanh Thu</h2>
-        <label for="date">Chọn ngày:</label>
-        <input type="date" id="date" onchange="fetchDailyReport()">
-        <div id="dailyReport"></div>
-        
-        <label for="timeRange">Chọn phạm vi:</label>
-        <select id="timeRange" onchange="fetchRevenueStats()">
-            <option value="month">Tháng</option>
-            <option value="quarter">Quý</option>
-            <option value="year">Năm</option>
-        </select>
-        <canvas id="revenueChart"></canvas>
+    <!-- Activity Detail Modal (Hidden by default) -->
+    <div id="activityDetailModal" class="hidden fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Chi tiết hoạt động
+                            </h3>
+                            <div class="mt-4 space-y-4">
+                                <div class="flex flex-col space-y-1">
+                                    <span class="text-xs text-gray-500">Nhân viên</span>
+                                    <div class="flex items-center">
+                                        <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+                                            <span class="material-icons text-sm text-gray-500">person</span>
+                                        </div>
+                                        <span class="text-sm font-medium">Nguyễn Văn A (Nhân viên sân 1)</span>
+                                    </div>
+                                </div>
 
-        <h3>Dự Báo Doanh Thu</h3>
-        <button onclick="predictRevenue()">Dự Báo</button>
-        <canvas id="forecastChart"></canvas>
+                                <div class="flex flex-col space-y-1">
+                                    <span class="text-xs text-gray-500">Thời gian</span>
+                                    <span class="text-sm">28/03/2025, 08:30</span>
+                                </div>
+
+                                <div class="flex flex-col space-y-1">
+                                    <span class="text-xs text-gray-500">Loại hoạt động</span>
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs inline-block w-fit">Đặt sân</span>
+                                </div>
+
+                                <div class="flex flex-col space-y-1">
+                                    <span class="text-xs text-gray-500">Chi tiết</span>
+                                    <p class="text-sm">Đặt sân số 3 cho khách hàng Lê Văn B, thời gian 10:00-12:00, đã thanh toán.</p>
+                                </div>
+
+                                <div class="flex flex-col space-y-1">
+                                    <span class="text-xs text-gray-500">Ghi chú bổ sung</span>
+                                    <p class="text-sm">Khách hàng yêu cầu chuẩn bị 2 quả bóng và 4 chai nước. Khách hàng đã đặt cọc 50% và sẽ thanh toán phần còn lại khi đến sân.</p>
+                                </div>
+
+                                <div class="flex flex-col space-y-1">
+                                    <span class="text-xs text-gray-500">Trạng thái</span>
+                                    <span class="px-2 py-1 rounded-full text-xs status-on-time inline-block w-fit">Thành công</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" id="closeActivityDetailModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
+                        Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        const employees = [];
-        const activityLogs = [];
+        // Show/Hide Task Assignment Modal
+        document.getElementById('closeTaskModal')?.addEventListener('click', function() {
+            document.getElementById('taskModal').classList.add('hidden');
+        });
 
-        // Phân quyền nhân viên
-        function assignRole() {
-            const name = document.getElementById("employeeName").value.trim();
-            const role = document.getElementById("role").value;
+        // Show/Hide Activity Detail Modal
+        document.getElementById('closeActivityDetailModal')?.addEventListener('click', function() {
+            document.getElementById('activityDetailModal').classList.add('hidden');
+        });
 
-            if (name) {
-                employees.push({ name, role });
-                updateEmployeeList();
-                logActivity(name, `Phân quyền thành công: ${role}`);
-            } else {
-                alert("Vui lòng nhập tên nhân viên!");
-            }
-        }
-
-        // Cập nhật danh sách nhân viên
-        function updateEmployeeList() {
-            const employeeList = document.getElementById("employeeList");
-            employeeList.innerHTML = employees.map(emp => `
-                <li class="list-group-item">${emp.name} - ${emp.role}</li>
-            `).join("");
-        }
-
-        // Ghi lịch sử hoạt động
-        function logActivity(employee, action) {
-            const timestamp = new Date().toLocaleString();
-            activityLogs.push({ employee, action, timestamp });
-            updateActivityLog();
-        }
-
-        // Hiển thị lịch sử hoạt động
-        function updateActivityLog() {
-            const logTable = document.getElementById("activityLog");
-            logTable.innerHTML = activityLogs.map(log => `
-                <tr>
-                    <td>${log.employee}</td>
-                    <td>${log.action}</td>
-                    <td>${log.timestamp}</td>
-                </tr>
-            `).join("");
-        }
-
-        // Báo cáo doanh thu theo ngày
-        function fetchDailyReport() {
-            const date = document.getElementById("date").value;
-            const dailyReport = document.getElementById("dailyReport");
-            dailyReport.innerHTML = date ? `Báo cáo doanh thu ngày ${date}: Tổng <b>5,000,000 VNĐ</b>` : "Vui lòng chọn ngày.";
-        }
-
-        // Thống kê doanh thu
-        function fetchRevenueStats() {
-            const range = document.getElementById("timeRange").value;
-            const ctx = document.getElementById("revenueChart").getContext("2d");
-            let labels, data;
-
-            if (range === "month") {
-                labels = ["Tháng 1", "Tháng 2", "Tháng 3"];
-                data = [5000000, 7000000, 9000000];
-            } else if (range === "quarter") {
-                labels = ["Quý 1", "Quý 2", "Quý 3"];
-                data = [20000000, 30000000, 25000000];
-            } else {
-                labels = ["2021", "2022", "2023"];
-                data = [100000000, 120000000, 150000000];
-            }
-
-            new Chart(ctx, {
-                type: "line",
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: "Doanh thu",
-                        data: data,
-                        borderColor: "#ffcc80",
-                        backgroundColor: "rgba(255, 204, 128, 0.2)",
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: "top" }
-                    }
-                }
+        // Setup event listeners for activity rows
+        const activityRows = document.querySelectorAll('tbody tr');
+        activityRows.forEach(row => {
+            row.addEventListener('click', function() {
+                document.getElementById('activityDetailModal').classList.remove('hidden');
             });
-        }
+        });
 
-        // Dự báo doanh thu
-        function predictRevenue() {
-            const ctx = document.getElementById("forecastChart").getContext("2d");
-            new Chart(ctx, {
-                type: "bar",
-                data: {
-                    labels: ["Tháng tới", "2 tháng tới", "3 tháng tới"],
-                    datasets: [{
-                        label: "Dự báo doanh thu",
-                        data: [10000000, 12000000, 15000000],
-                        backgroundColor: "#ff9800"
-                    }]
-                }
-            });
+        // Dummy function to show task modal (for demo purposes)
+        function showTaskModal() {
+            document.getElementById('taskModal').classList.remove('hidden');
         }
     </script>
 </body>
