@@ -3,88 +3,2509 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Doanh Thu</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Hệ Thống Báo Cáo và Thống Kê - Quản Lý Sân Bóng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #1e1e2f; margin: 0; padding: 20px; text-align: center; color: #ffffff; }
-        .container { max-width: 900px; margin: auto; background: #2a2a3b; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); display: none; }
-        canvas { max-width: 100%; }
-        button { padding: 10px 20px; margin: 10px 0; cursor: pointer; border: none; background: #ff9800; color: white; border-radius: 5px; font-size: 16px; }
-        button:hover { background: #e68900; }
-        .login-container { text-align: center; margin-top: 50px; background: #2a2a3b; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); max-width: 400px; margin: auto; }
-        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #555; border-radius: 5px; background: #3a3a4a; color: #fff; }
-        h2 { color: #ff9800; }
-        select { padding: 10px; border-radius: 5px; border: 1px solid #555; background: #3a3a4a; color: #fff; }
-        label { color: #ffcc80; }
-    </style>
-</head>
-<body>
-    <div class="login-container">
-        <h2>Đăng Nhập</h2>
-        <input type="text" id="username" placeholder="Tên đăng nhập">
-        <input type="password" id="password" placeholder="Mật khẩu">
-        <button onclick="login()">Đăng Nhập</button>
-        <p id="loginMessage" style="color: red;"></p>
-    </div>
+        :root {
+            --primary-color: #1a5d1a;
+            --primary-dark: #0f3b0f;
+            --primary-light: #c8e6c9;
+            --primary-bg: #e8f5e9;
+            --accent-color: #ff6d00;
+            --accent-dark: #c43c00;
+            --accent-light: #ffab40;
+            --text-dark: #333;
+            --text-light: #757575;
+            --text-white: #fff;
+            --status-green: #43a047;
+            --status-red: #e53935;
+            --status-orange: #f57f17;
+            --status-blue: #1e88e5;
+            --status-purple: #8e24aa;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
 
-    <div class="container" id="dashboard">
-        <h2>Báo Cáo Doanh Thu</h2>
-        <label for="date">Chọn ngày:</label>
-        <input type="date" id="date" onchange="fetchDailyReport()">
-        <div id="dailyReport"></div>
-        
-        <h2>Thống Kê Doanh Thu</h2>
-        <label for="timeRange">Chọn phạm vi:</label>
-        <select id="timeRange" onchange="fetchRevenueStats()">
-            <option value="month">Tháng</option>
-            <option value="quarter">Quý</option>
-            <option value="year">Năm</option>
-        </select>
-        <canvas id="revenueChart"></canvas>
-        
-        <h2>Dự Báo Doanh Thu</h2>
-        <button onclick="predictRevenue()">Dự Báo</button>
-        <canvas id="forecastChart"></canvas>
-    </div>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    <script>
-        function login() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            if (username === "admin" && password === "123456") {
-                document.querySelector(".login-container").style.display = "none";
-                document.getElementById("dashboard").style.display = "block";
-            } else {
-                document.getElementById("loginMessage").innerText = "Tên đăng nhập hoặc mật khẩu không đúng!";
+        body {
+            background-color: #f8f9fa;
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            padding: 20px;
+        }
+
+        .login-form-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .login-logo {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--primary-color);
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .login-form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .login-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(26, 93, 26, 0.2);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .login-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .login-error {
+            color: var(--status-red);
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--text-white);
+            box-shadow: var(--shadow);
+            padding: 0;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .sidebar-header {
+            padding: 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .brand-logo {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .brand-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(to right, #fff, #f0f4c3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .brand-slogan {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .menu-category {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 15px 25px 5px;
+            opacity: 0.6;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: var(--text-white);
+            text-decoration: none;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background-color: var(--accent-color);
+        }
+
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-text {
+            flex: 1;
+        }
+
+        .sidebar-footer {
+            padding: 15px 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            padding: 10px 0;
+            display: none;
+            z-index: 100;
+        }
+
+        .user-dropdown.active {
+            display: block;
+            animation: slideUp 0.3s;
+        }
+
+        .dropdown-item {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+
+        .dropdown-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .logout-item {
+            color: var(--status-red);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        function fetchDailyReport() {
-            const date = document.getElementById("date").value;
-            document.getElementById("dailyReport").innerHTML = `Báo cáo doanh thu ngày ${date}: Tổng 5,000,000 VNĐ`;
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            margin-left: 260px;
+            padding: 20px;
+            transition: var(--transition);
         }
 
-        function fetchRevenueStats() {
-            const ctx = document.getElementById("revenueChart").getContext("2d");
-            new Chart(ctx, {
-                type: "line",
-                data: {
-                    labels: ["Tháng 1", "Tháng 2", "Tháng 3"],
-                    datasets: [{ label: "Doanh thu", data: [5000000, 7000000, 9000000], borderColor: "#ffcc80", fill: false }]
-                }
-            });
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
         }
 
-        function predictRevenue() {
-            const ctx = document.getElementById("forecastChart").getContext("2d");
-            new Chart(ctx, {
-                type: "bar",
-                data: {
-                    labels: ["Tháng tới", "2 tháng tới", "3 tháng tới"],
-                    datasets: [{ label: "Dự báo", data: [10000000, 12000000, 15000000], backgroundColor: "#ff9800" }]
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-button {
+            padding: 10px 15px;
+            background-color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .action-button.primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .action-button.primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .filter-select, .filter-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(26, 93, 26, 0.2);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Report Cards */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .report-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .report-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .report-change {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .change-positive {
+            color: var(--status-green);
+        }
+
+        .change-negative {
+            color: var(--status-red);
+        }
+
+        .report-info {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* Charts Section */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chart-action {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chart-action:hover {
+            color: var(--primary-color);
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            position: relative;
+        }
+
+        /* Tables */
+        .table-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 15px 20px;
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .data-table td {
+            padding: 15px 20px;
+            border-top: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .data-table .status {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-paid {
+            background-color: rgba(67, 160, 71, 0.1);
+            color: var(--status-green);
+        }
+
+        .status-pending {
+            background-color: rgba(245, 127, 23, 0.1);
+            color: var(--status-orange);
+        }
+
+        .status-cancelled {
+            background-color: rgba(229, 57, 53, 0.1);
+            color: var(--status-red);
+        }
+
+        .field-usage {
+            width: 100%;
+            height: 5px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        .usage-bar {
+            height: 100%;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 1000;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .content-area {
+                margin-left: 0;
+            }
+
+            .reports-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toggle-sidebar {
+                display: flex !important;
+            }
+        }
+
+        /* Mobile Toggle Button */
+        .toggle-sidebar {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Tab System for Different Reports */
+        .tabs-container {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .tabs {
+            display: flex;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .tab:hover {
+            color: var(--primary-color);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Export buttons */
+        .export-button {
+            padding: 8px 15px;
+            background-color: var(--primary-bg);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-light);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .export-button:hover {
+            background-color: var(--primary-light);
+        }
+
+        .export-options {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            display: none;
+            z-index: 10;
+        }
+
+        .export-options.active {
+            display: block;
+            animation: fadeIn 0.2s;
+        }
+
+        .export-option {
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .export-option:hover {
+            background-color: #f5f5f5;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-form-container">
+            <div class="login-logo">
+                <i class="fas fa-futbol"></i>
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <h1 class="login-title">Đăng Nhập Hệ Thống Báo Cáo</h1>
+            <form id="loginForm">
+                <div class="login-form-group">
+                    <label for="username" class="login-label">Tên đăng nhập</label>
+                    <input type="text" id="username" class="login-input" placeholder="Nhập tên đăng nhập">
+                </div>
+                <div class="login-form-group">
+                    <label for="password" class="login-label">Mật khẩu</label>
+                    <input type="password" id="password" class="login-input" placeholder="Nhập mật khẩu">
+                </div>
+                <button type="submit" class="login-button">Đăng Nhập</button>
+                <p id="loginError" class="login-error">Tên đăng nhập hoặc mật khẩu không đúng</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="main-container" style="display: none;">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <i class="fas fa-futbol"></i>
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h1 class="brand-text">Quản Lý Sân Bóng</h1>
+                <p class="brand-slogan">Hệ thống báo cáo & thống kê</p>
+            </div>
+
+            <div class="sidebar-menu">
+                <p class="menu-category">Tổng quan</p>
+                <a class="menu-item active" id="dashboardLink">
+                    <div class="menu-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <span class="menu-text">Dashboard</span>
+                </a>
+
+                <p class="menu-category">Báo cáo</p>
+                <a class="menu-item" id="revenueLink">
+                    <div class="menu-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <span class="menu-text">Báo cáo doanh thu</span>
+                </a>
+                <a class="menu-item" id="expenseLink">
+                    <div class="menu-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                    <span class="menu-text">Báo cáo chi phí</span>
+                </a>
+                <a class="menu-item" id="fieldUsageLink">
+                    <div class="menu-icon"><i class="fas fa-chart-line"></i></div>
+                    <span class="menu-text">Thống kê sử dụng sân</span>
+                </a>
+                <a class="menu-item" id="fieldStatusLink">
+                    <div class="menu-icon"><i class="fas fa-tasks"></i></div>
+                    <span class="menu-text">Báo cáo tình trạng sân</span>
+                </a>
+
+                <p class="menu-category">Điều hướng</p>
+                <a class="menu-item" href="dashboard.html">
+                    <div class="menu-icon"><i class="fas fa-home"></i></div>
+                    <span class="menu-text">Trở về trang chủ</span>
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-info" id="userDropdownToggle">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div>
+                        <div class="user-name" id="userName">Admin</div>
+                        <div class="user-role" id="userRole">Quản trị viên</div>
+                    </div>
+                    <i class="fas fa-chevron-up" style="margin-left: auto;"></i>
+
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="dropdown-item">
+                            <i class="fas fa-user-circle"></i> Hồ sơ
+                        </div>
+                        <div class="dropdown-item">
+                            <i class="fas fa-cog"></i> Cài đặt
+                        </div>
+                        <div class="dropdown-item logout-item" id="logoutButton">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area" id="contentArea">
+            <!-- Dashboard Content -->
+            <div id="dashboardContent" class="tab-content active">
+                <div class="content-header">
+                    <h1 class="page-title">Dashboard</h1>
+                    <div class="page-actions">
+                        <button class="action-button">
+                            <i class="fas fa-sync-alt"></i> Làm mới
+                        </button>
+                        <div style="position: relative;">
+                            <button class="action-button" id="exportToggle">
+                                <i class="fas fa-download"></i> Xuất báo cáo
+                            </button>
+                            <div class="export-options" id="exportOptions">
+                                <div class="export-option">
+                                    <i class="fas fa-file-excel"></i> Xuất Excel
+                                </div>
+                                <div class="export-option">
+                                    <i class="fas fa-file-pdf"></i> Xuất PDF
+                                </div>
+                                <div class="export-option">
+                                    <i class="fas fa-print"></i> In báo cáo
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <form class="filter-form">
+                        <div class="filter-group">
+                            <label class="filter-label">Thời gian</label>
+                            <select class="filter-select" id="timeRangeSelect">
+                                <option value="day">Hôm nay</option>
+                                <option value="week">Tuần này</option>
+                                <option value="month" selected>Tháng này</option>
+                                <option value="quarter">Quý này</option>
+                                <option value="year">Năm nay</option>
+                                <option value="custom">Tùy chỉnh</option>
+                            </select>
+                        </div>
+                        <div class="filter-group date-range" style="display: none;">
+                            <label class="filter-label">Từ ngày</label>
+                            <input type="date" class="filter-input" id="startDate">
+                        </div>
+                        <div class="filter-group date-range" style="display: none;">
+                            <label class="filter-label">Đến ngày</label>
+                            <input type="date" class="filter-input" id="endDate">
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Loại sân</label>
+                            <select class="filter-select" id="fieldTypeSelect">
+                                <option value="all">Tất cả sân</option>
+                                <option value="5a">Sân 5 người</option>
+                                <option value="7a">Sân 7 người</option>
+                                <option value="11a">Sân 11 người</option>
+                                <option value="other">Sân khác</option>
+                            </select>
+                        </div>
+                        <div class="filter-buttons">
+                            <button type="button" class="action-button primary">
+                                <i class="fas fa-search"></i> Lọc dữ liệu
+                            </button>
+                            <button type="button" class="action-button">
+                                <i class="fas fa-redo"></i> Đặt lại
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-money-bill-wave"></i> Tổng doanh thu</h3>
+                        <div class="report-value">128.5M</div>
+                        <div class="report-change change-positive">
+                            <i class="fas fa-arrow-up"></i> 12.3% so với tháng trước
+                        </div>
+                        <p class="report-info">Doanh thu tháng 3/2025</p>
+                    </div>
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-file-invoice-dollar"></i> Tổng chi phí</h3>
+                        <div class="report-value">45.2M</div>
+                        <div class="report-change change-negative">
+                            <i class="fas fa-arrow-up"></i> 8.7% so với tháng trước
+                        </div>
+                        <p class="report-info">Chi phí tháng 3/2025</p>
+                    </div>
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-percentage"></i> Lợi nhuận ròng</h3>
+                        <div class="report-value">83.3M</div>
+                        <div class="report-change change-positive">
+                            <i class="fas fa-arrow-up"></i> 14.6% so với tháng trước
+                        </div>
+                        <p class="report-info">Lợi nhuận tháng 3/2025</p>
+                    </div>
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-calendar-check"></i> Số lượt đặt sân</h3>
+                        <div class="report-value">624</div>
+                        <div class="report-change change-positive">
+                            <i class="fas fa-arrow-up"></i> 5.2% so với tháng trước
+                        </div>
+                        <p class="report-info">Lượt đặt sân tháng 3/2025</p>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Biểu đồ doanh thu theo thời gian</h3>
+                            <div class="chart-actions">
+                                <span class="chart-action" data-chart-period="day">Ngày</span>
+                                <span class="chart-action" data-chart-period="week">Tuần</span>
+                                <span class="chart-action active" data-chart-period="month">Tháng</span>
+                                <span class="chart-action" data-chart-period="year">Năm</span>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Phân bổ doanh thu theo loại sân</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="fieldDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3 class="table-title"><i class="fas fa-list"></i> Top 5 sân được đặt nhiều nhất</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tên sân</th>
+                                <th>Loại sân</th>
+                                <th>Số lượt đặt</th>
+                                <th>Doanh thu</th>
+                                <th>Mức độ sử dụng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sân A1</td>
+                                <td>Sân 5 người</td>
+                                <td>86</td>
+                                <td>17.2M</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 85%;"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sân B2</td>
+                                <td>Sân 7 người</td>
+                                <td>72</td>
+                                <td>16.5M</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 78%;"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sân C1</td>
+                                <td>Sân 11 người</td>
+                                <td>65</td>
+                                <td>22.8M</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 72%;"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sân A2</td>
+                                <td>Sân 5 người</td>
+                                <td>63</td>
+                                <td>12.6M</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 65%;"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sân D1</td>
+                                <td>Sân cầu lông</td>
+                                <td>58</td>
+                                <td>8.7M</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 58%;"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Revenue Report Content -->
+            <div id="revenueContent" class="tab-content">
+                <div class="content-header">
+                    <h1 class="page-title">Báo Cáo Doanh Thu</h1>
+                    <div class="page-actions">
+                        <button class="action-button">
+                            <i class="fas fa-sync-alt"></i> Làm mới
+                        </button>
+                        <div style="position: relative;">
+                            <button class="action-button" id="exportRevenueToggle">
+                                <i class="fas fa-download"></i> Xuất báo cáo
+                            </button>
+                            <div class="export-options" id="exportRevenueOptions">
+                                <div class="export-option">
+                                    <i class="fas fa-file-excel"></i> Xuất Excel
+                                </div>
+                                <div class="export-option">
+                                    <i class="fas fa-file-pdf"></i> Xuất PDF
+                                </div>
+                                <div class="export-option">
+                                    <i class="fas fa-print"></i> In báo cáo
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <form class="filter-form">
+                        <div class="filter-group">
+                            <label class="filter-label">Thời gian</label>
+                            <select class="filter-select">
+                                <option value="day">Ngày</option>
+                                <option value="week">Tuần</option>
+                                <option value="month" selected>Tháng</option>
+                                <option value="quarter">Quý</option>
+                                <option value="year">Năm</option>
+                                <option value="custom">Tùy chỉnh</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Loại sân</label>
+                            <select class="filter-select">
+                                <option value="all">Tất cả sân</option>
+                                <option value="5a">Sân 5 người</option>
+                                <option value="7a">Sân 7 người</option>
+                                <option value="11a">Sân 11 người</option>
+                                <option value="other">Sân khác</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Hình thức thuê</label>
+                            <select class="filter-select">
+                                <option value="all">Tất cả</option>
+                                <option value="hourly">Theo giờ</option>
+                                <option value="session">Theo buổi</option>
+                                <option value="monthly">Theo tháng</option>
+                            </select>
+                        </div>
+                        <div class="filter-buttons">
+                            <button type="button" class="action-button primary">
+                                <i class="fas fa-search"></i> Lọc dữ liệu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="tabs-container">
+                    <div class="tabs">
+                        <div class="tab active" data-revenue-tab="overview">Tổng quan</div>
+                        <div class="tab" data-revenue-tab="detail">Chi tiết theo loại sân</div>
+                        <div class="tab" data-revenue-tab="peaktime">Thời gian cao điểm/thấp điểm</div>
+                        <div class="tab" data-revenue-tab="booking">Hình thức thuê</div>
+                        <div class="tab" data-revenue-tab="services">Dịch vụ kèm theo</div>
+                    </div>
+                </div>
+
+                <div class="revenue-tab-content active" id="revenueOverview">
+                    <div class="reports-grid">
+                        <div class="report-card">
+                            <h3 class="report-title"><i class="fas fa-money-bill-wave"></i> Tổng doanh thu</h3>
+                            <div class="report-value">128.5M</div>
+                            <div class="report-change change-positive">
+                                <i class="fas fa-arrow-up"></i> 12.3% so với tháng trước
+                            </div>
+                            <p class="report-info">Doanh thu tháng 3/2025</p>
+                        </div>
+                        <div class="report-card">
+                            <h3 class="report-title"><i class="fas fa-calendar-check"></i> Số lượt đặt sân</h3>
+                            <div class="report-value">624</div>
+                            <div class="report-change change-positive">
+                                <i class="fas fa-arrow-up"></i> 5.2% so với tháng trước
+                            </div>
+                            <p class="report-info">Lượt đặt sân tháng 3/2025</p>
+                        </div>
+                        <div class="report-card">
+                            <h3 class="report-title"><i class="fas fa-stopwatch"></i> Giờ cao điểm</h3>
+                            <div class="report-value">18:00 - 21:00</div>
+                            <div class="report-change">
+                                <i class="fas fa-users"></i> 78% lượt đặt sân
+                            </div>
+                            <p class="report-info">Thời gian đông nhất tháng 3/2025</p>
+                        </div>
+                        <div class="report-card">
+                            <h3 class="report-title"><i class="fas fa-hand-holding-usd"></i> Doanh thu TB/lượt</h3>
+                            <div class="report-value">206K</div>
+                            <div class="report-change change-positive">
+                                <i class="fas fa-arrow-up"></i> 3.8% so với tháng trước
+                            </div>
+                            <p class="report-info">Doanh thu trung bình/lượt</p>
+                        </div>
+                    </div>
+
+                    <div class="charts-container">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Biểu đồ doanh thu theo thời gian</h3>
+                                <div class="chart-actions">
+                                    <span class="chart-action" data-chart-period="day">Ngày</span>
+                                    <span class="chart-action" data-chart-period="week">Tuần</span>
+                                    <span class="chart-action active" data-chart-period="month">Tháng</span>
+                                    <span class="chart-action" data-chart-period="year">Năm</span>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="revenueTimeChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Phân bổ doanh thu theo loại sân</h3>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="revenueDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h3 class="table-title"><i class="fas fa-list"></i> Top doanh thu theo ngày</h3>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Ngày</th>
+                                    <th>Số lượt đặt</th>
+                                    <th>Doanh thu</th>
+                                    <th>Tỷ lệ hoàn thành</th>
+                                    <th>Chi tiết</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>28/03/2025 (Thứ 6)</td>
+                                    <td>35</td>
+                                    <td>7.2M</td>
+                                    <td><span class="status status-paid">94%</span></td>
+                                    <td><i class="fas fa-eye" style="cursor: pointer; color: var(--primary-color);"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>21/03/2025 (Thứ 6)</td>
+                                    <td>32</td>
+                                    <td>6.8M</td>
+                                    <td><span class="status status-paid">98%</span></td>
+                                    <td><i class="fas fa-eye" style="cursor: pointer; color: var(--primary-color);"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>23/03/2025 (Chủ nhật)</td>
+                                    <td>29</td>
+                                    <td>5.9M</td>
+                                    <td><span class="status status-paid">100%</span></td>
+                                    <td><i class="fas fa-eye" style="cursor: pointer; color: var(--primary-color);"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>14/03/2025 (Thứ 6)</td>
+                                    <td>28</td>
+                                    <td>5.8M</td>
+                                    <td><span class="status status-paid">92%</span></td>
+                                    <td><i class="fas fa-eye" style="cursor: pointer; color: var(--primary-color);"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>15/03/2025 (Thứ 7)</td>
+                                    <td>27</td>
+                                    <td>5.6M</td>
+                                    <td><span class="status status-pending">86%</span></td>
+                                    <td><i class="fas fa-eye" style="cursor: pointer; color: var(--primary-color);"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expense Report Content -->
+            <div id="expenseContent" class="tab-content">
+                <div class="content-header">
+                    <h1 class="page-title">Báo Cáo Chi Phí</h1>
+                    <div class="page-actions">
+                        <button class="action-button">
+                            <i class="fas fa-sync-alt"></i> Làm mới
+                        </button>
+                        <div style="position: relative;">
+                            <button class="action-button" id="exportExpenseToggle">
+                                <i class="fas fa-download"></i> Xuất báo cáo
+                            </button>
+                            <div class="export-options" id="exportExpenseOptions">
+                                <div class="export-option">
+                                    <i class="fas fa-file-excel"></i> Xuất Excel
+                                </div>
+                                <div class="export-option">
+                                    <i class="fas fa-file-pdf"></i> Xuất PDF
+                                </div>
+                                <div class="export-option">
+                                    <i class="fas fa-print"></i> In báo cáo
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <form class="filter-form">
+                        <div class="filter-group">
+                            <label class="filter-label">Thời gian</label>
+                            <select class="filter-select">
+                                <option value="month" selected>Tháng</option>
+                                <option value="quarter">Quý</option>
+                                <option value="year">Năm</option>
+                                <option value="custom">Tùy chỉnh</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Loại chi phí</label>
+                            <select class="filter-select">
+                                <option value="all">Tất cả chi phí</option>
+                                <option value="utilities">Điện & nước</option>
+                                <option value="maintenance">Bảo trì</option>
+                                <option value="salary">Lương nhân viên</option>
+                                <option value="inventory">Nhập hàng</option>
+                                <option value="marketing">Quảng cáo & tiếp thị</option>
+                            </select>
+                        </div>
+                        <div class="filter-buttons">
+                            <button type="button" class="action-button primary">
+                                <i class="fas fa-search"></i> Lọc dữ liệu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-file-invoice-dollar"></i> Tổng chi phí</h3>
+                        <div class="report-value">45.2M</div>
+                        <div class="report-change change-negative">
+                            <i class="fas fa-arrow-up"></i> 8.7% so với tháng trước
+                        </div>
+                        <p class="report-info">Chi phí tháng 3/2025</p>
+                    </div>
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-lightbulb"></i> Điện & nước</h3>
+                        <div class="report-value">12.8M</div>
+                        <div class="report-change change-negative">
+                            <i class="fas fa-arrow-up"></i> 5.2% so với tháng trước
+                        </div>
+                        <p class="report-info">Chi phí điện nước tháng 3/2025</p>
+                    </div>
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-tools"></i> Bảo trì sân</h3>
+                        <div class="report-value">8.5M</div>
+                        <div class="report-change change-positive">
+                            <i class="fas fa-arrow-down"></i> 3.8% so với tháng trước
+                        </div>
+                        <p class="report-info">Chi phí bảo trì tháng 3/2025</p>
+                    </div>
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-user-tie"></i> Lương nhân viên</h3>
+                        <div class="report-value">18.3M</div>
+                        <div class="report-change">
+                            <i class="fas fa-equals"></i> Không đổi so với tháng trước
+                        </div>
+                        <p class="report-info">Chi phí nhân sự tháng 3/2025</p>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Biểu đồ chi phí theo thời gian</h3>
+                            <div class="chart-actions">
+                                <span class="chart-action" data-chart-period="day">Ngày</span>
+                                <span class="chart-action" data-chart-period="week">Tuần</span>
+                                <span class="chart-action active" data-chart-period="month">Tháng</span>
+                                <span class="chart-action" data-chart-period="year">Năm</span>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="expenseTimeChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Phân bổ chi phí theo loại</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="expenseDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">So sánh doanh thu và chi phí</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="profitChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Lợi nhuận ròng</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="netProfitChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3 class="table-title"><i class="fas fa-list"></i> Chi tiết chi phí</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Mô tả</th>
+                                <th>Loại chi phí</th>
+                                <th>Số tiền</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>25/03/2025</td>
+                                <td>Tiền điện tháng 3</td>
+                                <td>Điện & nước</td>
+                                <td>8.5M</td>
+                                <td><span class="status status-paid">Đã thanh toán</span></td>
+                            </tr>
+                            <tr>
+                                <td>25/03/2025</td>
+                                <td>Tiền nước tháng 3</td>
+                                <td>Điện & nước</td>
+                                <td>4.3M</td>
+                                <td><span class="status status-paid">Đã thanh toán</span></td>
+                            </tr>
+                            <tr>
+                                <td>28/03/2025</td>
+                                <td>Lương nhân viên tháng 3</td>
+                                <td>Lương nhân viên</td>
+                                <td>18.3M</td>
+                                <td><span class="status status-pending">Chờ thanh toán</span></td>
+                            </tr>
+                            <tr>
+                                <td>15/03/2025</td>
+                                <td>Bảo trì sân A1 & A2</td>
+                                <td>Bảo trì sân</td>
+                                <td>5.2M</td>
+                                <td><span class="status status-paid">Đã thanh toán</span></td>
+                            </tr>
+                            <tr>
+                                <td>20/03/2025</td>
+                                <td>Bảo trì sân B1</td>
+                                <td>Bảo trì sân</td>
+                                <td>3.3M</td>
+                                <td><span class="status status-paid">Đã thanh toán</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Field Usage Statistics Content -->
+            <div id="fieldUsageContent" class="tab-content">
+                <div class="content-header">
+                    <h1 class="page-title">Thống Kê Sử Dụng Sân</h1>
+                    <div class="page-actions">
+                        <button class="action-button">
+                            <i class="fas fa-sync-alt"></i> Làm mới
+                        </button>
+                        <div style="position: relative;">
+                            <button class="action-button" id="exportUsageToggle">
+                                <i class="fas fa-download"></i> Xuất báo cáo
+                            </button>
+                            <div class="export-options" id="exportUsageOptions">
+                                <div class="export-option">
+                                    <i class="fas fa-file-excel"></i> Xuất Excel
+                                </div>
+                                <div class="export-option">
+                                    <i class="fas fa-file-pdf"></i> Xuất PDF
+                                </div>
+                                <div class="export-option">
+                                    <i class="fas fa-print"></i> In báo cáo
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <form class="filter-form">
+                        <div class="filter-group">
+                            <label class="filter-label">Thời gian</label>
+                            <select class="filter-select">
+                                <option value="week">Tuần</option>
+                                <option value="month" selected>Tháng</option>
+                                <option value="quarter">Quý</option>
+                                <option value="year">Năm</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Loại sân</label>
+                            <select class="filter-select">
+                                <option value="all">Tất cả sân</option>
+                                <option value="5a">Sân 5 người</option>
+                                <option value="7a">Sân 7 người</option>
+                                <option value="11a">Sân 11 người</option>
+                                <option value="other">Sân khác</option>
+                            </select>
+                        </div>
+                        <div class="filter-buttons">
+                            <button type="button" class="action-button primary">
+                                <i class="fas fa-search"></i> Lọc dữ liệu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-calendar-check"></i> Tổng lượt đặt sân</h3>
+                        <div class="report-value">624</div>
+                        <div class="report-change change-positive">
+                            <i class="fas fa-arrow-up"></i> 5.2% so với tháng trước
+                        </div>
+                        <p class="report-info">Lượt đặt sân tháng 3/2025</p>
+                    </div>
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-stopwatch"></i> Giờ cao điểm</h3>
+                        <div class="report-value">18:00 - 21:00</div>
+                        <div class="report-change">
+                            <i class="fas fa-users"></i> 78% lượt đặt sân
+                        </div>
+                        <p class="report-info">Thời gian đông nhất</p>
+                    </div>
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-stopwatch"></i> Giờ thấp điểm</h3>
+                        <div class="report-value">09:00 - 14:00</div>
+                        <div class="report-change">
+                            <i class="fas fa-users"></i> 22% lượt đặt sân
+                        </div>
+                        <p class="report-info">Thời gian ít khách nhất</p>
+                    </div>
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-calendar-day"></i> Ngày đông nhất</h3>
+                        <div class="report-value">Thứ 6, Thứ 7</div>
+                        <div class="report-change">
+                            <i class="fas fa-users"></i> 48% lượt đặt sân
+                        </div>
+                        <p class="report-info">Ngày đông nhất trong tuần</p>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Biểu đồ sử dụng sân theo giờ</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="usageByHourChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Biểu đồ sử dụng sân theo ngày</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="usageByDayChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Biểu đồ sử dụng theo loại sân</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="usageByFieldTypeChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Tỷ lệ đặt sân cao điểm/thấp điểm</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="peakTimeDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3 class="table-title"><i class="fas fa-list"></i> Chi tiết sử dụng sân</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tên sân</th>
+                                <th>Loại sân</th>
+                                <th>Số giờ sử dụng</th>
+                                <th>Tỷ lệ sử dụng</th>
+                                <th>Giờ cao điểm</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sân A1</td>
+                                <td>Sân 5 người</td>
+                                <td>225 giờ</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 85%;"></div>
+                                    </div>
+                                </td>
+                                <td>19:00 - 21:00</td>
+                            </tr>
+                            <tr>
+                                <td>Sân B2</td>
+                                <td>Sân 7 người</td>
+                                <td>180 giờ</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 78%;"></div>
+                                    </div>
+                                </td>
+                                <td>18:00 - 21:00</td>
+                            </tr>
+                            <tr>
+                                <td>Sân C1</td>
+                                <td>Sân 11 người</td>
+                                <td>165 giờ</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 72%;"></div>
+                                    </div>
+                                </td>
+                                <td>18:00 - 20:00</td>
+                            </tr>
+                            <tr>
+                                <td>Sân A2</td>
+                                <td>Sân 5 người</td>
+                                <td>160 giờ</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 65%;"></div>
+                                    </div>
+                                </td>
+                                <td>19:00 - 21:00</td>
+                            </tr>
+                            <tr>
+                                <td>Sân D1</td>
+                                <td>Sân cầu lông</td>
+                                <td>140 giờ</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 58%;"></div>
+                                    </div>
+                                </td>
+                                <td>17:00 - 19:00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Field Status Report Content -->
+            <div id="fieldStatusContent" class="tab-content">
+                <div class="content-header">
+                    <h1 class="page-title">Báo Cáo Tình Trạng Sân</h1>
+                    <div class="page-actions">
+                        <button class="action-button">
+                            <i class="fas fa-sync-alt"></i> Làm mới
+                        </button>
+                        <div style="position: relative;">
+                            <button class="action-button" id="exportStatusToggle">
+                                <i class="fas fa-download"></i> Xuất báo cáo
+                            </button>
+                            <div class="export-options" id="exportStatusOptions">
+                                <div class="export-option">
+                                    <i class="fas fa-file-excel"></i> Xuất Excel
+                                </div>
+                                <div class="export-option">
+                                    <i class="fas fa-file-pdf"></i> Xuất PDF
+                                </div>
+                                <div class="export-option">
+                                    <i class="fas fa-print"></i> In báo cáo
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <form class="filter-form">
+                        <div class="filter-group">
+                            <label class="filter-label">Thời gian</label>
+                            <select class="filter-select">
+                                <option value="month" selected>Tháng</option>
+                                <option value="quarter">Quý</option>
+                                <option value="year">Năm</option>
+                                <option value="all">Tất cả</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Loại sân</label>
+                            <select class="filter-select">
+                                <option value="all">Tất cả sân</option>
+                                <option value="5a">Sân 5 người</option>
+                                <option value="7a">Sân 7 người</option>
+                                <option value="11a">Sân 11 người</option>
+                                <option value="other">Sân khác</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Tình trạng</label>
+                            <select class="filter-select">
+                                <option value="all">Tất cả</option>
+                                <option value="good">Tốt</option>
+                                <option value="maintenance">Đang bảo trì</option>
+                                <option value="needMaintenance">Cần bảo trì</option>
+                            </select>
+                        </div>
+                        <div class="filter-buttons">
+                            <button type="button" class="action-button primary">
+                                <i class="fas fa-search"></i> Lọc dữ liệu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-tools"></i> Số lần bảo trì</h3>
+                        <div class="report-value">18</div>
+                        <div class="report-change change-negative">
+                            <i class="fas fa-arrow-up"></i> 12.5% so với tháng trước
+                        </div>
+                        <p class="report-info">Lần bảo trì tháng 3/2025</p>
+                    </div>
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-file-invoice-dollar"></i> Chi phí bảo trì</h3>
+                        <div class="report-value">8.5M</div>
+                        <div class="report-change change-positive">
+                            <i class="fas fa-arrow-down"></i> 3.8% so với tháng trước
+                        </div>
+                        <p class="report-info">Chi phí bảo trì tháng 3/2025</p>
+                    </div>
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-exclamation-triangle"></i> Sân cần bảo trì</h3>
+                        <div class="report-value">2</div>
+                        <div class="report-change">
+                            <i class="fas fa-tools"></i> Đã lên lịch
+                        </div>
+                        <p class="report-info">Sân B2, Sân D2</p>
+                    </div>
+                    <div class="report-card">
+                        <h3 class="report-title"><i class="fas fa-clock"></i> Thời gian bảo trì TB</h3>
+                        <div class="report-value">4.5 giờ</div>
+                        <div class="report-change change-positive">
+                            <i class="fas fa-arrow-down"></i> 0.5 giờ so với tháng trước
+                        </div>
+                        <p class="report-info">Thời gian bảo trì trung bình</p>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Lịch sử bảo trì theo thời gian</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="maintenanceHistoryChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Phân bổ bảo trì theo loại sân</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="maintenanceByFieldTypeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3 class="table-title"><i class="fas fa-list"></i> Sân ít được sử dụng</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tên sân</th>
+                                <th>Loại sân</th>
+                                <th>Số lượt đặt</th>
+                                <th>Tỷ lệ sử dụng</th>
+                                <th>Gợi ý</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sân E2</td>
+                                <td>Sân tennis</td>
+                                <td>12</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 18%;"></div>
+                                    </div>
+                                </td>
+                                <td>Giảm giá 20% vào giờ thấp điểm</td>
+                            </tr>
+                            <tr>
+                                <td>Sân D2</td>
+                                <td>Sân cầu lông</td>
+                                <td>18</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 25%;"></div>
+                                    </div>
+                                </td>
+                                <td>Thêm khuyến mãi đặt gói tháng</td>
+                            </tr>
+                            <tr>
+                                <td>Sân B3</td>
+                                <td>Sân 7 người</td>
+                                <td>22</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 32%;"></div>
+                                    </div>
+                                </td>
+                                <td>Tổ chức giải đấu nhỏ định kỳ</td>
+                            </tr>
+                            <tr>
+                                <td>Sân C3</td>
+                                <td>Sân 11 người</td>
+                                <td>24</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 38%;"></div>
+                                    </div>
+                                </td>
+                                <td>Chuyển đổi mục đích sử dụng</td>
+                            </tr>
+                            <tr>
+                                <td>Sân A4</td>
+                                <td>Sân 5 người</td>
+                                <td>28</td>
+                                <td>
+                                    <div class="field-usage">
+                                        <div class="usage-bar" style="width: 42%;"></div>
+                                    </div>
+                                </td>
+                                <td>Nâng cấp chất lượng sân</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3 class="table-title"><i class="fas fa-history"></i> Lịch sử bảo trì</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Sân</th>
+                                <th>Nội dung bảo trì</th>
+                                <th>Chi phí</th>
+                                <th>Thời gian (giờ)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>15/03/2025</td>
+                                <td>Sân A1</td>
+                                <td>Thay thảm cỏ nhân tạo</td>
+                                <td>3.5M</td>
+                                <td>8</td>
+                            </tr>
+                            <tr>
+                                <td>15/03/2025</td>
+                                <td>Sân A2</td>
+                                <td>Sửa lưới và đèn chiếu sáng</td>
+                                <td>1.7M</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td>18/03/2025</td>
+                                <td>Sân C2</td>
+                                <td>Sơn vạch kẻ sân</td>
+                                <td>0.8M</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>20/03/2025</td>
+                                <td>Sân B1</td>
+                                <td>Sửa hệ thống thoát nước</td>
+                                <td>1.2M</td>
+                                <td>5</td>
+                            </tr>
+                            <tr>
+                                <td>22/03/2025</td>
+                                <td>Sân D1</td>
+                                <td>Thay lưới và dụng cụ</td>
+                                <td>1.3M</td>
+                                <td>2</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toggle-sidebar" id="toggleSidebar">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables
+            const loginPage = document.getElementById('loginPage');
+            const mainApp = document.getElementById('mainApp');
+            const loginForm = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
+            const sidebar = document.getElementById('sidebar');
+            const contentArea = document.getElementById('contentArea');
+            const toggleSidebar = document.getElementById('toggleSidebar');
+            const userDropdownToggle = document.getElementById('userDropdownToggle');
+            const userDropdown = document.getElementById('userDropdown');
+            const logoutButton = document.getElementById('logoutButton');
+
+            // Check if user is logged in
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+            if (isLoggedIn) {
+                showApp();
+                updateUserInfo(sessionStorage.getItem('username'), sessionStorage.getItem('role'));
+            }
+
+            // Login Form Submission
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                // Simple authentication (in a real app, this would be done server-side)
+                if ((username === 'admin' && password === 'admin123') || 
+                    (username === 'owner' && password === 'owner123')) {
+                    // Login successful
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    sessionStorage.setItem('username', username);
+                    sessionStorage.setItem('role', username === 'admin' ? 'admin' : 'owner');
+                    showApp();
+                    updateUserInfo(username, username === 'admin' ? 'admin' : 'owner');
+                } else {
+                    // Login failed
+                    loginError.style.display = 'block';
                 }
             });
-        }
+
+            // Show main app
+            function showApp() {
+                loginPage.style.display = 'none';
+                mainApp.style.display = 'flex';
+                initializeCharts();
+            }
+
+            // Update user info
+            function updateUserInfo(username, role) {
+                const userAvatar = document.getElementById('userAvatar');
+                const userName = document.getElementById('userName');
+                const userRole = document.getElementById('userRole');
+
+                userAvatar.textContent = username.charAt(0).toUpperCase();
+                userName.textContent = username.charAt(0).toUpperCase() + username.slice(1);
+                userRole.textContent = role === 'admin' ? 'Quản trị viên' : 'Chủ sân';
+            }
+
+            // Toggle sidebar on mobile
+            toggleSidebar.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+            });
+
+            // User dropdown
+            userDropdownToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('active');
+            });
+
+            document.addEventListener('click', function() {
+                userDropdown.classList.remove('active');
+                document.getElementById('exportOptions')?.classList.remove('active');
+                document.getElementById('exportRevenueOptions')?.classList.remove('active');
+                document.getElementById('exportExpenseOptions')?.classList.remove('active');
+                document.getElementById('exportUsageOptions')?.classList.remove('active');
+                document.getElementById('exportStatusOptions')?.classList.remove('active');
+            });
+
+            // Logout
+            logoutButton.addEventListener('click', function() {
+                sessionStorage.removeItem('isLoggedIn');
+                sessionStorage.removeItem('username');
+                sessionStorage.removeItem('role');
+                loginPage.style.display = 'flex';
+                mainApp.style.display = 'none';
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                loginError.style.display = 'none';
+            });
+
+            // Tab Navigation
+            const contentTabs = [
+                { id: 'dashboardContent', link: 'dashboardLink' },
+                { id: 'revenueContent', link: 'revenueLink' },
+                { id: 'expenseContent', link: 'expenseLink' },
+                { id: 'fieldUsageContent', link: 'fieldUsageLink' },
+                { id: 'fieldStatusContent', link: 'fieldStatusLink' }
+            ];
+
+            contentTabs.forEach(tab => {
+                document.getElementById(tab.link).addEventListener('click', function() {
+                    // Hide all content
+                    contentTabs.forEach(t => {
+                        document.getElementById(t.id).classList.remove('active');
+                        document.getElementById(t.link).classList.remove('active');
+                    });
+
+                    // Show selected content
+                    document.getElementById(tab.id).classList.add('active');
+                    document.getElementById(tab.link).classList.add('active');
+                });
+            });
+
+            // Export dropdown toggles
+            const exportToggles = [
+                { toggle: 'exportToggle', options: 'exportOptions' },
+                { toggle: 'exportRevenueToggle', options: 'exportRevenueOptions' },
+                { toggle: 'exportExpenseToggle', options: 'exportExpenseOptions' },
+                { toggle: 'exportUsageToggle', options: 'exportUsageOptions' },
+                { toggle: 'exportStatusToggle', options: 'exportStatusOptions' }
+            ];
+
+            exportToggles.forEach(item => {
+                const toggleElem = document.getElementById(item.toggle);
+                const optionsElem = document.getElementById(item.options);
+                
+                if (toggleElem && optionsElem) {
+                    toggleElem.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        optionsElem.classList.toggle('active');
+                    });
+                }
+            });
+
+            // Time range select
+            const timeRangeSelect = document.getElementById('timeRangeSelect');
+            const dateRangeFields = document.querySelectorAll('.date-range');
+
+            timeRangeSelect.addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    dateRangeFields.forEach(field => field.style.display = 'block');
+                } else {
+                    dateRangeFields.forEach(field => field.style.display = 'none');
+                }
+            });
+
+            // Revenue report tabs
+            const revenueTabs = document.querySelectorAll('[data-revenue-tab]');
+            revenueTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    revenueTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    // In a real app, you would show the corresponding content here
+                    if (this.getAttribute('data-revenue-tab') !== 'overview') {
+                        alert('Chức năng này sẽ được cập nhật trong phiên bản tiếp theo.');
+                        document.querySelector('[data-revenue-tab="overview"]').classList.add('active');
+                        this.classList.remove('active');
+                    }
+                });
+            });
+
+            // Initialize Charts
+            function initializeCharts() {
+                // Revenue Chart
+                const revenueChart = new Chart(
+                    document.getElementById('revenueChart'),
+                    {
+                        type: 'line',
+                        data: {
+                            labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+                            datasets: [{
+                                label: 'Doanh thu (triệu VND)',
+                                data: [95, 105, 128.5, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                borderColor: '#1a5d1a',
+                                backgroundColor: 'rgba(26, 93, 26, 0.1)',
+                                tension: 0.3,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    }
+                );
+
+                // Field Distribution Chart
+                const fieldDistributionChart = new Chart(
+                    document.getElementById('fieldDistributionChart'),
+                    {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Sân 5 người', 'Sân 7 người', 'Sân 11 người', 'Sân khác'],
+                            datasets: [{
+                                data: [40, 25, 20, 15],
+                                backgroundColor: [
+                                    '#43a047',
+                                    '#1e88e5',
+                                    '#f57f17',
+                                    '#8e24aa'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                }
+                            }
+                        }
+                    }
+                );
+
+                // Additional charts for other tabs would be initialized here
+                // These are simplified examples
+                if (document.getElementById('revenueTimeChart')) {
+                    new Chart(
+                        document.getElementById('revenueTimeChart'),
+                        {
+                            type: 'line',
+                            data: {
+                                labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+                                datasets: [{
+                                    label: 'Doanh thu (triệu VND)',
+                                    data: [95, 105, 128.5, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                    borderColor: '#1a5d1a',
+                                    backgroundColor: 'rgba(26, 93, 26, 0.1)',
+                                    tension: 0.3,
+                                    fill: true
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false
+                            }
+                        }
+                    );
+                }
+
+                if (document.getElementById('revenueDistributionChart')) {
+                    new Chart(
+                        document.getElementById('revenueDistributionChart'),
+                        {
+                            type: 'doughnut',
+                            data: {
+                                labels: ['Sân 5 người', 'Sân 7 người', 'Sân 11 người', 'Sân khác'],
+                                datasets: [{
+                                    data: [40, 25, 20, 15],
+                                    backgroundColor: [
+                                        '#43a047',
+                                        '#1e88e5',
+                                        '#f57f17',
+                                        '#8e24aa'
+                                    ]
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false
+                            }
+                        }
+                    );
+                }
+
+                if (document.getElementById('expenseTimeChart')) {
+                    new Chart(
+                        document.getElementById('expenseTimeChart'),
+                        {
+                            type: 'line',
+                            data: {
+                                labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+                                datasets: [{
+                                    label: 'Chi phí (triệu VND)',
+                                    data: [38, 41.5, 45.2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                    borderColor: '#e53935',
+                                    backgroundColor: 'rgba(229, 57, 53, 0.1)',
+                                    tension: 0.3,
+                                    fill: true
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false
+                            }
+                        }
+                    );
+                }
+
+                if (document.getElementById('expenseDistributionChart')) {
+                    new Chart(
+                        document.getElementById('expenseDistributionChart'),
+                        {
+                            type: 'pie',
+                            data: {
+                                labels: ['Điện & nước', 'Bảo trì sân', 'Lương nhân viên', 'Quảng cáo & tiếp thị', 'Khác'],
+                                datasets: [{
+                                    data: [28, 19, 40, 8, 5],
+                                    backgroundColor: [
+                                        '#1e88e5',
+                                        '#f57f17',
+                                        '#43a047',
+                                        '#8e24aa',
+                                        '#757575'
+                                    ]
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false
+                            }
+                        }
+                    );
+                }
+
+                if (document.getElementById('profitChart')) {
+                    new Chart(
+                        document.getElementById('profitChart'),
+                        {
+                            type: 'bar',
+                            data: {
+                                labels: ['T1', 'T2', 'T3'],
+                                datasets: [
+                                    {
+                                        label: 'Doanh thu',
+                                        data: [95, 105, 128.5],
+                                        backgroundColor: 'rgba(67, 160, 71, 0.7)'
+                                    },
+                                    {
+                                        label: 'Chi phí',
+                                        data: [38, 41.5, 45.2],
+                                        backgroundColor: 'rgba(229, 57, 53, 0.7)'
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    x: {
+                                        stacked: false
+                                    },
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        }
+                    );
+                }
+
+                if (document.getElementById('netProfitChart')) {
+                    new Chart(
+                        document.getElementById('netProfitChart'),
+                        {
+                            type: 'line',
+                            data: {
+                                labels: ['T1', 'T2', 'T3'],
+                                datasets: [{
+                                    label: 'Lợi nhuận ròng (triệu VND)',
+                                    data: [57, 63.5, 83.3],
+                                    borderColor: '#1a5d1a',
+                                    backgroundColor: 'rgba(26, 93, 26, 0.1)',
+                                    tension: 0.3,
+                                    fill: true
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false
+                            }
+                        }
+                    );
+                }
+
+                if (document.getElementById('usageByHourChart')) {
+                    new Chart(
+                        document.getElementById('usageByHourChart'),
+                        {
+                            type: 'bar',
+                            data: {
+                                labels: ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00'],
+                                datasets: [{
+                                    label: 'Số lượt đặt sân',
+                                    data: [10, 15, 18, 20, 15, 12, 20, 35, 42, 60, 85, 95, 90, 75, 32],
+                                    backgroundColor: 'rgba(30, 136, 229, 0.7)'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        }
+                    );
+                }
+
+                if (document.getElementById('usageByDayChart')) {
+                    new Chart(
+                        document.getElementById('usageByDayChart'),
+                        {
+                            type: 'bar',
+                            data: {
+                                labels: ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'],
+                                datasets: [{
+                                    label: 'Số lượt đặt sân',
+                                    data: [95, 60, 65, 70, 85, 120, 115],
+                                    backgroundColor: 'rgba(142, 36, 170, 0.7)'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        }
+                    );
+                }
+
+                if (document.getElementById('usageByFieldTypeChart')) {
+                    new Chart(
+                        document.getElementById('usageByFieldTypeChart'),
+                        {
+                            type: 'bar',
+                            data: {
+                                labels: ['Sân 5 người', 'Sân 7 người', 'Sân 11 người', 'Sân cầu lông', 'Sân tennis'],
+                                datasets: [{
+                                    label: 'Số lượt đặt sân',
+                                    data: [220, 180, 120, 75, 29],
+                                    backgroundColor: 'rgba(67, 160, 71, 0.7)'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        }
+                    );
+                }
+
+                if (document.getElementById('peakTimeDistributionChart')) {
+                    new Chart(
+                        document.getElementById('peakTimeDistributionChart'),
+                        {
+                            type: 'pie',
+                            data: {
+                                labels: ['Giờ cao điểm (17:00-22:00)', 'Giờ trung bình (14:00-17:00)', 'Giờ thấp điểm (8:00-14:00)'],
+                                datasets: [{
+                                    data: [78, 14, 8],
+                                    backgroundColor: [
+                                        '#e53935',
+                                        '#f57f17',
+                                        '#43a047'
+                                    ]
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false
+                            }
+                        }
+                    );
+                }
+
+                if (document.getElementById('maintenanceHistoryChart')) {
+                    new Chart(
+                        document.getElementById('maintenanceHistoryChart'),
+                        {
+                            type: 'line',
+                            data: {
+                                labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+                                datasets: [
+                                    {
+                                        label: 'Số lần bảo trì',
+                                        data: [12, 16, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                        borderColor: '#f57f17',
+                                        backgroundColor: 'rgba(245, 127, 23, 0.1)',
+                                        tension: 0.3,
+                                        fill: true,
+                                        yAxisID: 'y'
+                                    },
+                                    {
+                                        label: 'Chi phí bảo trì (triệu VND)',
+                                        data: [6.2, 8.8, 8.5, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                        borderColor: '#1e88e5',
+                                        backgroundColor: 'rgba(30, 136, 229, 0.1)',
+                                        tension: 0.3,
+                                        fill: true,
+                                        yAxisID: 'y1'
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        position: 'left'
+                                    },
+                                    y1: {
+                                        beginAtZero: true,
+                                        position: 'right',
+                                        grid: {
+                                            drawOnChartArea: false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    );
+                }
+
+                if (document.getElementById('maintenanceByFieldTypeChart')) {
+                    new Chart(
+                        document.getElementById('maintenanceByFieldTypeChart'),
+                        {
+                            type: 'pie',
+                            data: {
+                                labels: ['Sân 5 người', 'Sân 7 người', 'Sân 11 người', 'Sân cầu lông', 'Sân tennis'],
+                                datasets: [{
+                                    data: [35, 25, 20, 12, 8],
+                                    backgroundColor: [
+                                        '#43a047',
+                                        '#1e88e5',
+                                        '#f57f17',
+                                        '#8e24aa',
+                                        '#e53935'
+                                    ]
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false
+                            }
+                        }
+                    );
+                }
+            }
+
+            // Chart action buttons
+            const chartActions = document.querySelectorAll('.chart-action');
+            chartActions.forEach(action => {
+                action.addEventListener('click', function() {
+                    const parent = this.closest('.chart-actions');
+                    parent.querySelectorAll('.chart-action').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // In a real app, this would update the chart with new data
+                    const period = this.getAttribute('data-chart-period');
+                    if (period != 'month') {
+                        alert(`Dữ liệu theo ${period === 'day' ? 'ngày' : period === 'week' ? 'tuần' : 'năm'} sẽ được cập nhật trong phiên bản tiếp theo.`);
+                        parent.querySelector('[data-chart-period="month"]').classList.add('active');
+                        this.classList.remove('active');
+                    }
+                });
+            });
+
+            // Export options
+            const exportOptions = document.querySelectorAll('.export-option');
+            exportOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const action = this.textContent.trim();
+                    alert(`Chức năng '${action}' sẽ được cập nhật trong phiên bản tiếp theo.`);
+                });
+            });
+        });
     </script>
 </body>
 </html>
