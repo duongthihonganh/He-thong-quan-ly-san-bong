@@ -3,194 +3,839 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Dịch Vụ Đi Kèm</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Quản lý Dịch vụ Đi kèm - Hệ thống Quản lý Cơ sở Thể thao</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #000000; /* Nền màu đen */
-            color: #ffd700; /* Màu chữ vàng */
-            margin: 0;
-            padding: 20px;
+        .bg-primary {
+            background-color: #1d4ed8;
         }
-        .container {
-            background-color: #1a1a1a; /* Màu nền đen nhạt */
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Ánh sáng vàng */
-            max-width: 900px;
-            margin: auto;
+        .text-primary {
+            color: #1d4ed8;
         }
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            color: #ffd700; /* Tiêu đề màu vàng */
+        .border-primary {
+            border-color: #1d4ed8;
         }
-        .btn-primary {
-            background-color: #ffd700; /* Nút màu vàng */
-            color: #000000;
-            border: none;
+        .hover\:bg-blue-600:hover {
+            background-color: #2563eb;
         }
-        .btn-primary:hover {
-            background-color: #e6c200; /* Vàng sậm khi hover */
+        .hover\:text-primary:hover {
+            color: #1d4ed8;
         }
-        input, select, textarea {
-            background-color: #333333; /* Màu nền đen nhạt */
-            color: #ffd700; /* Chữ màu vàng */
-            border: 1px solid #ffd700; /* Viền vàng */
-            border-radius: 5px;
+        .bg-secondary {
+            background-color: #ef4444;
         }
-        input::placeholder {
-            color: #e6e6e6; /* Placeholder xám */
+        .hover\:bg-red-700:hover {
+            background-color: #b91c1c;
         }
-        table {
-            background-color: #1a1a1a;
-            color: #ffd700;
-            margin-top: 20px;
-        }
-        .table-primary {
-            background-color: #ffd700; /* Nền vàng */
-            color: #000000; /* Chữ đen */
-        }
-        .alert {
-            font-size: 14px;
-            background-color: #ffd700; /* Nền thông báo vàng */
-            color: #000000; /* Chữ đen */
-            border: none;
+        .bg-low-stock {
+            background-color: rgba(254, 226, 226, 0.5);
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1 class="text-center">Quản Lý Dịch Vụ Đi Kèm</h1>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar - Desktop -->
+        <aside class="w-64 bg-white shadow-md hidden md:block">
+            <div class="p-4 bg-primary text-white">
+                <h1 class="text-xl font-bold">Quản lý Dịch vụ</h1>
+            </div>
+            <nav class="mt-4">
+                <ul>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 bg-blue-50 text-primary border-l-4 border-primary">
+                            <span class="material-icons mr-2">inventory_2</span>
+                            <span>Quản lý Dịch vụ</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">shopping_cart</span>
+                            <span>Xử lý Đơn hàng</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">receipt_long</span>
+                            <span>Hóa đơn</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">assessment</span>
+                            <span>Báo cáo & Thống kê</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-primary">
+                            <span class="material-icons mr-2">settings</span>
+                            <span>Cài đặt</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
 
-        <!-- Đăng nhập -->
-        <h2 class="section-title">1. Đăng Nhập</h2>
-        <form id="loginForm">
-            <div class="mb-3">
-                <label for="username" class="form-label">Tên Đăng Nhập:</label>
-                <input type="text" id="username" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Mật Khẩu:</label>
-                <input type="password" id="password" class="form-control">
-            </div>
-            <button type="button" class="btn btn-primary w-100" onclick="login()">Đăng Nhập</button>
-        </form>
-        <div id="loginMessage" class="mt-3"></div>
+        <!-- Main Content -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm">
+                <div class="flex items-center justify-between p-4">
+                    <button class="md:hidden text-gray-600">
+                        <span class="material-icons">menu</span>
+                    </button>
+                    <div class="flex items-center space-x-4">
+                        <button class="text-gray-600">
+                            <span class="material-icons">notifications</span>
+                        </button>
+                        <div class="flex items-center">
+                            <div class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
+                                <span class="material-icons text-gray-600 text-sm">person</span>
+                            </div>
+                            <span class="ml-2 text-sm font-medium text-gray-700">Trần Văn A</span>
+                            <span class="material-icons text-gray-400 ml-1">arrow_drop_down</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
 
-        <!-- Quản lý dịch vụ -->
-        <h2 class="section-title">2. Cập Nhật Danh Sách Dịch Vụ</h2>
-        <form id="serviceForm">
-            <div class="mb-3">
-                <label for="serviceName" class="form-label">Tên Dịch Vụ:</label>
-                <input type="text" id="serviceName" class="form-control" placeholder="Ví dụ: Cho thuê bóng">
-            </div>
-            <div class="mb-3">
-                <label for="serviceDescription" class="form-label">Mô Tả:</label>
-                <input type="text" id="serviceDescription" class="form-control" placeholder="Ví dụ: Bóng đá tiêu chuẩn">
-            </div>
-            <div class="mb-3">
-                <label for="servicePrice" class="form-label">Giá:</label>
-                <input type="number" id="servicePrice" class="form-control" placeholder="Nhập giá dịch vụ">
-            </div>
-            <div class="mb-3">
-                <label for="serviceStatus" class="form-label">Trạng Thái:</label>
-                <select id="serviceStatus" class="form-select">
-                    <option value="Còn hàng">Còn hàng</option>
-                    <option value="Hết hàng">Hết hàng</option>
-                </select>
-            </div>
-            <button type="button" class="btn btn-primary w-100" onclick="addService()">Thêm Dịch Vụ</button>
-        </form>
-        <div id="serviceResult" class="mt-3"></div>
+            <!-- Page Content -->
+            <div class="p-6">
+                <!-- Page Header -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800 mb-1">Quản lý Dịch vụ Đi kèm</h1>
+                        <p class="text-gray-600">Quản lý dịch vụ cho thuê và bán tại cơ sở thể thao</p>
+                    </div>
+                    <div class="mt-4 md:mt-0">
+                        <button id="btnAddService" class="bg-primary text-white px-4 py-2 rounded-md flex items-center hover:bg-blue-600 transition-colors">
+                            <span class="material-icons mr-1">add</span>
+                            Thêm Dịch vụ Mới
+                        </button>
+                    </div>
+                </div>
 
-        <h3 class="section-title">Danh Sách Dịch Vụ</h3>
-        <table class="table table-bordered">
-            <thead class="table-primary">
-                <tr>
-                    <th>Tên Dịch Vụ</th>
-                    <th>Mô Tả</th>
-                    <th>Giá</th>
-                    <th>Trạng Thái</th>
-                    <th>Hành Động</th>
-                </tr>
-            </thead>
-            <tbody id="serviceList">
-                <!-- Dịch vụ sẽ được hiển thị ở đây -->
-            </tbody>
-        </table>
+                <!-- Filters -->
+                <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+                    <div class="border-b border-gray-200">
+                        <ul class="flex -mb-px">
+                            <li class="mr-2">
+                                <button class="inline-block py-2 px-4 text-primary border-b-2 border-primary font-medium" data-filter="all">
+                                    Tất cả
+                                </button>
+                            </li>
+                            <li class="mr-2">
+                                <button class="inline-block py-2 px-4 text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-blue-200 font-medium" data-filter="rental">
+                                    Cho thuê
+                                </button>
+                            </li>
+                            <li class="mr-2">
+                                <button class="inline-block py-2 px-4 text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-blue-200 font-medium" data-filter="sale">
+                                    Bán
+                                </button>
+                            </li>
+                            <li class="mr-2">
+                                <button class="inline-block py-2 px-4 text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-blue-200 font-medium" data-filter="lowStock">
+                                    Sắp hết hàng
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
 
-        <!-- Báo cáo doanh thu -->
-        <h2 class="section-title">3. Báo Cáo Doanh Thu</h2>
-        <div id="reportSection">
-            <p>Tổng Doanh Thu: <b id="totalRevenue">0 VNĐ</b></p>
+                    <div class="mt-4 flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div class="flex mb-4 md:mb-0">
+                            <div class="relative">
+                                <input type="text" id="searchInput" placeholder="Tìm kiếm dịch vụ..." class="pl-10 pr-3 py-2 border border-gray-300 rounded-md">
+                                <span class="material-icons absolute left-3 top-2 text-gray-400">search</span>
+                            </div>
+                            <button class="ml-2 px-3 py-2 border border-gray-300 rounded-md">
+                                <span class="material-icons">filter_list</span>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center">
+                            <span class="text-sm text-gray-600 mr-2">Hiển thị:</span>
+                            <select id="pageSize" class="border border-gray-300 rounded-md px-2 py-1">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Table -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            Mã dịch vụ
+                                            <span class="material-icons ml-1 text-xs">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            Tên dịch vụ
+                                            <span class="material-icons ml-1 text-xs">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            Loại
+                                            <span class="material-icons ml-1 text-xs">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            Giá
+                                            <span class="material-icons ml-1 text-xs">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            Tồn kho
+                                            <span class="material-icons ml-1 text-xs">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            Trạng thái
+                                            <span class="material-icons ml-1 text-xs">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Thao tác
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <!-- Row 1: Bóng đá -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        DV001
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 flex-shrink-0 bg-gray-100 rounded-md flex items-center justify-center">
+                                                <span class="material-icons text-gray-500">sports_soccer</span>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Bóng đá size 5</div>
+                                                <div class="text-sm text-gray-500">Quả bóng đá tiêu chuẩn size 5 cho sân 11 người</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                            Cho thuê
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        50.000 ₫
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div>
+                                            <div class="flex items-center">
+                                                <div>15 cái</div>
+                                            </div>
+                                            <div class="w-24 h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden">
+                                                <div class="bg-green-500 h-full rounded-full" style="width: 75%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            Đang hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-blue-700 mr-3">
+                                            <span class="material-icons">edit</span>
+                                        </button>
+                                        <button class="text-secondary hover:text-red-700">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 2: Áo thi đấu -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        DV002
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 flex-shrink-0 bg-gray-100 rounded-md flex items-center justify-center">
+                                                <span class="material-icons text-gray-500">person</span>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Áo thi đấu</div>
+                                                <div class="text-sm text-gray-500">Áo bóng đá cao cấp, nhiều màu, có thể in số</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                            Cho thuê
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        25.000 ₫
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div>
+                                            <div class="flex items-center">
+                                                <div>30 cái</div>
+                                            </div>
+                                            <div class="w-24 h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden">
+                                                <div class="bg-green-500 h-full rounded-full" style="width: 75%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            Đang hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-blue-700 mr-3">
+                                            <span class="material-icons">edit</span>
+                                        </button>
+                                        <button class="text-secondary hover:text-red-700">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 3: Nước khoáng -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        DV003
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 flex-shrink-0 bg-gray-100 rounded-md flex items-center justify-center">
+                                                <span class="material-icons text-gray-500">local_drink</span>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Nước khoáng</div>
+                                                <div class="text-sm text-gray-500">Chai nước khoáng 500ml</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
+                                            Bán
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        10.000 ₫
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div>
+                                            <div class="flex items-center">
+                                                <div>40 chai</div>
+                                            </div>
+                                            <div class="w-24 h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden">
+                                                <div class="bg-green-500 h-full rounded-full" style="width: 67%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            Đang hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-blue-700 mr-3">
+                                            <span class="material-icons">edit</span>
+                                        </button>
+                                        <button class="text-secondary hover:text-red-700">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 4: Trọng tài -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        DV004
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 flex-shrink-0 bg-gray-100 rounded-md flex items-center justify-center">
+                                                <span class="material-icons text-gray-500">sports</span>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Trọng tài</div>
+                                                <div class="text-sm text-gray-500">Dịch vụ thuê trọng tài cho trận đấu</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                            Dịch vụ
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        200.000 ₫/trận
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div>
+                                            <div class="flex items-center">
+                                                <div>5 trận</div>
+                                            </div>
+                                            <div class="w-24 h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden">
+                                                <div class="bg-yellow-500 h-full rounded-full" style="width: 50%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            Đang hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-blue-700 mr-3">
+                                            <span class="material-icons">edit</span>
+                                        </button>
+                                        <button class="text-secondary hover:text-red-700">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 5: Vợt tennis -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        DV005
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 flex-shrink-0 bg-gray-100 rounded-md flex items-center justify-center">
+                                                <span class="material-icons text-gray-500">sports_tennis</span>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Vợt tennis</div>
+                                                <div class="text-sm text-gray-500">Vợt tennis chất lượng cao</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                            Cho thuê
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        80.000 ₫
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div>
+                                            <div class="flex items-center">
+                                                <div>8 cái</div>
+                                                <div class="ml-1 text-xs text-red-600 font-medium">(Sắp hết)</div>
+                                            </div>
+                                            <div class="w-24 h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden">
+                                                <div class="bg-yellow-500 h-full rounded-full" style="width: 40%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            Đang hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-blue-700 mr-3">
+                                            <span class="material-icons">edit</span>
+                                        </button>
+                                        <button class="text-secondary hover:text-red-700">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 6: Bánh năng lượng - SẮP HẾT HÀNG -->
+                                <tr class="hover:bg-gray-50 bg-low-stock">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        DV006
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 flex-shrink-0 bg-gray-100 rounded-md flex items-center justify-center">
+                                                <span class="material-icons text-gray-500">fastfood</span>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Bánh năng lượng</div>
+                                                <div class="text-sm text-gray-500">Bánh năng lượng cho vận động viên</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
+                                            Bán
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        15.000 ₫
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div>
+                                            <div class="flex items-center">
+                                                <div>5 cái</div>
+                                                <div class="ml-1 text-xs text-red-600 font-medium">(Sắp hết)</div>
+                                            </div>
+                                            <div class="w-24 h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden">
+                                                <div class="bg-red-500 h-full rounded-full" style="width: 15%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            Đang hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-blue-700 mr-3">
+                                            <span class="material-icons">edit</span>
+                                        </button>
+                                        <button class="text-secondary hover:text-red-700">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 7: Nước tăng lực - HẾT HÀNG -->
+                                <tr class="hover:bg-gray-50 bg-low-stock">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        DV008
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 flex-shrink-0 bg-gray-100 rounded-md flex items-center justify-center">
+                                                <span class="material-icons text-gray-500">local_drink</span>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Nước tăng lực</div>
+                                                <div class="text-sm text-gray-500">Nước tăng lực thể thao</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
+                                            Bán
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        20.000 ₫
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <div>
+                                            <div class="flex items-center">
+                                                <div>2 chai</div>
+                                                <div class="ml-1 text-xs text-red-600 font-medium">(Sắp hết)</div>
+                                            </div>
+                                            <div class="w-24 h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden">
+                                                <div class="bg-red-500 h-full rounded-full" style="width: 10%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                            Hết hàng
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-blue-700 mr-3">
+                                            <span class="material-icons">edit</span>
+                                        </button>
+                                        <button class="text-secondary hover:text-red-700">
+                                            <span class="material-icons">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                        <div class="flex-1 flex justify-between sm:hidden">
+                            <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Trước
+                            </button>
+                            <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Tiếp
+                            </button>
+                        </div>
+                        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <p class="text-sm text-gray-700">
+                                    Hiển thị <span class="font-medium">1</span> đến <span class="font-medium">7</span> của <span class="font-medium">8</span> dịch vụ
+                                </p>
+                            </div>
+                            <div>
+                                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                    <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                        <span class="sr-only">Trước</span>
+                                        <span class="material-icons text-sm">chevron_left</span>
+                                    </button>
+                                    <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white">
+                                        1
+                                    </button>
+                                    <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                        <span class="sr-only">Tiếp</span>
+                                        <span class="material-icons text-sm">chevron_right</span>
+                                    </button>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Service Modal (Hidden by default) -->
+    <div id="serviceModal" class="hidden fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Thêm Dịch vụ Mới
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500">
+                                    Thêm dịch vụ mới vào hệ thống quản lý
+                                </p>
+                            </div>
+                            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="serviceCode" class="block text-sm font-medium text-gray-700">Mã dịch vụ</label>
+                                    <input type="text" name="serviceCode" id="serviceCode" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="VD: DV001">
+                                </div>
+                                <div>
+                                    <label for="serviceName" class="block text-sm font-medium text-gray-700">Tên dịch vụ</label>
+                                    <input type="text" name="serviceName" id="serviceName" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Tên dịch vụ">
+                                </div>
+                                <div>
+                                    <label for="serviceType" class="block text-sm font-medium text-gray-700">Loại dịch vụ</label>
+                                    <select id="serviceType" name="serviceType" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                        <option value="rental">Cho thuê</option>
+                                        <option value="sale">Bán</option>
+                                        <option value="service">Dịch vụ</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="serviceCategory" class="block text-sm font-medium text-gray-700">Danh mục</label>
+                                    <select id="serviceCategory" name="serviceCategory" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                        <option value="equipment">Thiết bị thể thao</option>
+                                        <option value="clothing">Trang phục</option>
+                                        <option value="beverage">Đồ uống</option>
+                                        <option value="food">Đồ ăn</option>
+                                        <option value="referee">Trọng tài</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="servicePrice" class="block text-sm font-medium text-gray-700">Giá (VNĐ)</label>
+                                    <div class="mt-1 relative rounded-md shadow-sm">
+                                        <input type="text" name="servicePrice" id="servicePrice" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0">
+                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500 sm:text-sm">₫</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="serviceUnit" class="block text-sm font-medium text-gray-700">Đơn vị tính</label>
+                                    <input type="text" name="serviceUnit" id="serviceUnit" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="cái, giờ, trận...">
+                                </div>
+                                <div>
+                                    <label for="serviceStock" class="block text-sm font-medium text-gray-700">Số lượng</label>
+                                    <input type="number" name="serviceStock" id="serviceStock" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" min="0" value="0">
+                                </div>
+                                <div>
+                                    <label for="serviceLowStockThreshold" class="block text-sm font-medium text-gray-700">Ngưỡng hết hàng</label>
+                                    <input type="number" name="serviceLowStockThreshold" id="serviceLowStockThreshold" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" min="0" value="5">
+                                    <p class="mt-1 text-sm text-gray-500">Số lượng tối thiểu trước khi cảnh báo hết hàng</p>
+                                </div>
+                                <div>
+                                    <label for="serviceStatus" class="block text-sm font-medium text-gray-700">Trạng thái</label>
+                                    <select id="serviceStatus" name="serviceStatus" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                        <option value="active">Đang hoạt động</option>
+                                        <option value="inactive">Ngừng hoạt động</option>
+                                        <option value="outofstock">Hết hàng</option>
+                                    </select>
+                                </div>
+                                <div class="col-span-1 md:col-span-2">
+                                    <label for="serviceDescription" class="block text-sm font-medium text-gray-700">Mô tả</label>
+                                    <textarea id="serviceDescription" name="serviceDescription" rows="3" class="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Mô tả dịch vụ"></textarea>
+                                </div>
+                                <div class="col-span-1 md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700">Biểu tượng</label>
+                                    <div class="mt-2 grid grid-cols-5 gap-2">
+                                        <button type="button" class="p-2 text-center border rounded-md hover:bg-gray-100 active:bg-blue-50 active:text-blue-600">
+                                            <span class="material-icons">sports_soccer</span>
+                                        </button>
+                                        <button type="button" class="p-2 text-center border rounded-md hover:bg-gray-100">
+                                            <span class="material-icons">sports</span>
+                                        </button>
+                                        <button type="button" class="p-2 text-center border rounded-md hover:bg-gray-100">
+                                            <span class="material-icons">sports_tennis</span>
+                                        </button>
+                                        <button type="button" class="p-2 text-center border rounded-md hover:bg-gray-100">
+                                            <span class="material-icons">person</span>
+                                        </button>
+                                        <button type="button" class="p-2 text-center border rounded-md hover:bg-gray-100">
+                                            <span class="material-icons">local_drink</span>
+                                        </button>
+                                        <button type="button" class="p-2 text-center border rounded-md hover:bg-gray-100">
+                                            <span class="material-icons">fastfood</span>
+                                        </button>
+                                        <button type="button" class="p-2 text-center border rounded-md hover:bg-gray-100">
+                                            <span class="material-icons">directions_run</span>
+                                        </button>
+                                        <button type="button" class="p-2 text-center border rounded-md hover:bg-gray-100">
+                                            <span class="material-icons">fitness_center</span>
+                                        </button>
+                                        <button type="button" class="p-2 text-center border rounded-md hover:bg-gray-100">
+                                            <span class="material-icons">pool</span>
+                                        </button>
+                                        <button type="button" class="p-2 text-center border rounded-md hover:bg-gray-100">
+                                            <span class="material-icons">sports_basketball</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Lưu
+                    </button>
+                    <button type="button" id="closeModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Hủy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal (Hidden by default) -->
+    <div id="deleteModal" class="hidden fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <span class="material-icons text-red-600">warning</span>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Xác nhận xóa
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500">
+                                    Bạn có chắc chắn muốn xóa dịch vụ này không? Hành động này không thể hoàn tác.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-secondary text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Xóa
+                    </button>
+                    <button type="button" id="closeDeleteModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Hủy
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        const services = [];
-        let totalRevenue = 0;
+        // Show/Hide Service Modal
+        document.getElementById('btnAddService').addEventListener('click', function() {
+            document.getElementById('serviceModal').classList.remove('hidden');
+        });
 
-        // Đăng nhập
-        function login() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            if (username === "admin" && password === "123456") {
-                document.getElementById("loginMessage").innerHTML = `<div class="alert alert-success">Đăng nhập thành công!</div>`;
-                document.getElementById("loginForm").style.display = "none";
-            } else {
-                document.getElementById("loginMessage").innerHTML = `<div class="alert alert-danger">Tên đăng nhập hoặc mật khẩu không đúng!</div>`;
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('serviceModal').classList.add('hidden');
+        });
+
+        // Manage filter tab selection
+        const filterButtons = document.querySelectorAll('[data-filter]');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('text-primary', 'border-primary');
+                    btn.classList.add('text-gray-500', 'border-transparent');
+                });
+
+                // Add active class to clicked button
+                this.classList.add('text-primary', 'border-primary');
+                this.classList.remove('text-gray-500', 'border-transparent');
+
+                // Apply filter logic here
+                const filterType = this.getAttribute('data-filter');
+                console.log('Filter applied:', filterType);
+                // In real implementation, you would filter the table data based on the filterType
+            });
+        });
+
+        // Example delete button event handlers
+        const deleteButtons = document.querySelectorAll('button .material-icons');
+        deleteButtons.forEach(button => {
+            if (button.textContent === 'delete') {
+                button.parentElement.addEventListener('click', function() {
+                    document.getElementById('deleteModal').classList.remove('hidden');
+                });
             }
-        }
+        });
 
-        // Thêm dịch vụ
-        function addService() {
-            const name = document.getElementById("serviceName").value.trim();
-            const description = document.getElementById("serviceDescription").value.trim();
-            const price = parseInt(document.getElementById("servicePrice").value);
-            const status = document.getElementById("serviceStatus").value;
+        document.getElementById('closeDeleteModal').addEventListener('click', function() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        });
 
-            if (name && description && price) {
-                services.push({ name, description, price, status });
-                updateServiceList();
-                document.getElementById("serviceResult").innerHTML = `<div class="alert alert-success">Dịch vụ đã được thêm thành công!</div>`;
-                document.getElementById("serviceForm").reset();
-            } else {
-                alert("Vui lòng nhập đầy đủ thông tin!");
-            }
-        }
+        // Icon selection in the modal
+        const iconButtons = document.querySelector('.grid.grid-cols-5').querySelectorAll('button');
+        iconButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all icon buttons
+                iconButtons.forEach(btn => {
+                    btn.classList.remove('bg-blue-50', 'text-blue-600');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('bg-blue-50', 'text-blue-600');
+            });
+        });
 
-        // Cập nhật danh sách dịch vụ
-        function updateServiceList() {
-            const serviceList = document.getElementById("serviceList");
-            serviceList.innerHTML = services.map((service, index) => `
-                <tr>
-                    <td>${service.name}</td>
-                    <td>${service.description}</td>
-                    <td>${service.price.toLocaleString()} VNĐ</td>
-                    <td>${service.status}</td>
-                    <td>
-                        <button class="btn btn-danger btn-sm" onclick="removeService(${index})">Xóa</button>
-                    </td>
-                </tr>
-            `).join("");
-            calculateRevenue();
-        }
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            console.log('Searching for:', searchTerm);
+            // In real implementation, you would filter the table data based on the search term
+        });
 
-        // Xóa dịch vụ
-        function removeService(index) {
-            services.splice(index, 1);
-            updateServiceList();
-        }
-
-        // Tính tổng doanh thu
-        function calculateRevenue() {
-            totalRevenue = services.reduce((sum, service) => sum + service.price, 0);
-            document.getElementById("totalRevenue").innerText = `${totalRevenue.toLocaleString()} VNĐ`;
-        }
+        // Page size change
+        document.getElementById('pageSize').addEventListener('change', function() {
+            const pageSize = this.value;
+            console.log('Page size changed to:', pageSize);
+            // In real implementation, you would update the items per page
+        });
     </script>
 </body>
 </html>
