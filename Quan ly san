@@ -8,8 +8,6 @@
     <script>
         // Kiểm tra đăng nhập
         document.addEventListener('DOMContentLoaded', function() {
-            // Lưu ý: Trong môi trường thực tế, bạn sẽ muốn bật lại kiểm tra đăng nhập này
-            // Hiện tại vô hiệu hóa để dễ dàng kiểm tra trang
             const checkLogin = false; // Đặt thành true để bật kiểm tra đăng nhập
             
             if (checkLogin) {
