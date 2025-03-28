@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Phiếu Đặt Sân</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #FFC107;
+            color: #000000;
+        }
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        .status-confirmed { color: green; font-weight: bold; }
+        .status-pending { color: orange; font-weight: bold; }
+        .status-cancelled { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Quản lý Phiếu Đặt Sân</h2>
+
+        <button class="btn btn-success mb-3" onclick="showBookingForm()">+ Đặt Sân Mới</button>
+
+        <input type="text" id="searchBox" class="form-control mb-3" placeholder="Tìm kiếm theo tên, SDT, CCCD...">
+
+        <table id="bookingTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên Khách Hàng</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Sân</th>
+                    <th>Ngày Đặt</th>
+                    <th>Giờ</th>
+                    <th>Giá Tiền</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>PD001</td>
+                    <td>Nguyễn Văn A</td>
+                    <td>0987654321</td>
+                    <td>Sân 1</td>
+                    <td>2025-03-20</td>
+                    <td>18:00 - 19:30</td>
+                    <td>300,000 VND</td>
+                    <td class="status-confirmed">Đã xác nhận</td>
+                    <td>
+                        <button class="btn btn-info" onclick="viewDetails('PD001')">Chi tiết</button>
+                        <button class="btn btn-danger" onclick="cancelBooking('PD001')">Hủy</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="/trangchu.html" class="btn btn-secondary mt-3">Quay lại</a>
+    </div>
+
+    <!-- Form Đặt Sân -->
+    <div id="bookingForm" class="container mt-4" style="display:none;">
+        <h3>Đặt Sân Mới</h3>
+        <form>
+            <div class="mb-3">
+                <label>Họ Tên Khách Hàng</label>
+                <input type="text" class="form-control" id="customerName">
+            </div>
+            <div class="mb-3">
+                <label>Số Điện Thoại</label>
+                <input type="text" class="form-control" id="phoneNumber">
+            </div>
+            <div class="mb-3">
+                <label>Sân</label>
+                <select class="form-control" id="field">
+                    <option value="Sân 1">Sân 1</option>
+                    <option value="Sân 2">Sân 2</option>
+                    <option value="Sân 3">Sân 3</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label>Ngày Đặt</label>
+                <input type="date" class="form-control" id="bookingDate">
+            </div>
+            <div class="mb-3">
+                <label>Giờ Bắt Đầu</label>
+                <input type="time" class="form-control" id="startTime">
+            </div>
+            <div class="mb-3">
+                <label>Giờ Kết Thúc</label>
+                <input type="time" class="form-control" id="endTime">
+            </div>
+            <button type="button" class="btn btn-primary w-100" onclick="bookField()">Đặt Sân</button>
+        </form>
+    </div>
+
+    <script>
+        function showBookingForm() {
+            document.getElementById('bookingForm').style.display = 'block';
+        }
+
+        function bookField() {
+            let name = document.getElementById('customerName').value;
+            let phone = document.getElementById('phoneNumber').value;
+            let field = document.getElementById('field').value;
+            let date = document.getElementById('bookingDate').value;
+            let startTime = document.getElementById('startTime').value;
+            let endTime = document.getElementById('endTime').value;
+
+            if (!name || !phone || !field || !date || !startTime || !endTime) {
+                alert("Vui lòng nhập đầy đủ thông tin!");
+                return;
+            }
+
+            let newRow = `
+                <tr>
+                    <td>PD00${Math.floor(Math.random() * 100)}</td>
+                    <td>${name}</td>
+                    <td>${phone}</td>
+                    <td>${field}</td>
+                    <td>${date}</td>
+                    <td>${startTime} - ${endTime}</td>
+                    <td>300,000 VND</td>
+                    <td class="status-pending">Đang chờ</td>
+                    <td>
+                        <button class="btn btn-info" onclick="viewDetails('${name}')">Chi tiết</button>
+                        <button class="btn btn-danger" onclick="cancelBooking('${name}')">Hủy</button>
+                    </td>
+                </tr>
+            `;
+            document.querySelector("#bookingTable tbody").innerHTML += newRow;
+            alert("Đặt sân thành công!");
+            document.getElementById('bookingForm').reset();
+            document.getElementById('bookingForm').style.display = 'none';
+        }
+
+        function viewDetails(id) {
+            alert("Xem chi tiết phiếu đặt: " + id);
+        }
+
+        function cancelBooking(id) {
+            let reason = prompt("Nhập lý do hủy đặt:");
+            if (reason) {
+                alert("Đã hủy phiếu đặt: " + id + "\nLý do: " + reason);
+                document.querySelectorAll("#bookingTable tbody tr").forEach(row => {
+                    if (row.cells[0].textContent === id) {
+                        row.cells[7].innerHTML = "<span class='status-cancelled'>Đã hủy</span>";
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

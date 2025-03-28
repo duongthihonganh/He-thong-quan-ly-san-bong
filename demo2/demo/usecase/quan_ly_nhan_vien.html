@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Nhân Viên</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #FFC107;
+            color: #000000;
+        }
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #000000;
+        }
+        .table {
+            background: #ffffff;
+            color: #000000;
+        }
+        .table-dark {
+            background: #343a40;
+            color: #ffffff;
+        }
+        .btn-danger, .btn-success {
+            border-radius: 5px;
+        }
+        .btn-secondary {
+            display: block;
+            width: fit-content;
+            margin: 0 auto;
+            background-color: #6c757d;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <h2>Lịch sử Hoạt Động</h2>
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Nhân Viên</th>
+                <th>Thao Tác</th>
+                <th>Thời Gian</th>
+            </tr>
+        </thead>
+        <tbody id="historyList">
+        </tbody>
+    </table>
+  </div>
+    <div class="container mt-4">
+        <h2>Quản lý Nhân Viên Sân Bóng</h2>
+
+        <!-- Tìm kiếm -->
+        <input type="text" id="searchBox" class="form-control mb-3" placeholder="Tìm kiếm theo tên hoặc số điện thoại...">
+
+        <button class="btn btn-success mb-3" onclick="showAddForm()">+ Thêm Nhân Viên</button>
+
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên Nhân Viên</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Email</th>
+                    <th>Chức vụ</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="staffList">
+                <tr id="nv1">
+                    <td>1</td>
+                    <td>Nguyễn Văn A</td>
+                    <td>0123456789</td>
+                    <td>nguyenvana@example.com</td>
+                    <td>Nhân viên thường</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="removeStaff('nv1')">Xóa</button>
+                    </td>
+                </tr>
+                <tr id="nv2">
+                    <td>2</td>
+                    <td>Trần Thị B</td>
+                    <td>0987654321</td>
+                    <td>tranthib@example.com</td>
+                    <td>Quản lý</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="removeStaff('nv2')">Xóa</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="/trangchu.html" class="btn btn-secondary">Quay lại</a>
+    </div>
+
+    <!-- Form thêm nhân viên -->
+    <div id="staffForm" class="container mt-4" style="display:none;">
+        <h3>Thêm Nhân Viên</h3>
+        <form>
+            <div class="mb-3">
+                <label>Họ Tên Nhân Viên</label>
+                <input type="text" class="form-control" id="staffName">
+            </div>
+            <div class="mb-3">
+                <label>Số Điện Thoại</label>
+                <input type="text" class="form-control" id="staffPhone">
+            </div>
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email" class="form-control" id="staffEmail">
+            </div>
+            <div class="mb-3">
+                <label>Chức vụ</label>
+                <select class="form-control" id="staffRole">
+                    <option value="Nhân viên thường">Nhân viên thường</option>
+                    <option value="Quản lý">Quản lý</option>
+                    <option value="Chủ sân">Chủ sân</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary w-100" onclick="saveStaff()">Lưu Nhân Viên</button>
+        </form>
+    </div>
+
+    <script>
+        function showAddForm() {
+            document.getElementById('staffForm').style.display = 'block';
+        }
+
+        function saveStaff() {
+            let name = document.getElementById('staffName').value;
+            let phone = document.getElementById('staffPhone').value;
+            let email = document.getElementById('staffEmail').value;
+            let role = document.getElementById('staffRole').value;
+
+            if (!name || !phone || !email) {
+                alert("Vui lòng nhập đầy đủ thông tin!");
+                return;
+            }
+
+            let newRow = `
+                <tr id="nv${Math.floor(Math.random() * 100)}">
+                    <td>${Math.floor(Math.random() * 1000)}</td>
+                    <td>${name}</td>
+                    <td>${phone}</td>
+                    <td>${email}</td>
+                    <td>${role}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="removeStaff('nv${Math.floor(Math.random() * 100)}')">Xóa</button>
+                    </td>
+                </tr>
+            `;
+            document.querySelector("#staffList").innerHTML += newRow;
+            alert("Thêm nhân viên thành công!");
+            document.getElementById('staffForm').reset();
+            document.getElementById('staffForm').style.display = 'none';
+        }
+
+        function removeStaff(id) {
+            let confirmDelete = confirm("Bạn có chắc muốn xóa nhân viên này?");
+            if (confirmDelete) {
+                document.getElementById(id).remove();
+                alert("Xóa nhân viên thành công!");
+            }
+        }
+
+        document.getElementById('searchBox').addEventListener('keyup', function() {
+            let searchText = this.value.toLowerCase();
+            let rows = document.querySelectorAll("#staffList tr");
+
+            rows.forEach(row => {
+                let name = row.cells[1].textContent.toLowerCase();
+                let phone = row.cells[2].textContent.toLowerCase();
+
+                if (name.includes(searchText) || phone.includes(searchText)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+
+        //lưu lịch sử hoạt đông
+        let historyData = [];
+
+function logHistory(employee, action) {
+    let timestamp = new Date().toLocaleString();
+    historyData.push({ employee, action, timestamp });
+
+    let historyRow = `
+        <tr>
+            <td>${employee}</td>
+            <td>${action}</td>
+            <td>${timestamp}</td>
+        </tr>
+    `;
+    document.querySelector("#historyList").innerHTML += historyRow;
+}
+
+// Ví dụ ghi nhận lịch sử khi xóa nhân viên
+function removeStaff(id) {
+    let row = document.getElementById(id);
+    let employeeName = row.cells[1].textContent;
+
+    let confirmDelete = confirm("Bạn có chắc muốn xóa nhân viên này?");
+    if (confirmDelete) {
+        row.remove();
+        logHistory(employeeName, "Xóa nhân viên");
+        alert("Xóa nhân viên thành công!");
+    }
+}
+
+// Ghi nhận khi thêm nhân viên
+function saveStaff() {
+    let name = document.getElementById('staffName').value;
+    let phone = document.getElementById('staffPhone').value;
+    let email = document.getElementById('staffEmail').value;
+    let role = document.getElementById('staffRole').value;
+
+    if (!name || !phone || !email) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+    }
+
+    let newRow = `
+        <tr id="nv${Math.floor(Math.random() * 100)}">
+            <td>${Math.floor(Math.random() * 1000)}</td>
+            <td>${name}</td>
+            <td>${phone}</td>
+            <td>${email}</td>
+            <td>${role}</td>
+            <td>
+                <button class="btn btn-danger" onclick="removeStaff('nv${Math.floor(Math.random() * 100)}')">Xóa</button>
+            </td>
+        </tr>
+    `;
+    document.querySelector("#staffList").innerHTML += newRow;
+    logHistory(name, "Thêm nhân viên");
+    alert("Thêm nhân viên thành công!");
+    document.getElementById('staffForm').reset();
+    document.getElementById('staffForm').style.display = 'none';
+}
+// Ghi nhận khi đặt sân
+function bookField(employee, field, time) {
+    logHistory(employee, `Đặt sân ${field} lúc ${time}`);
+    alert("Đặt sân thành công!");
+}
+
+// Ghi nhận khi hủy sân
+function cancelField(employee, field, time) {
+    logHistory(employee, `Hủy sân ${field} lúc ${time}`);
+    alert("Hủy sân thành công!");
+}
+
+// Ghi nhận khi thu tiền
+function collectPayment(employee, amount) {
+    logHistory(employee, `Thu tiền: ${amount} VND`);
+    alert("Thu tiền thành công!");
+}
+
+// Ghi nhận khi phục vụ
+function serveCustomer(employee, service) {
+    logHistory(employee, `Phục vụ: ${service}`);
+    alert("Phục vụ khách hàng thành công!");
+}
+
+
+    </script>
+</body>
+</html>

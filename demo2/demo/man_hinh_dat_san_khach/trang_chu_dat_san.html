@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang chủ</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #FFC107;
+      color: #000;
+    }
+    .container-custom {
+      margin-top: 50px;
+    }
+    .sidebar {
+      background: #343a40;
+      padding: 20px;
+      border-radius: 10px;
+      height: 100%;
+    }
+    .sidebar h4 {
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+    .sidebar a {
+      color: #ffffff;
+      text-decoration: none;
+      display: block;
+      padding: 10px 0;
+      border-bottom: 1px solid #ffffff;
+    }
+    .sidebar a:last-child {
+      border-bottom: none;
+    }
+    .main-content {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      min-height: 300px;
+    }
+    .stadium-info {
+      margin-top: 20px;
+    }
+    .stadium-card {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .stadium-card img {
+      width: 100%;
+      height: 150px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    .stadium-card h5 {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container container-custom">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="sidebar">
+          <h4>Chức năng</h4>
+          <a href="/demo/man_hinh_dat_san_khach/chuc_nang/thong_tin.html">Thông tin cá nhân</a>
+          <a href="/demo/man_hinh_dat_san_khach/chuc_nang/lich_dat_san.html">Xem lịch sân</a>
+          <a href="/demo/man_hinh_dat_san_khach/chuc_nang/dat_san.html">Đặt sân</a>
+          <a href="/demo/man_hinh_dat_san_khach/chuc_nang/thanh_toan.html">Thanh toán đặt sân</a>
+          <a href="/demo/man_hinh_dat_san_khach/chuc_nang/lich_su_dat_san.html">Theo dõi lịch sử đặt sân</a>
+          <a href="/demo/man_hinh_dat_san_khach/chuc_nang/yeu_cau_huy_san.html">Yêu cầu hủy đặt sân</a>
+          <a href="/demo/man_hinh_dat_san_khach/chuc_nang/dich_vu.html">Dịch vụ tiện ích</a>
+          <a href="/demo/man_hinh_dat_san_khach/chuc_nang/phan_hoi_danh_gia.html">Gửi phản hồi / Đánh giá</a>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="main-content">
+          <h2>Trang chủ</h2>
+          <div class="search-box p-3 bg-light rounded">
+            <div class="row">
+              <div class="col-md-5">
+                <input type="text" class="form-control" placeholder="Bạn muốn đến đâu?">
+              </div>
+              <div class="col-md-4">
+                <input type="date" class="form-control">
+              </div>
+              <div class="col-md-3">
+                <button class="btn btn-warning w-100">Tìm kiếm</button>
+              </div>
+            </div>
+          </div>
+          <p class="mt-3">Chào mừng bạn đến với hệ thống quản lý sân bóng</p>
+          <div class="stadium-info">
+            <h3>Điểm đến thịnh hành</h3>
+            <div class="stadium-card">
+              <img src="/demo/image/dia-diem-du-lich-o-ha-noi-1.jpg" alt="Sân bóng Hà Nội">
+              <h5>Hà Nội</h5>
+              <p>Nằm ở trung tâm thành phố, có mặt cỏ nhân tạo chất lượng cao và hệ thống chiếu sáng hiện đại.</p>
+              <button class="btn btn-warning">Xem ngay</button>
+            </div>
+            <div class="stadium-card">
+              <img src="/demo/image/dlk-02ab6.jpg" alt="Sân bóng Ninh Bình">
+              <h5>Ninh Bình</h5>
+              <p>Không gian rộng rãi, phù hợp với các giải đấu và có khu vực khán đài dành cho khán giả.</p>
+              <button class="btn btn-warning">Xem ngay</button>
+            </div>
+            <div class="stadium-card">
+              <img src="/demo/image/hai-phong-6-1680234763392125722891.jpg" alt="Sân bóng Hải Phòng">
+              <h5>Hải Phòng</h5>
+              <p>Được trang bị đầy đủ tiện nghi, phục vụ cả ngày lẫn đêm với dịch vụ thuê sân tiện lợi.</p>
+              <button class="btn btn-warning">Xem ngay</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

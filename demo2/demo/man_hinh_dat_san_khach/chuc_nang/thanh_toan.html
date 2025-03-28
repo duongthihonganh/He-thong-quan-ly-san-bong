@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh toán đặt sân</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #FFC107;
+      color: #000;
+    }
+    .container-custom {
+      margin-top: 50px;
+    }
+    .payment-card {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    .payment-card h2 {
+      margin-bottom: 20px;
+    }
+    .btn-back {
+      margin-bottom: 20px;
+    }
+    .confirmation {
+      display: none;
+      background: #28a745;
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+  <script>
+    function confirmPayment(event, id) {
+      event.preventDefault();
+      document.getElementById('payment-form-' + id).style.display = 'none';
+      document.getElementById('confirmation-message-' + id).style.display = 'block';
+    }
+  </script>
+</head>
+<body>
+  <div class="container container-custom">
+    <button class="btn btn-dark btn-back" onclick="window.history.back()">Quay lại</button>
+
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        
+        <!-- Ví dụ 1: Đặt sân tại Hà Nội -->
+        <div class="payment-card">
+          <h2>Thanh toán đặt sân</h2>
+          <form id="payment-form-1" onsubmit="confirmPayment(event, 1)">
+            <div class="mb-3">
+              <label class="form-label">Nơi đặt</label>
+              <input type="text" class="form-control" value="Hà Nội" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Sân bóng</label>
+              <input type="text" class="form-control" value="Sân bóng Tuấn Phong" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ngày đặt</label>
+              <input type="date" class="form-control" value="2025-03-20" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Giờ bắt đầu</label>
+              <input type="time" class="form-control" value="18:00" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Thời gian thuê (giờ)</label>
+              <input type="number" class="form-control" value="2" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tổng tiền (VNĐ)</label>
+              <input type="text" class="form-control" value="300,000" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Chọn phương thức thanh toán</label>
+              <select class="form-control">
+                <option>Tiền mặt</option>
+                <option>Chuyển khoản</option>
+                <option>QR Code</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-warning w-100">Thanh toán</button>
+          </form>
+          <div id="confirmation-message-1" class="confirmation">
+            <p>Thanh toán thành công! Cảm ơn bạn đã sử dụng dịch vụ.</p>
+            <button class="btn btn-light" onclick="location.reload()">Quay lại</button>
+          </div>
+        </div>
+
+        <!-- Ví dụ 2: Đặt sân tại Ninh Bình -->
+        <div class="payment-card">
+          <h2>Thanh toán đặt sân</h2>
+          <form id="payment-form-2" onsubmit="confirmPayment(event, 2)">
+            <div class="mb-3">
+              <label class="form-label">Nơi đặt</label>
+              <input type="text" class="form-control" value="Ninh Bình" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Sân bóng</label>
+              <input type="text" class="form-control" value="Sân bóng Huyền Trang" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ngày đặt</label>
+              <input type="date" class="form-control" value="2025-03-21" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Giờ bắt đầu</label>
+              <input type="time" class="form-control" value="20:00" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Thời gian thuê (giờ)</label>
+              <input type="number" class="form-control" value="3" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tổng tiền (VNĐ)</label>
+              <input type="text" class="form-control" value="450,000" disabled>
+            </div>
+            <button type="submit" class="btn btn-warning w-100">Thanh toán</button>
+          </form>
+          <div id="confirmation-message-2" class="confirmation">
+            <p>Thanh toán thành công! Cảm ơn bạn đã sử dụng dịch vụ.</p>
+            <button class="btn btn-light" onclick="location.reload()">Quay lại</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

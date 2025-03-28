@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống kê sân bóng</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #FFC107;
+            color: #000000;
+        }
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #000000;
+        }
+        .chart-container {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Thống kê sân bóng</h2>
+        
+        <div class="chart-container">
+            <h3 class="text-center">Số lượt đặt sân theo sân bóng</h3>
+            <canvas id="fieldBookingChart"></canvas>
+        </div>
+
+        <div class="chart-container mt-4">
+            <h3 class="text-center">Doanh thu từ từng sân bóng</h3>
+            <canvas id="fieldRevenueChart"></canvas>
+        </div>
+
+        <div class="chart-container mt-4">
+            <h3 class="text-center">Chi phí điện, nước</h3>
+            <canvas id="utilityCostChart"></canvas>
+        </div>
+
+        <div class="chart-container mt-4">
+            <h3 class="text-center">Chi phí bảo trì sân</h3>
+            <canvas id="maintenanceCostChart"></canvas>
+        </div>
+
+        <div class="chart-container mt-4">
+            <h3 class="text-center">Chi phí nhập hàng</h3>
+            <canvas id="inventoryCostChart"></canvas>
+        </div>
+
+        <div class="chart-container mt-4">
+            <h3 class="text-center">Chi phí quảng cáo</h3>
+            <canvas id="marketingCostChart"></canvas>
+        </div>
+
+        <div class="chart-container mt-4">
+            <h3 class="text-center">So sánh Doanh thu và Chi phí</h3>
+            <canvas id="profitComparisonChart"></canvas>
+        </div>
+        
+        <a href="/trangchu.html" class="btn btn-secondary mt-3">Quay lại</a>
+    </div>
+    
+    <script>
+        var ctx1 = document.getElementById('fieldBookingChart').getContext('2d');
+        var fieldBookingChart = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Sân 1', 'Sân 2', 'Sân 3', 'Sân 4', 'Sân 5'],
+                datasets: [{
+                    label: 'Số lượt đặt sân',
+                    data: [50, 65, 40, 55, 70],
+                    backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#F4A261', '#2A9D8F'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        var ctx2 = document.getElementById('fieldRevenueChart').getContext('2d');
+        var fieldRevenueChart = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Sân 1', 'Sân 2', 'Sân 3', 'Sân 4', 'Sân 5'],
+                datasets: [{
+                    label: 'Doanh thu (triệu VNĐ)',
+                    data: [25, 32, 20, 28, 35],
+                    backgroundColor: ['#C70039', '#900C3F', '#581845', '#FFBD33', '#28A745'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        var ctx3 = document.getElementById('utilityCostChart').getContext('2d');
+        var utilityCostChart = new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4'],
+                datasets: [{
+                    label: 'Chi phí điện, nước (triệu VNĐ)',
+                    data: [5, 4.5, 5.2, 4.8],
+                    backgroundColor: '#FF5733',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        var ctx4 = document.getElementById('maintenanceCostChart').getContext('2d');
+        var maintenanceCostChart = new Chart(ctx4, {
+            type: 'bar',
+            data: {
+                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4'],
+                datasets: [{
+                    label: 'Chi phí bảo trì sân (triệu VNĐ)',
+                    data: [3, 2.8, 3.2, 3.5],
+                    backgroundColor: '#3498DB',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        var ctx5 = document.getElementById('inventoryCostChart').getContext('2d');
+        var inventoryCostChart = new Chart(ctx5, {
+            type: 'bar',
+            data: {
+                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4'],
+                datasets: [{
+                    label: 'Chi phí nhập hàng (triệu VNĐ)',
+                    data: [7, 6.5, 7.2, 6.8],
+                    backgroundColor: '#F39C12',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        var ctx7 = document.getElementById('profitComparisonChart').getContext('2d');
+        var profitComparisonChart = new Chart(ctx7, {
+            type: 'bar',
+            data: {
+                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4'],
+                datasets: [{
+                    label: 'Doanh thu (triệu VNĐ)',
+                    data: [80, 85, 90, 95],
+                    backgroundColor: '#28A745',
+                    borderWidth: 1
+                }, {
+                    label: 'Chi phí (triệu VNĐ)',
+                    data: [50, 55, 60, 65],
+                    backgroundColor: '#DC3545',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        var ctx6 = document.getElementById('marketingCostChart').getContext('2d');
+        var marketingCostChart = new Chart(ctx6, {
+            type: 'bar',
+            data: {
+                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4'],
+                datasets: [{
+                    label: 'Chi phí quảng cáo (triệu VNĐ)',
+                    data: [4, 3.5, 4.2, 3.8],
+                    backgroundColor: '#E74C3C',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
