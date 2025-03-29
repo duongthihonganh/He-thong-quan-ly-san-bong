@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ thống Quản lý Sân Bóng</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="main-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h1>Quản lý Sân Bóng</h1>
+      </div>
+      
+      <div class="nav-menu">
+        <div class="nav-title">Tổng quan</div>
+        <div class="nav-item active" data-page="dashboard">
+          <i class="fas fa-home"></i>
+          <span>Trang chủ</span>
+        </div>
+        
+        <div class="nav-title">Quản lý</div>
+        <div class="nav-item" data-page="bookings">
+          <i class="fas fa-calendar-alt"></i>
+          <span>Đặt sân</span>
+        </div>
+        <div class="nav-item" data-page="fields">
+          <i class="fas fa-futbol"></i>
+          <span>Sân bóng</span>
+        </div>
+        <div class="nav-item" data-page="customers">
+          <i class="fas fa-users"></i>
+          <span>Khách hàng</span>
+        </div>
+        <div class="nav-item" data-page="services">
+          <i class="fas fa-concierge-bell"></i>
+          <span>Dịch vụ</span>
+        </div>
+        <div class="nav-item" data-page="payments">
+          <i class="fas fa-money-bill-wave"></i>
+          <span>Thanh toán</span>
+        </div>
+        
+        <div class="nav-title">Báo cáo</div>
+        <div class="nav-item" data-page="reports">
+          <i class="fas fa-chart-bar"></i>
+          <span>Báo cáo doanh thu</span>
+        </div>
+        
+        <div class="nav-title">Hệ thống</div>
+        <div class="nav-item" data-page="staff">
+          <i class="fas fa-user-tie"></i>
+          <span>Nhân viên</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Bar -->
+      <div class="topbar">
+        <div class="search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Tìm kiếm...">
+        </div>
+        
+        <div class="user-info">
+          <span class="user-name" id="userName">Đang tải...</span>
+          <span class="user-role" id="userRole">...</span>
+          <div class="user-avatar" id="userAvatar">
+            <i class="fas fa-user"></i>
+          </div>
+          
+          <div class="dropdown-menu" id="userDropdown">
+            <div class="dropdown-item">
+              <i class="fas fa-user-circle"></i> Thông tin cá nhân
+            </div>
+            <div class="dropdown-item">
+              <i class="fas fa-cog"></i> Cài đặt
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item" id="logoutBtn">
+              <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Page Content -->
+      <div class="page-content" id="pageContent">
+        <!-- Nội dung trang sẽ được thêm vào ở đây bằng JavaScript -->
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Đang tải dữ liệu...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal Container -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" id="modalContainer">
+      <!-- Modal content will be inserted here dynamically -->
+    </div>
+  </div>
+  
+  <script src="js/main.js"></script>
+</body>
+</html>
