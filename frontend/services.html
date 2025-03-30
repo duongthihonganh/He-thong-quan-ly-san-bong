@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý Dịch Vụ - Hệ thống Quản lý Sân Bóng</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-futbol"></i>
+          <span>SOCCER FIELD</span>
+        </div>
+      </div>
+      
+      <ul class="sidebar-menu">
+        <li class="menu-item">
+          <a href="index.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-tachometer-alt"></i></span>
+            <span>Tổng quan</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="bookings.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-calendar-alt"></i></span>
+            <span>Đặt sân</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="fields.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-futbol"></i></span>
+            <span>Sân bóng</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="customers.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-users"></i></span>
+            <span>Khách hàng</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="staff.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-user-tie"></i></span>
+            <span>Nhân viên</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="services.html" class="menu-link active">
+            <span class="menu-icon"><i class="fas fa-concierge-bell"></i></span>
+            <span>Dịch vụ</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="reports.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-chart-bar"></i></span>
+            <span>Báo cáo & Thống kê</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="page-title">
+          Quản lý Dịch Vụ
+        </div>
+        
+        <div class="user-dropdown">
+          <div class="dropdown-toggle">
+            <div class="user-info">
+              <div class="user-name">Người dùng</div>
+              <div class="user-role">Quản lý</div>
+            </div>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          
+          <div class="dropdown-menu">
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-user-circle"></i> Hồ sơ
+            </a>
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-cog"></i> Cài đặt
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="#" id="logoutBtn" class="dropdown-item">
+              <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Services Content -->
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-header">
+          <div>Quản lý dịch vụ đi kèm</div>
+          <button class="btn" id="newServiceBtn">
+            <i class="fas fa-plus-circle"></i> Thêm dịch vụ mới
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="form-row" style="margin-bottom: 1rem;">
+            <div class="form-col">
+              <label for="serviceNameFilter">Tên dịch vụ:</label>
+              <input type="text" id="serviceNameFilter" class="form-control" placeholder="Tìm theo tên dịch vụ">
+            </div>
+            <div class="form-col">
+              <label for="serviceCategoryFilter">Danh mục:</label>
+              <select id="serviceCategoryFilter" class="form-control">
+                <option value="">Tất cả danh mục</option>
+                <option value="food">Đồ ăn</option>
+                <option value="drink">Đồ uống</option>
+                <option value="equipment">Dụng cụ</option>
+                <option value="other">Khác</option>
+              </select>
+            </div>
+            <div class="form-col" style="align-self: flex-end;">
+              <button class="btn" id="serviceFilterBtn">
+                <i class="fas fa-search"></i> Tìm kiếm
+              </button>
+            </div>
+          </div>
+          
+          <div class="table-container">
+            <table class="table" id="servicesTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tên dịch vụ</th>
+                  <th>Danh mục</th>
+                  <th>Mô tả</th>
+                  <th>Đơn giá</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="7" class="text-center">Đang tải dữ liệu...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Service Sales Statistics -->
+      <div class="card">
+        <div class="card-header">
+          <div>Thống kê bán dịch vụ</div>
+          <div>
+            <select id="serviceStatsPeriod" class="form-control" style="display: inline-block; width: auto;">
+              <option value="today">Hôm nay</option>
+              <option value="week">Tuần này</option>
+              <option value="month" selected>Tháng này</option>
+              <option value="year">Năm nay</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="dashboard-cards">
+            <div class="card">
+              <div class="card-body">
+                <div class="dashboard-card">
+                  <div class="card-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                  </div>
+                  <div class="card-info">
+                    <h3 id="totalServiceOrders">0</h3>
+                    <p>Tổng đơn hàng</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card">
+              <div class="card-body">
+                <div class="dashboard-card">
+                  <div class="card-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                  </div>
+                  <div class="card-info">
+                    <h3 id="totalServiceRevenue">0 ₫</h3>
+                    <p>Doanh thu dịch vụ</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card">
+              <div class="card-body">
+                <div class="dashboard-card">
+                  <div class="card-icon">
+                    <i class="fas fa-trophy"></i>
+                  </div>
+                  <div class="card-info">
+                    <h3 id="topService">-</h3>
+                    <p>Dịch vụ bán chạy nhất</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card">
+              <div class="card-body">
+                <div class="dashboard-card">
+                  <div class="card-icon">
+                    <i class="fas fa-chart-line"></i>
+                  </div>
+                  <div class="card-info">
+                    <h3 id="avgOrderValue">0 ₫</h3>
+                    <p>Giá trị trung bình/đơn</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div style="margin-top: 1.5rem;">
+            <h4>Top 5 dịch vụ bán chạy</h4>
+            <div id="topServicesChart" style="height: 300px; background-color: #f5f5f5; display: flex; justify-content: center; align-items: center;">
+              <p>Biểu đồ đang được tải...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Service Modal -->
+  <div class="modal" id="serviceModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Thêm dịch vụ mới</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="serviceForm">
+          <input type="hidden" id="serviceId">
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="serviceName">Tên dịch vụ:</label>
+                <input type="text" id="serviceName" class="form-control" required>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="serviceCategory">Danh mục:</label>
+                <select id="serviceCategory" class="form-control" required>
+                  <option value="food">Đồ ăn</option>
+                  <option value="drink">Đồ uống</option>
+                  <option value="equipment">Dụng cụ</option>
+                  <option value="other">Khác</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="serviceDescription">Mô tả:</label>
+            <textarea id="serviceDescription" class="form-control" rows="2"></textarea>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="servicePrice">Đơn giá (VNĐ):</label>
+                <input type="number" id="servicePrice" class="form-control" required min="0">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="serviceStatus">Trạng thái:</label>
+                <select id="serviceStatus" class="form-control" required>
+                  <option value="active">Đang kinh doanh</option>
+                  <option value="inactive">Ngừng kinh doanh</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="serviceUnit">Đơn vị tính:</label>
+                <input type="text" id="serviceUnit" class="form-control" placeholder="Ví dụ: chai, ly, bộ">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="stockQuantity">Số lượng tồn kho:</label>
+                <input type="number" id="stockQuantity" class="form-control" min="0" value="0">
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="serviceNotes">Ghi chú:</label>
+            <textarea id="serviceNotes" class="form-control" rows="2"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" id="cancelServiceBtn">Hủy</button>
+        <button type="button" class="btn" id="saveServiceBtn">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Firebase SDK if using Firebase Authentication -->
+  <!-- <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script> -->
+  
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/services.js"></script>
+</body>
+</html>

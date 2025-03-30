@@ -1,0 +1,16 @@
+{
+  "workflow": {
+    "name": "frontend-server",
+    "author": "agent",
+    "metadata": {
+      "agentRequireRestartOnSave": false
+    },
+    "tasks": [
+      {
+        "task": "shell.exec",
+        "args": "./run-frontend.sh",
+        "waitForPort": 3000
+      }
+    ]
+  }
+}

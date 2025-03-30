@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo cáo & Thống kê - Hệ thống Quản lý Sân Bóng</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-futbol"></i>
+          <span>SOCCER FIELD</span>
+        </div>
+      </div>
+      
+      <ul class="sidebar-menu">
+        <li class="menu-item">
+          <a href="index.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-tachometer-alt"></i></span>
+            <span>Tổng quan</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="bookings.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-calendar-alt"></i></span>
+            <span>Đặt sân</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="fields.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-futbol"></i></span>
+            <span>Sân bóng</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="customers.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-users"></i></span>
+            <span>Khách hàng</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="staff.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-user-tie"></i></span>
+            <span>Nhân viên</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="services.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-concierge-bell"></i></span>
+            <span>Dịch vụ</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="reports.html" class="menu-link active">
+            <span class="menu-icon"><i class="fas fa-chart-bar"></i></span>
+            <span>Báo cáo & Thống kê</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="page-title">
+          Báo cáo & Thống kê
+        </div>
+        
+        <div class="user-dropdown">
+          <div class="dropdown-toggle">
+            <div class="user-info">
+              <div class="user-name">Người dùng</div>
+              <div class="user-role">Quản lý</div>
+            </div>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          
+          <div class="dropdown-menu">
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-user-circle"></i> Hồ sơ
+            </a>
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-cog"></i> Cài đặt
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="#" id="logoutBtn" class="dropdown-item">
+              <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Report Configuration -->
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-header">
+          <div>Tạo báo cáo</div>
+        </div>
+        <div class="card-body">
+          <form id="reportForm">
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="reportType">Loại báo cáo:</label>
+                  <select id="reportType" class="form-control" required>
+                    <option value="">-- Chọn loại báo cáo --</option>
+                    <option value="revenue">Báo cáo doanh thu</option>
+                    <option value="booking">Báo cáo đặt sân</option>
+                    <option value="customer">Báo cáo khách hàng</option>
+                    <option value="service">Báo cáo dịch vụ</option>
+                    <option value="field_usage">Báo cáo sử dụng sân</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="reportPeriod">Thời gian:</label>
+                  <select id="reportPeriod" class="form-control" required>
+                    <option value="today">Hôm nay</option>
+                    <option value="yesterday">Hôm qua</option>
+                    <option value="this_week">Tuần này</option>
+                    <option value="last_week">Tuần trước</option>
+                    <option value="this_month" selected>Tháng này</option>
+                    <option value="last_month">Tháng trước</option>
+                    <option value="this_quarter">Quý này</option>
+                    <option value="last_quarter">Quý trước</option>
+                    <option value="this_year">Năm nay</option>
+                    <option value="last_year">Năm trước</option>
+                    <option value="custom">Tùy chỉnh...</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <div id="customDateRange" style="display: none;">
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="startDate">Từ ngày:</label>
+                    <input type="date" id="startDate" class="form-control">
+                  </div>
+                </div>
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="endDate">Đến ngày:</label>
+                    <input type="date" id="endDate" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="reportFormat">Định dạng xuất báo cáo:</label>
+                  <select id="reportFormat" class="form-control">
+                    <option value="table">Hiển thị trên trang web</option>
+                    <option value="sheets">Xuất sang Google Sheets</option>
+                    <option value="excel">Tải về Excel</option>
+                    <option value="pdf">Tải về PDF</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="additionalFilters">Bộ lọc bổ sung:</label>
+                  <select id="additionalFilters" class="form-control">
+                    <option value="none">Không có</option>
+                    <option value="field">Theo sân</option>
+                    <option value="customer">Theo khách hàng</option>
+                    <option value="payment_status">Theo trạng thái thanh toán</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <div id="fieldFilterContainer" style="display: none;">
+              <div class="form-group">
+                <label for="fieldFilter">Chọn sân:</label>
+                <select id="fieldFilter" class="form-control">
+                  <option value="">Tất cả sân</option>
+                  <option value="1">Sân mini 1</option>
+                  <option value="2">Sân mini 2</option>
+                  <option value="3">Sân 7 người 1</option>
+                </select>
+              </div>
+            </div>
+            
+            <div id="customerFilterContainer" style="display: none;">
+              <div class="form-group">
+                <label for="customerFilter">Chọn khách hàng:</label>
+                <select id="customerFilter" class="form-control">
+                  <option value="">Tất cả khách hàng</option>
+                  <option value="1">Nguyễn Văn A</option>
+                  <option value="2">Công ty XYZ</option>
+                  <option value="3">Trần Thị B</option>
+                </select>
+              </div>
+            </div>
+            
+            <div id="paymentStatusFilterContainer" style="display: none;">
+              <div class="form-group">
+                <label for="paymentStatusFilter">Trạng thái thanh toán:</label>
+                <select id="paymentStatusFilter" class="form-control">
+                  <option value="">Tất cả trạng thái</option>
+                  <option value="paid">Đã thanh toán</option>
+                  <option value="partially_paid">Thanh toán một phần</option>
+                  <option value="unpaid">Chưa thanh toán</option>
+                </select>
+              </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 1rem;">
+              <button type="button" class="btn" id="generateReportBtn">
+                <i class="fas fa-file-alt"></i> Tạo báo cáo
+              </button>
+              <button type="button" class="btn" id="resetReportBtn">
+                <i class="fas fa-redo"></i> Làm mới
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Report Results -->
+      <div class="card">
+        <div class="card-header">
+          <div id="reportTitle">Kết quả báo cáo</div>
+          <div>
+            <button class="btn" id="exportBtn" style="display: none;">
+              <i class="fas fa-file-export"></i> Xuất báo cáo
+            </button>
+            <button class="btn" id="printBtn" style="display: none;">
+              <i class="fas fa-print"></i> In báo cáo
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="reportSummary" style="margin-bottom: 1.5rem; display: none;">
+            <!-- Summary cards will be dynamically inserted here -->
+          </div>
+          
+          <div id="reportChartContainer" style="height: 400px; background-color: #f5f5f5; margin-bottom: 1.5rem; display: none; justify-content: center; align-items: center;">
+            <p>Biểu đồ sẽ được hiển thị tại đây</p>
+          </div>
+          
+          <div id="reportTableContainer" style="display: none;">
+            <div class="table-container">
+              <table class="table" id="reportTable">
+                <thead>
+                  <tr>
+                    <!-- Headers will be dynamically inserted here -->
+                    <th>Chưa có dữ liệu</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-center">Hãy thiết lập và tạo báo cáo để xem kết quả</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div id="noReportData" class="text-center" style="padding: 2rem;">
+            <i class="fas fa-chart-bar" style="font-size: 3rem; color: var(--divider-color); margin-bottom: 1rem;"></i>
+            <p>Hãy chọn loại báo cáo và thiết lập thời gian để xem báo cáo.</p>
+          </div>
+          
+          <div id="loadingReport" class="text-center" style="padding: 2rem; display: none;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+            <p>Đang tạo báo cáo, vui lòng đợi...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google Sheets Connection Modal -->
+  <div class="modal" id="sheetsConnectionModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Kết nối với Google Sheets</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="sheetsConnectionForm">
+          <div class="form-group">
+            <label for="sheetId">ID Google Sheet:</label>
+            <input type="text" id="sheetId" class="form-control" placeholder="Nhập ID của Google Sheet">
+            <small>* Để trống nếu muốn tạo bảng tính mới</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="sheetName">Tên trang tính:</label>
+            <input type="text" id="sheetName" class="form-control" placeholder="Ví dụ: Doanh thu tháng 9">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" id="cancelSheetsBtn">Hủy</button>
+        <button type="button" class="btn" id="connectSheetsBtn">Xuất báo cáo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Firebase SDK if using Firebase Authentication -->
+  <!-- <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script> -->
+  
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/reports.js"></script>
+</body>
+</html>

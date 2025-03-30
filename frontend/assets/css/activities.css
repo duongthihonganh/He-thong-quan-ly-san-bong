@@ -1,0 +1,58 @@
+.activities-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.activity-type {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 1rem;
+  background-color: rgba(0, 128, 55, 0.1);
+  color: var(--primary-color);
+}
+
+.activity-type.booking {
+  background-color: rgba(0, 128, 55, 0.1);
+  color: var(--primary-color);
+}
+
+.activity-type.payment {
+  background-color: rgba(0, 150, 136, 0.1);
+  color: #009688;
+}
+
+.activity-type.maintenance {
+  background-color: rgba(255, 160, 0, 0.1);
+  color: var(--warning-color);
+}
+
+.activity-type.customer {
+  background-color: rgba(33, 150, 243, 0.1);
+  color: #2196F3;
+}
+
+.activity-details p {
+  margin-bottom: 0.25rem;
+}
+
+.activity-details small {
+  color: var(--text-light);
+  font-size: 0.8rem;
+}

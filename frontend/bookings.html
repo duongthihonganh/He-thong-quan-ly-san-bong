@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý Đặt Sân - Hệ thống Quản lý Sân Bóng</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/details.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-futbol"></i>
+          <span>SOCCER FIELD</span>
+        </div>
+      </div>
+      
+      <ul class="sidebar-menu">
+        <li class="menu-item">
+          <a href="index.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-tachometer-alt"></i></span>
+            <span>Tổng quan</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="bookings.html" class="menu-link active">
+            <span class="menu-icon"><i class="fas fa-calendar-alt"></i></span>
+            <span>Đặt sân</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="fields.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-futbol"></i></span>
+            <span>Sân bóng</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="customers.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-users"></i></span>
+            <span>Khách hàng</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="staff.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-user-tie"></i></span>
+            <span>Nhân viên</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="services.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-concierge-bell"></i></span>
+            <span>Dịch vụ</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="reports.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-chart-bar"></i></span>
+            <span>Báo cáo & Thống kê</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="page-title">
+          Quản lý Đặt Sân
+        </div>
+        
+        <div class="user-dropdown">
+          <div class="dropdown-toggle">
+            <div class="user-info">
+              <div class="user-name">Người dùng</div>
+              <div class="user-role">Quản lý</div>
+            </div>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          
+          <div class="dropdown-menu">
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-user-circle"></i> Hồ sơ
+            </a>
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-cog"></i> Cài đặt
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="#" id="logoutBtn" class="dropdown-item">
+              <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bookings Content -->
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-header">
+          <div>Quản lý lịch đặt sân</div>
+          <button class="btn" id="newBookingBtn">
+            <i class="fas fa-plus-circle"></i> Đặt sân mới
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="form-row" style="margin-bottom: 1rem;">
+            <div class="form-col">
+              <label for="bookingDateFilter">Ngày:</label>
+              <input type="date" id="bookingDateFilter" class="form-control" value="">
+            </div>
+            <div class="form-col">
+              <label for="bookingFieldFilter">Sân:</label>
+              <select id="bookingFieldFilter" class="form-control">
+                <option value="">Tất cả sân</option>
+                <option value="1">Sân mini 1</option>
+                <option value="2">Sân mini 2</option>
+                <option value="3">Sân 7 người 1</option>
+              </select>
+            </div>
+            <div class="form-col">
+              <label for="bookingStatusFilter">Trạng thái:</label>
+              <select id="bookingStatusFilter" class="form-control">
+                <option value="">Tất cả trạng thái</option>
+                <option value="confirmed">Đã xác nhận</option>
+                <option value="pending">Chờ xác nhận</option>
+                <option value="cancelled">Đã hủy</option>
+              </select>
+            </div>
+            <div class="form-col" style="align-self: flex-end;">
+              <button class="btn" id="bookingFilterBtn">
+                <i class="fas fa-search"></i> Lọc
+              </button>
+            </div>
+          </div>
+          
+          <div class="table-container">
+            <table class="table" id="bookingsTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Sân</th>
+                  <th>Khách hàng</th>
+                  <th>Ngày</th>
+                  <th>Thời gian</th>
+                  <th>Trạng thái</th>
+                  <th>Thanh toán</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="8" class="text-center">Đang tải dữ liệu...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Booking Modal -->
+  <div class="modal" id="bookingModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Đặt sân mới</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="bookingForm">
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="fieldId">Chọn sân:</label>
+                <select id="fieldId" class="form-control" required>
+                  <option value="">-- Chọn sân --</option>
+                  <option value="1">Sân mini 1</option>
+                  <option value="2">Sân mini 2</option>
+                  <option value="3">Sân 7 người 1</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="bookingDate">Ngày đặt:</label>
+                <input type="date" id="bookingDate" class="form-control" required>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="startTime">Giờ bắt đầu:</label>
+                <select id="startTime" class="form-control" required>
+                  <option value="">-- Chọn giờ --</option>
+                  <option value="06:00">06:00</option>
+                  <option value="07:00">07:00</option>
+                  <option value="08:00">08:00</option>
+                  <option value="09:00">09:00</option>
+                  <option value="10:00">10:00</option>
+                  <option value="11:00">11:00</option>
+                  <option value="12:00">12:00</option>
+                  <option value="13:00">13:00</option>
+                  <option value="14:00">14:00</option>
+                  <option value="15:00">15:00</option>
+                  <option value="16:00">16:00</option>
+                  <option value="17:00">17:00</option>
+                  <option value="18:00">18:00</option>
+                  <option value="19:00">19:00</option>
+                  <option value="20:00">20:00</option>
+                  <option value="21:00">21:00</option>
+                  <option value="22:00">22:00</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="endTime">Giờ kết thúc:</label>
+                <select id="endTime" class="form-control" required>
+                  <option value="">-- Chọn giờ --</option>
+                  <option value="07:00">07:00</option>
+                  <option value="08:00">08:00</option>
+                  <option value="09:00">09:00</option>
+                  <option value="10:00">10:00</option>
+                  <option value="11:00">11:00</option>
+                  <option value="12:00">12:00</option>
+                  <option value="13:00">13:00</option>
+                  <option value="14:00">14:00</option>
+                  <option value="15:00">15:00</option>
+                  <option value="16:00">16:00</option>
+                  <option value="17:00">17:00</option>
+                  <option value="18:00">18:00</option>
+                  <option value="19:00">19:00</option>
+                  <option value="20:00">20:00</option>
+                  <option value="21:00">21:00</option>
+                  <option value="22:00">22:00</option>
+                  <option value="23:00">23:00</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="customerId">Khách hàng:</label>
+                <select id="customerId" class="form-control" required>
+                  <option value="">-- Chọn khách hàng --</option>
+                  <option value="1">Nguyễn Văn A - 0901234567</option>
+                  <option value="2">Công ty XYZ - 0909876543</option>
+                  <option value="3">Trần Thị B - 0905555555</option>
+                  <option value="new">+ Thêm khách hàng mới</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="bookingStatus">Trạng thái:</label>
+                <select id="bookingStatus" class="form-control" required>
+                  <option value="confirmed">Đã xác nhận</option>
+                  <option value="pending">Chờ xác nhận</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="paymentMethod">Phương thức thanh toán:</label>
+            <select id="paymentMethod" class="form-control" required>
+              <option value="cash">Tiền mặt</option>
+              <option value="transfer">Chuyển khoản</option>
+              <option value="card">Thẻ</option>
+            </select>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="totalAmount">Tổng tiền:</label>
+                <input type="number" id="totalAmount" class="form-control" required>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="paidAmount">Đã thanh toán:</label>
+                <input type="number" id="paidAmount" class="form-control" value="0">
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="notes">Ghi chú:</label>
+            <textarea id="notes" class="form-control" rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" id="cancelBookingBtn">Hủy</button>
+        <button type="button" class="btn" id="saveBookingBtn">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Booking Details Modal -->
+  <div class="modal" id="viewBookingModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Chi tiết đặt sân</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="bookingDetails">
+          <div class="booking-detail-row">
+            <div class="booking-detail-label">Mã đặt sân:</div>
+            <div class="booking-detail-value" id="viewBookingId"></div>
+          </div>
+          <div class="booking-detail-row">
+            <div class="booking-detail-label">Sân:</div>
+            <div class="booking-detail-value" id="viewFieldName"></div>
+          </div>
+          <div class="booking-detail-row">
+            <div class="booking-detail-label">Ngày đặt:</div>
+            <div class="booking-detail-value" id="viewBookingDate"></div>
+          </div>
+          <div class="booking-detail-row">
+            <div class="booking-detail-label">Thời gian:</div>
+            <div class="booking-detail-value" id="viewBookingTime"></div>
+          </div>
+          <div class="booking-detail-row">
+            <div class="booking-detail-label">Khách hàng:</div>
+            <div class="booking-detail-value" id="viewCustomerName"></div>
+          </div>
+          <div class="booking-detail-row">
+            <div class="booking-detail-label">SĐT:</div>
+            <div class="booking-detail-value" id="viewCustomerPhone"></div>
+          </div>
+          <div class="booking-detail-row">
+            <div class="booking-detail-label">Trạng thái:</div>
+            <div class="booking-detail-value" id="viewBookingStatus"></div>
+          </div>
+          <div class="booking-detail-row">
+            <div class="booking-detail-label">Thanh toán:</div>
+            <div class="booking-detail-value" id="viewPaymentStatus"></div>
+          </div>
+          <div class="booking-detail-row">
+            <div class="booking-detail-label">Phương thức:</div>
+            <div class="booking-detail-value" id="viewPaymentMethod"></div>
+          </div>
+          <div class="booking-detail-row">
+            <div class="booking-detail-label">Tổng tiền:</div>
+            <div class="booking-detail-value" id="viewTotalAmount"></div>
+          </div>
+          <div class="booking-detail-row">
+            <div class="booking-detail-label">Đã thanh toán:</div>
+            <div class="booking-detail-value" id="viewPaidAmount"></div>
+          </div>
+          <div class="booking-detail-row">
+            <div class="booking-detail-label">Còn lại:</div>
+            <div class="booking-detail-value" id="viewRemainingAmount"></div>
+          </div>
+          <div class="booking-detail-row">
+            <div class="booking-detail-label">Ghi chú:</div>
+            <div class="booking-detail-value" id="viewNotes"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" id="printBookingBtn">
+          <i class="fas fa-print"></i> In
+        </button>
+        <button type="button" class="btn" id="closeViewBookingBtn">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Firebase SDK if using Firebase Authentication -->
+  <!-- <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script> -->
+  
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/bookings.js"></script>
+</body>
+</html>

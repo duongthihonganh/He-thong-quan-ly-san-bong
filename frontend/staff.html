@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý Nhân Viên - Hệ thống Quản lý Sân Bóng</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-futbol"></i>
+          <span>SOCCER FIELD</span>
+        </div>
+      </div>
+      
+      <ul class="sidebar-menu">
+        <li class="menu-item">
+          <a href="index.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-tachometer-alt"></i></span>
+            <span>Tổng quan</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="bookings.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-calendar-alt"></i></span>
+            <span>Đặt sân</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="fields.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-futbol"></i></span>
+            <span>Sân bóng</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="customers.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-users"></i></span>
+            <span>Khách hàng</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="staff.html" class="menu-link active">
+            <span class="menu-icon"><i class="fas fa-user-tie"></i></span>
+            <span>Nhân viên</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="services.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-concierge-bell"></i></span>
+            <span>Dịch vụ</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="reports.html" class="menu-link">
+            <span class="menu-icon"><i class="fas fa-chart-bar"></i></span>
+            <span>Báo cáo & Thống kê</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="page-title">
+          Quản lý Nhân Viên
+        </div>
+        
+        <div class="user-dropdown">
+          <div class="dropdown-toggle">
+            <div class="user-info">
+              <div class="user-name">Người dùng</div>
+              <div class="user-role">Quản lý</div>
+            </div>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          
+          <div class="dropdown-menu">
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-user-circle"></i> Hồ sơ
+            </a>
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-cog"></i> Cài đặt
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="#" id="logoutBtn" class="dropdown-item">
+              <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Staff Content -->
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-header">
+          <div>Quản lý nhân viên</div>
+          <button class="btn" id="newStaffBtn">
+            <i class="fas fa-plus-circle"></i> Thêm nhân viên mới
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="form-row" style="margin-bottom: 1rem;">
+            <div class="form-col">
+              <label for="staffNameFilter">Tên/SĐT:</label>
+              <input type="text" id="staffNameFilter" class="form-control" placeholder="Tìm theo tên hoặc số điện thoại">
+            </div>
+            <div class="form-col">
+              <label for="staffRoleFilter">Vai trò:</label>
+              <select id="staffRoleFilter" class="form-control">
+                <option value="">Tất cả vai trò</option>
+                <option value="admin">Quản trị viên</option>
+                <option value="manager">Quản lý</option>
+                <option value="staff">Nhân viên</option>
+              </select>
+            </div>
+            <div class="form-col" style="align-self: flex-end;">
+              <button class="btn" id="staffFilterBtn">
+                <i class="fas fa-search"></i> Tìm kiếm
+              </button>
+            </div>
+          </div>
+          
+          <div class="table-container">
+            <table class="table" id="staffTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tên</th>
+                  <th>Vai trò</th>
+                  <th>Email</th>
+                  <th>SĐT</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="7" class="text-center">Đang tải dữ liệu...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Staff Shift Schedule -->
+      <div class="card">
+        <div class="card-header">
+          <div>Lịch làm việc</div>
+          <div>
+            <button class="btn" id="printScheduleBtn">
+              <i class="fas fa-print"></i> In lịch
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="form-row" style="margin-bottom: 1rem;">
+            <div class="form-col">
+              <label for="scheduleWeek">Tuần:</label>
+              <input type="week" id="scheduleWeek" class="form-control">
+            </div>
+            <div class="form-col" style="align-self: flex-end;">
+              <button class="btn" id="loadScheduleBtn">
+                <i class="fas fa-sync-alt"></i> Xem lịch
+              </button>
+            </div>
+          </div>
+          
+          <div class="table-container">
+            <table class="table" id="shiftScheduleTable">
+              <thead>
+                <tr>
+                  <th>Nhân viên</th>
+                  <th>Thứ 2</th>
+                  <th>Thứ 3</th>
+                  <th>Thứ 4</th>
+                  <th>Thứ 5</th>
+                  <th>Thứ 6</th>
+                  <th>Thứ 7</th>
+                  <th>Chủ nhật</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="8" class="text-center">Đang tải lịch làm việc...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Staff Modal -->
+  <div class="modal" id="staffModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Thêm nhân viên mới</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="staffForm">
+          <input type="hidden" id="staffId">
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="fullName">Họ và tên:</label>
+                <input type="text" id="fullName" class="form-control" required>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="role">Vai trò:</label>
+                <select id="role" class="form-control" required>
+                  <option value="admin">Quản trị viên</option>
+                  <option value="manager">Quản lý</option>
+                  <option value="staff">Nhân viên</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" class="form-control" required>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="phone">Số điện thoại:</label>
+                <input type="tel" id="phone" class="form-control" required>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row" id="passwordContainer">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" id="password" class="form-control">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="confirmPassword">Xác nhận mật khẩu:</label>
+                <input type="password" id="confirmPassword" class="form-control">
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="address">Địa chỉ:</label>
+                <input type="text" id="address" class="form-control">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="status">Trạng thái:</label>
+                <select id="status" class="form-control" required>
+                  <option value="active">Đang làm việc</option>
+                  <option value="inactive">Ngừng làm việc</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="notes">Ghi chú:</label>
+            <textarea id="notes" class="form-control" rows="2"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" id="cancelStaffBtn">Hủy</button>
+        <button type="button" class="btn" id="saveStaffBtn">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Staff Details Modal -->
+  <div class="modal" id="viewStaffModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Chi tiết nhân viên</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="staffDetails">
+          <div class="staff-detail-row">
+            <div class="staff-detail-label">Mã nhân viên:</div>
+            <div class="staff-detail-value" id="viewStaffId"></div>
+          </div>
+          <div class="staff-detail-row">
+            <div class="staff-detail-label">Họ và tên:</div>
+            <div class="staff-detail-value" id="viewFullName"></div>
+          </div>
+          <div class="staff-detail-row">
+            <div class="staff-detail-label">Vai trò:</div>
+            <div class="staff-detail-value" id="viewRole"></div>
+          </div>
+          <div class="staff-detail-row">
+            <div class="staff-detail-label">Email:</div>
+            <div class="staff-detail-value" id="viewEmail"></div>
+          </div>
+          <div class="staff-detail-row">
+            <div class="staff-detail-label">Số điện thoại:</div>
+            <div class="staff-detail-value" id="viewPhone"></div>
+          </div>
+          <div class="staff-detail-row">
+            <div class="staff-detail-label">Địa chỉ:</div>
+            <div class="staff-detail-value" id="viewAddress"></div>
+          </div>
+          <div class="staff-detail-row">
+            <div class="staff-detail-label">Trạng thái:</div>
+            <div class="staff-detail-value" id="viewStatus"></div>
+          </div>
+          <div class="staff-detail-row">
+            <div class="staff-detail-label">Ghi chú:</div>
+            <div class="staff-detail-value" id="viewNotes"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" id="closeViewStaffBtn">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Firebase SDK if using Firebase Authentication -->
+  <!-- <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script> -->
+  
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/staff.js"></script>
+</body>
+</html>
