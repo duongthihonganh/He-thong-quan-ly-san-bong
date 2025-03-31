@@ -96,59 +96,71 @@
         </div>
       </div>
       
-      <!-- Staff Content -->
-      <div class="card" style="margin-bottom: 1.5rem;">
-        <div class="card-header">
+       <!-- Staff Content -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <div class="card-header">
           <div>Quản lý nhân viên</div>
           <button class="btn" id="newStaffBtn">
-            <i class="fas fa-plus-circle"></i> Thêm nhân viên mới
+              <i class="fas fa-plus-circle"></i> Thêm nhân viên mới
           </button>
-        </div>
-        <div class="card-body">
+      </div>  
+      <div class="card-body">
           <div class="form-row" style="margin-bottom: 1rem;">
-            <div class="form-col">
-              <label for="staffNameFilter">Tên/SĐT:</label>
-              <input type="text" id="staffNameFilter" class="form-control" placeholder="Tìm theo tên hoặc số điện thoại">
-            </div>
-            <div class="form-col">
-              <label for="staffRoleFilter">Vai trò:</label>
-              <select id="staffRoleFilter" class="form-control">
-                <option value="">Tất cả vai trò</option>
-                <option value="admin">Quản trị viên</option>
-                <option value="manager">Quản lý</option>
-                <option value="staff">Nhân viên</option>
-              </select>
-            </div>
-            <div class="form-col" style="align-self: flex-end;">
-              <button class="btn" id="staffFilterBtn">
-                <i class="fas fa-search"></i> Tìm kiếm
-              </button>
-            </div>
+              <div class="form-col">
+                  <label for="staffNameFilter">Tên/SĐT:*</label>
+                  <input type="text" id="staffNameFilter" class="form-control" placeholder="Tìm theo tên hoặc số điện thoại">
+              </div>
+              <div class="form-col">
+                  <label for="staffRoleFilter">Vai trò:*</label>
+                  <select id="staffRoleFilter" class="form-control">
+                      <option value="">Tất cả vai trò</option>
+                      <option value="admin">Quản trị viên</option>
+                      <option value="manager">Quản lý</option>
+                      <option value="staff">Nhân viên</option>
+                  </select>
+              </div>
+              <div class="form-col" style="align-self: flex-end;">
+                  <button class="btn" id="staffFilterBtn">
+                      <i class="fas fa-search"></i> Tìm kiếm
+                  </button>
+              </div>
           </div>
-          
-          <div class="table-container">
-            <table class="table" id="staffTable">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Tên</th>
-                  <th>Vai trò</th>
-                  <th>Email</th>
-                  <th>SĐT</th>
-                  <th>Trạng thái</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="7" class="text-center">Đang tải dữ liệu...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
 
+          <div class="table-container">
+              <table class="table" id="staffTable">
+                  <thead>
+                      <tr>
+                          <th>ID</th>
+                          <th>Tên</th>
+                          <th>Vai trò</th>
+                          <th>Email</th>
+                          <th>SĐT</th>
+                          <th>Trạng thái</th>
+                          <th>Thao tác</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td colspan="7" class="text-center">Đang tải dữ liệu...</td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          document.querySelectorAll("#staffTable thead th").forEach(th => {
+              if (!th.innerHTML.includes("*")) {
+                  th.innerHTML = th.innerText + " *"; // Đảm bảo không bị trùng tag HTML
+              }
+          });
+      });
+  </script>
+
+</body>
+<html>
       <!-- Staff Shift Schedule -->
       <div class="card">
         <div class="card-header">
@@ -212,17 +224,17 @@
           <div class="form-row">
             <div class="form-col">
               <div class="form-group">
-                <label for="fullName">Họ và tên:</label>
+                <label for="fullName">Họ và tên:* </label>
                 <input type="text" id="fullName" class="form-control" required>
               </div>
             </div>
             <div class="form-col">
               <div class="form-group">
-                <label for="role">Vai trò:</label>
+                <label for="role">Vai trò:* </label>
                 <select id="role" class="form-control" required>
                   <option value="admin">Quản trị viên</option>
-                  <option value="manager">Quản lý</option>
-                  <option value="staff">Nhân viên</option>
+                  <option value="manager">Quản lý </option>
+                  <option value="staff">Nhân viên </option>
                 </select>
               </div>
             </div>
@@ -231,13 +243,13 @@
           <div class="form-row">
             <div class="form-col">
               <div class="form-group">
-                <label for="email">Email:</label>
+                <label for="email">Email:* </label>
                 <input type="email" id="email" class="form-control" required>
               </div>
             </div>
             <div class="form-col">
               <div class="form-group">
-                <label for="phone">Số điện thoại:</label>
+                <label for="phone">Số điện thoại:* </label>
                 <input type="tel" id="phone" class="form-control" required>
               </div>
             </div>
@@ -246,13 +258,13 @@
           <div class="form-row" id="passwordContainer">
             <div class="form-col">
               <div class="form-group">
-                <label for="password">Mật khẩu:</label>
+                <label for="password">Mật khẩu:* </label>
                 <input type="password" id="password" class="form-control">
               </div>
             </div>
             <div class="form-col">
               <div class="form-group">
-                <label for="confirmPassword">Xác nhận mật khẩu:</label>
+                <label for="confirmPassword">Xác nhận mật khẩu:* </label>
                 <input type="password" id="confirmPassword" class="form-control">
               </div>
             </div>
@@ -261,13 +273,13 @@
           <div class="form-row">
             <div class="form-col">
               <div class="form-group">
-                <label for="address">Địa chỉ:</label>
+                <label for="address">Địa chỉ:* </label>
                 <input type="text" id="address" class="form-control">
               </div>
             </div>
             <div class="form-col">
               <div class="form-group">
-                <label for="status">Trạng thái:</label>
+                <label for="status">Trạng thái:* </label>
                 <select id="status" class="form-control" required>
                   <option value="active">Đang làm việc</option>
                   <option value="inactive">Ngừng làm việc</option>
