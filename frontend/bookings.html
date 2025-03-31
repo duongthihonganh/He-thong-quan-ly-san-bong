@@ -6,7 +6,6 @@
   <title>Quản lý Đặt Sân - Hệ thống Quản lý Sân Bóng</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/details.css">
 </head>
 <body>
   <div class="dashboard-container">
@@ -74,7 +73,7 @@
         </div>
         
         <div class="user-dropdown">
-          <div class="dropdown-toggle">
+          <div class="dropdown-toggle" id="userDropdown">
             <div class="user-info">
               <div class="user-name">Người dùng</div>
               <div class="user-role">Quản lý</div>
@@ -82,7 +81,7 @@
             <i class="fas fa-chevron-down"></i>
           </div>
           
-          <div class="dropdown-menu">
+          <div class="dropdown-menu" id="userMenu">
             <a href="#" class="dropdown-item">
               <i class="fas fa-user-circle"></i> Hồ sơ
             </a>
@@ -151,9 +150,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td colspan="8" class="text-center">Đang tải dữ liệu...</td>
-                </tr>
+                <!-- Table data will be populated by JavaScript -->
               </tbody>
             </table>
           </div>
@@ -167,7 +164,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">Đặt sân mới</h3>
-        <button class="modal-close">&times;</button>
+        <button class="modal-close" id="closeBookingModal">&times;</button>
       </div>
       <div class="modal-body">
         <form id="bookingForm">
@@ -268,6 +265,23 @@
             </div>
           </div>
           
+          <div id="newCustomerFields" style="display: none;">
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="customerName">Tên khách hàng:</label>
+                  <input type="text" id="customerName" class="form-control">
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="customerPhone">Số điện thoại:</label>
+                  <input type="tel" id="customerPhone" class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
+          
           <div class="form-group">
             <label for="paymentMethod">Phương thức thanh toán:</label>
             <select id="paymentMethod" class="form-control" required>
@@ -296,10 +310,17 @@
             <label for="notes">Ghi chú:</label>
             <textarea id="notes" class="form-control" rows="3"></textarea>
           </div>
+          
+          <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 15px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-weight: 500;">Còn lại:</span>
+              <span id="remainingAmount" style="font-weight: 600; color: #dc3545;">0đ</span>
+            </div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn" id="cancelBookingBtn">Hủy</button>
+        <button type="button" class="btn btn-secondary" id="cancelBookingBtn">Hủy</button>
         <button type="button" class="btn" id="saveBookingBtn">Lưu</button>
       </div>
     </div>
@@ -310,7 +331,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">Chi tiết đặt sân</h3>
-        <button class="modal-close">&times;</button>
+        <button class="modal-close" id="closeViewModal">&times;</button>
       </div>
       <div class="modal-body">
         <div id="bookingDetails">
@@ -372,11 +393,586 @@
         <button type="button" class="btn" id="printBookingBtn">
           <i class="fas fa-print"></i> In
         </button>
-        <button type="button" class="btn" id="closeViewBookingBtn">Đóng</button>
+        <button type="button" class="btn btn-secondary" id="closeViewBookingBtn">Đóng</button>
       </div>
     </div>
   </div>
 
+  <script>
+    // Fake database for demo
+    const fields = [
+      { id: "1", name: "Sân mini 1", price: 300000, type: "5v5" },
+      { id: "2", name: "Sân mini 2", price: 300000, type: "5v5" },
+      { id: "3", name: "Sân 7 người 1", price: 500000, type: "7v7" }
+    ];
+    
+    const customers = [
+      { id: "1", name: "Nguyễn Văn A", phone: "0901234567" },
+      { id: "2", name: "Công ty XYZ", phone: "0909876543" },
+      { id: "3", name: "Trần Thị B", phone: "0905555555" }
+    ];
+    
+    let bookings = [
+      { 
+        id: "B001", 
+        fieldId: "1", 
+        customerId: "1", 
+        customerName: "Nguyễn Văn A", 
+        customerPhone: "0901234567",
+        bookingDate: "2025-04-01", 
+        startTime: "18:00", 
+        endTime: "20:00", 
+        bookingTime: "18:00 - 20:00", 
+        status: "confirmed", 
+        paymentMethod: "cash",
+        totalAmount: 600000,
+        paidAmount: 300000,
+        notes: "Khách hàng yêu cầu chuẩn bị thêm nước uống"
+      },
+      { 
+        id: "B002", 
+        fieldId: "2", 
+        customerId: "2", 
+        customerName: "Công ty XYZ", 
+        customerPhone: "0909876543",
+        bookingDate: "2025-04-01", 
+        startTime: "16:00", 
+        endTime: "18:00", 
+        bookingTime: "16:00 - 18:00", 
+        status: "pending", 
+        paymentMethod: "transfer",
+        totalAmount: 600000,
+        paidAmount: 600000,
+        notes: "Tổ chức thi đấu nội bộ công ty"
+      }
+    ];
+    
+    // DOM elements
+    const userDropdown = document.getElementById('userDropdown');
+    const userMenu = document.getElementById('userMenu');
+    const bookingModal = document.getElementById('bookingModal');
+    const viewBookingModal = document.getElementById('viewBookingModal');
+    const newBookingBtn = document.getElementById('newBookingBtn');
+    const cancelBookingBtn = document.getElementById('cancelBookingBtn');
+    const saveBookingBtn = document.getElementById('saveBookingBtn');
+    const closeBookingModal = document.getElementById('closeBookingModal');
+    const closeViewModal = document.getElementById('closeViewModal');
+    const closeViewBookingBtn = document.getElementById('closeViewBookingBtn');
+    const bookingForm = document.getElementById('bookingForm');
+    const bookingFieldFilter = document.getElementById('bookingFieldFilter');
+    const bookingDateFilter = document.getElementById('bookingDateFilter');
+    const bookingStatusFilter = document.getElementById('bookingStatusFilter');
+    const bookingFilterBtn = document.getElementById('bookingFilterBtn');
+    const customerId = document.getElementById('customerId');
+    const newCustomerFields = document.getElementById('newCustomerFields');
+    const fieldIdSelect = document.getElementById('fieldId');
+    const startTimeSelect = document.getElementById('startTime');
+    const endTimeSelect = document.getElementById('endTime');
+    const totalAmountInput = document.getElementById('totalAmount');
+    const paidAmountInput = document.getElementById('paidAmount');
+    const remainingAmount = document.getElementById('remainingAmount');
+    const bookingsTable = document.getElementById('bookingsTable');
+    
+    // Today's date
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const todayFormatted = yyyy + '-' + mm + '-' + dd;
+    
+    // Set default date
+    bookingDateFilter.value = todayFormatted;
+    document.getElementById('bookingDate').value = todayFormatted;
+    
+    // Event Listeners
+    userDropdown.addEventListener('click', function() {
+      userMenu.classList.toggle('show');
+    });
+    
+    document.addEventListener('click', function(event) {
+      if (!userDropdown.contains(event.target)) {
+        userMenu.classList.remove('show');
+      }
+    });
+    
+    newBookingBtn.addEventListener('click', function() {
+      resetBookingForm();
+      bookingModal.classList.add('show');
+    });
+    
+    cancelBookingBtn.addEventListener('click', function() {
+      bookingModal.classList.remove('show');
+    });
+    
+    closeBookingModal.addEventListener('click', function() {
+      bookingModal.classList.remove('show');
+    });
+    
+    closeViewModal.addEventListener('click', function() {
+      viewBookingModal.classList.remove('show');
+    });
+    
+    closeViewBookingBtn.addEventListener('click', function() {
+      viewBookingModal.classList.remove('show');
+    });
+    
+    customerId.addEventListener('change', function() {
+      if (this.value === 'new') {
+        newCustomerFields.style.display = 'block';
+      } else {
+        newCustomerFields.style.display = 'none';
+        
+        // Populate customer fields if selecting existing customer
+        if (this.value) {
+          const customer = customers.find(c => c.id === this.value);
+          if (customer) {
+            document.getElementById('customerName').value = customer.name;
+            document.getElementById('customerPhone').value = customer.phone;
+          }
+        }
+      }
+    });
+    
+    // Calculate price when field, start time or end time changes
+    fieldIdSelect.addEventListener('change', updateTotalAmount);
+    startTimeSelect.addEventListener('change', function() {
+      // Reset and populate end time options
+      populateEndTimeOptions();
+      updateTotalAmount();
+    });
+    endTimeSelect.addEventListener('change', updateTotalAmount);
+    
+    // Calculate remaining amount
+    totalAmountInput.addEventListener('input', updateRemainingAmount);
+    paidAmountInput.addEventListener('input', updateRemainingAmount);
+    
+    // Save booking
+    saveBookingBtn.addEventListener('click', saveBooking);
+    
+    // Filter bookings
+    bookingFilterBtn.addEventListener('click', filterBookings);
+    
+    // Initialize
+    populateFieldOptions();
+    loadBookings();
+    
+    // Functions
+    function resetBookingForm() {
+      bookingForm.reset();
+      document.getElementById('bookingDate').value = todayFormatted;
+      newCustomerFields.style.display = 'none';
+      endTimeSelect.innerHTML = '<option value="">-- Chọn giờ --</option>';
+      totalAmountInput.value = '';
+      paidAmountInput.value = '0';
+      remainingAmount.textContent = '0đ';
+    }
+    
+    function populateFieldOptions() {
+      fieldIdSelect.innerHTML = '<option value="">-- Chọn sân --</option>';
+      fields.forEach(field => {
+        const option = document.createElement('option');
+        option.value = field.id;
+        option.textContent = `${field.name} (${field.type})`;
+        fieldIdSelect.appendChild(option);
+      });
+    }
+    
+    function populateEndTimeOptions() {
+      const startTime = startTimeSelect.value;
+      if (!startTime) {
+        endTimeSelect.innerHTML = '<option value="">-- Chọn giờ --</option>';
+        endTimeSelect.disabled = true;
+        return;
+      }
+      
+      endTimeSelect.disabled = false;
+      endTimeSelect.innerHTML = '<option value="">-- Chọn giờ --</option>';
+      
+      // Get all time slots after start time
+      const startIndex = Array.from(startTimeSelect.options)
+        .findIndex(option => option.value === startTime);
+      
+      if (startIndex > 0) {
+        for (let i = startIndex + 1; i < startTimeSelect.options.length; i++) {
+          const option = document.createElement('option');
+          option.value = startTimeSelect.options[i].value;
+          option.textContent = startTimeSelect.options[i].textContent;
+          endTimeSelect.appendChild(option);
+        }
+      }
+    }
+    
+    function updateTotalAmount() {
+      const fieldId = fieldIdSelect.value;
+      const startTime = startTimeSelect.value;
+      const endTime = endTimeSelect.value;
+      
+      if (!fieldId || !startTime || !endTime) {
+        totalAmountInput.value = '';
+        return;
+      }
+      
+      const field = fields.find(f => f.id === fieldId);
+      if (!field) return;
+      
+      // Calculate hours
+      const startHour = parseInt(startTime.split(':')[0]);
+      const endHour = parseInt(endTime.split(':')[0]);
+      const hours = endHour - startHour;
+      
+      // Calculate price
+      const price = field.price * hours;
+      totalAmountInput.value = price;
+      updateRemainingAmount();
+    }
+    
+    function updateRemainingAmount() {
+      const total = parseFloat(totalAmountInput.value) || 0;
+      const paid = parseFloat(paidAmountInput.value) || 0;
+      const remaining = total - paid;
+      remainingAmount.textContent = formatCurrency(remaining);
+    }
+    
+    function formatCurrency(amount) {
+      return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })
+        .format(amount)
+        .replace('₫', 'đ');
+    }
+    
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('vi-VN');
+    }
+    
+    function saveBooking() {
+      // Form validation
+      const fieldId = fieldIdSelect.value;
+      const bookingDate = document.getElementById('bookingDate').value;
+      const startTime = startTimeSelect.value;
+      const endTime = endTimeSelect.value;
+      const selectedCustomerId = customerId.value;
+      const status = document.getElementById('bookingStatus').value;
+      const paymentMethod = document.getElementById('paymentMethod').value;
+      const totalAmount = parseFloat(totalAmountInput.value) || 0;
+      const paidAmount = parseFloat(paidAmountInput.value) || 0;
+      const notes = document.getElementById('notes').value;
+      
+      if (!fieldId || !bookingDate || !startTime || !endTime) {
+        alert('Vui lòng điền đầy đủ thông tin đặt sân!');
+        return;
+      }
+      
+      let customerName, customerPhone, custId;
+      
+      if (selectedCustomerId === 'new') {
+        customerName = document.getElementById('customerName').value;
+        customerPhone = document.getElementById('customerPhone').value;
+        
+        if (!customerName || !customerPhone) {
+          alert('Vui lòng nhập thông tin khách hàng!');
+          return;
+        }
+        
+        // Add new customer to database
+        const newCustomerId = (customers.length + 1).toString();
+        const newCustomer = {
+          id: newCustomerId,
+          name: customerName,
+          phone: customerPhone
+        };
+        
+        customers.push(newCustomer);
+        custId = newCustomerId;
+      } else {
+        if (!selectedCustomerId) {
+          alert('Vui lòng chọn khách hàng!');
+          return;
+        }
+        
+        const customer = customers.find(c => c.id === selectedCustomerId);
+        customerName = customer.name;
+        customerPhone = customer.phone;
+        custId = selectedCustomerId;
+      }
+      
+      // Create new booking
+      const bookingId = 'B' + String(bookings.length + 1).padStart(3, '0');
+      const bookingTime = `${startTime} - ${endTime}`;
+      
+      const newBooking = {
+        id: bookingId,
+        fieldId,
+        customerId: custId,
+        customerName,
+        customerPhone,
+        bookingDate,
+        startTime,
+        endTime,
+        bookingTime,
+        status,
+        paymentMethod,
+        totalAmount,
+        paidAmount,
+        notes
+      };
+      
+      // Add to database
+      bookings.push(newBooking);
+      
+      // Close modal and reload table
+      bookingModal.classList.remove('show');
+      loadBookings();
+      
+      // Show success message
+      alert('Đặt sân thành công!');
+    }
+    
+    function loadBookings() {
+      const tbody = bookingsTable.querySelector('tbody');
+      tbody.innerHTML = '';
+      
+      if (bookings.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="8" class="text-center">Không có dữ liệu</td>';
+        tbody.appendChild(tr);
+        return;
+      }
+      
+      bookings.forEach(booking => {
+        const field = fields.find(f => f.id === booking.fieldId);
+        const fieldName = field ? field.name : '';
+        
+        const tr = document.createElement('tr');
+        
+        // Status badge
+        let statusBadge = '';
+        if (booking.status === 'confirmed') {
+          statusBadge = '<span class="badge badge-success">Đã xác nhận</span>';
+        } else if (booking.status === 'pending') {
+          statusBadge = '<span class="badge badge-warning">Chờ xác nhận</span>';
+        } else if (booking.status === 'cancelled') {
+          statusBadge = '<span class="badge badge-danger">Đã hủy</span>';
+        }
+        
+        // Payment status
+        let paymentStatus = '';
+        if (booking.paidAmount >= booking.totalAmount) {
+          paymentStatus = '<span class="badge badge-success">Đã thanh toán</span>';
+        } else if (booking.paidAmount > 0) {
+          paymentStatus = '<span class="badge badge-warning">Một phần</span>';
+        } else {
+          paymentStatus = '<span class="badge badge-secondary">Chưa thanh toán</span>';
+        }
+        
+        tr.innerHTML = `
+          <td>${booking.id}</td>
+          <td>${fieldName}</td>
+          <td>${booking.customerName}</td>
+          <td>${formatDate(booking.bookingDate)}</td>
+          <td>${booking.bookingTime}</td>
+          <td>${statusBadge}</td>
+          <td>${paymentStatus}</td>
+          <td>
+            <button class="btn btn-sm" onclick="viewBooking('${booking.id}')">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="deleteBooking('${booking.id}')">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        `;
+        
+        tbody.appendChild(tr);
+      });
+    }
+    
+    function filterBookings() {
+      const fieldId = bookingFieldFilter.value;
+      const date = bookingDateFilter.value;
+      const status = bookingStatusFilter.value;
+      
+      loadBookings(); // First load all bookings
+      
+      // Then filter if any criteria is selected
+      if (fieldId || date || status) {
+        const filteredBookings = bookings.filter(booking => {
+          return (!fieldId || booking.fieldId === fieldId) &&
+                 (!date || booking.bookingDate === date) &&
+                 (!status || booking.status === status);
+        });
+        
+        bookings = filteredBookings;
+        loadBookings();
+      }
+    }
+    
+    // Make these functions globally available
+    window.viewBooking = function(bookingId) {
+      const booking = bookings.find(b => b.id === bookingId);
+      if (!booking) return;
+      
+      const field = fields.find(f => f.id === booking.fieldId);
+      
+      document.getElementById('viewBookingId').textContent = booking.id;
+      document.getElementById('viewFieldName').textContent = field ? field.name : '';
+      document.getElementById('viewBookingDate').textContent = formatDate(booking.bookingDate);
+      document.getElementById('viewBookingTime').textContent = booking.bookingTime;
+      document.getElementById('viewCustomerName').textContent = booking.customerName;
+      document.getElementById('viewCustomerPhone').textContent = booking.customerPhone;
+      
+      // Status
+      let statusHTML = '';
+      if (booking.status === 'confirmed') {
+        statusHTML = '<span class="badge badge-success">Đã xác nhận</span>';
+      } else if (booking.status === 'pending') {
+        statusHTML = '<span class="badge badge-warning">Chờ xác nhận</span>';
+      } else if (booking.status === 'cancelled') {
+        statusHTML = '<span class="badge badge-danger">Đã hủy</span>';
+      }
+      document.getElementById('viewBookingStatus').innerHTML = statusHTML;
+      
+      // Payment status
+      let paymentStatusHTML = '';
+      if (booking.paidAmount >= booking.totalAmount) {
+        paymentStatusHTML = '<span class="badge badge-success">Đã thanh toán</span>';
+      } else if (booking.paidAmount > 0) {
+        paymentStatusHTML = '<span class="badge badge-warning">Thanh toán một phần</span>';
+      } else {
+        paymentStatusHTML = '<span class="badge badge-secondary">Chưa thanh toán</span>';
+      }
+      document.getElementById('viewPaymentStatus').innerHTML = paymentStatusHTML;
+      
+      // Payment method
+      let paymentMethodText = '';
+      if (booking.paymentMethod === 'cash') {
+        paymentMethodText = 'Tiền mặt';
+      } else if (booking.paymentMethod === 'transfer') {
+        paymentMethodText = 'Chuyển khoản';
+      } else if (booking.paymentMethod === 'card') {
+        paymentMethodText = 'Thẻ';
+      }
+      document.getElementById('viewPaymentMethod').textContent = paymentMethodText;
+      
+      document.getElementById('viewTotalAmount').textContent = formatCurrency(booking.totalAmount);
+      document.getElementById('viewPaidAmount').textContent = formatCurrency(booking.paidAmount);
+      document.getElementById('viewRemainingAmount').textContent = formatCurrency(booking.totalAmount - booking.paidAmount);
+      document.getElementById('viewNotes').textContent = booking.notes || 'Không có';
+      
+      viewBookingModal.classList.add('show');
+    };
+    
+    window.deleteBooking = function(bookingId) {
+      if (confirm('Bạn có chắc chắn muốn xóa lịch đặt sân này?')) {
+        bookings = bookings.filter(b => b.id !== bookingId);
+        loadBookings();
+        alert('Đã xóa lịch đặt sân!');
+      }
+    };
+    
+    // Print function
+    document.getElementById('printBookingBtn').addEventListener('click', function() {
+      const printContents = document.getElementById('bookingDetails').innerHTML;
+      const originalContents = document.body.innerHTML;
+      
+      document.body.innerHTML = `
+        <div style="padding: 20px;">
+          <h2 style="text-align: center; margin-bottom: 20px;">CHI TIẾT ĐẶT SÂN</h2>
+          ${printContents}
+        </div>
+      `;
+      
+      window.print();
+      document.body.innerHTML = originalContents;
+      
+      // Reattach event listeners
+      init();
+    });
+    
+    function init() {
+      // Reattach all event listeners after printing
+      userDropdown.addEventListener('click', function() {
+        userMenu.classList.toggle('show');
+      });
+      
+      document.addEventListener('click', function(event) {
+        if (!userDropdown.contains(event.target)) {
+          userMenu.classList.remove('show');
+        }
+      });
+      
+      newBookingBtn.addEventListener('click', function() {
+        resetBookingForm();
+        bookingModal.classList.add('show');
+      });
+      
+      cancelBookingBtn.addEventListener('click', function() {
+        bookingModal.classList.remove('show');
+      });
+      
+      closeBookingModal.addEventListener('click', function() {
+        bookingModal.classList.remove('show');
+      });
+      
+      closeViewModal.addEventListener('click', function() {
+        viewBookingModal.classList.remove('show');
+      });
+      
+      closeViewBookingBtn.addEventListener('click', function() {
+        viewBookingModal.classList.remove('show');
+      });
+      
+      customerId.addEventListener('change', function() {
+        if (this.value === 'new') {
+          newCustomerFields.style.display = 'block';
+        } else {
+          newCustomerFields.style.display = 'none';
+          
+          // Populate customer fields if selecting existing customer
+          if (this.value) {
+            const customer = customers.find(c => c.id === this.value);
+            if (customer) {
+              document.getElementById('customerName').value = customer.name;
+              document.getElementById('customerPhone').value = customer.phone;
+            }
+          }
+        }
+      });
+      
+      fieldIdSelect.addEventListener('change', updateTotalAmount);
+      startTimeSelect.addEventListener('change', function() {
+        populateEndTimeOptions();
+        updateTotalAmount();
+      });
+      endTimeSelect.addEventListener('change', updateTotalAmount);
+      
+      totalAmountInput.addEventListener('input', updateRemainingAmount);
+      paidAmountInput.addEventListener('input', updateRemainingAmount);
+      
+      saveBookingBtn.addEventListener('click', saveBooking);
+      bookingFilterBtn.addEventListener('click', filterBookings);
+      
+      document.getElementById('printBookingBtn').addEventListener('click', function() {
+        const printContents = document.getElementById('bookingDetails').innerHTML;
+        const originalContents = document.body.innerHTML;
+        
+        document.body.innerHTML = `
+          <div style="padding: 20px;">
+            <h2 style="text-align: center; margin-bottom: 20px;">CHI TIẾT ĐẶT SÂN</h2>
+            ${printContents}
+          </div>
+        `;
+        
+        window.print();
+        document.body.innerHTML = originalContents;
+        
+        // Reattach event listeners
+        init();
+      });
+      
+      populateFieldOptions();
+      loadBookings();
+    }
+  </script>
   <!-- Add Firebase SDK if using Firebase Authentication -->
   <!-- <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script> -->
