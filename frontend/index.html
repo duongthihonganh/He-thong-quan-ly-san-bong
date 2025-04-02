@@ -46,12 +46,6 @@
           </a>
         </li>
         <li class="menu-item">
-          <a href="staff.html" class="menu-link">
-            <span class="menu-icon"><i class="fas fa-user-tie"></i></span>
-            <span>Nhân viên</span>
-          </a>
-        </li>
-        <li class="menu-item">
           <a href="services.html" class="menu-link">
             <span class="menu-icon"><i class="fas fa-concierge-bell"></i></span>
             <span>Dịch vụ</span>
@@ -159,6 +153,18 @@
           </div>
         </div>
         
+        <!-- Field Status Overview -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-header">
+            Tổng quan tình trạng sân
+          </div>
+          <div class="card-body">
+            <div id="fieldStatusOverview" class="field-status-container">
+              <p>Đang tải thông tin sân...</p>
+            </div>
+          </div>
+        </div>
+        
         <!-- Quick Access -->
         <div class="card" style="margin-bottom: 1.5rem;">
           <div class="card-header">
@@ -192,13 +198,111 @@
         </div>
       </div>
     </div>
+    
+    <!-- Field Status Table -->
+    <div class="section">
+      <div class="card">
+        <div class="card-header">
+          Trạng thái tất cả các sân
+        </div>
+        <div class="card-body">
+          <div id="allFieldsStatusTable">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tên sân</th>
+                  <th>Loại</th>
+                  <th>Trạng thái</th>
+                  <th>Giá tiền</th>
+                  <th>Thời gian trống tiếp theo</th>
+                </tr>
+              </thead>
+              <tbody id="allFieldsStatusBody">
+                <tr>
+                  <td colspan="6" class="text-center">Đang tải dữ liệu sân...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Revenue Statistics -->
+    <div class="section">
+      <div class="card">
+        <div class="card-header">
+          Thống kê doanh thu
+        </div>
+        <div class="card-body">
+          <div class="tabs">
+            <div class="tab-header">
+              <div class="tab active" data-tab="daily">Theo ngày</div>
+              <div class="tab" data-tab="monthly">Theo tháng</div>
+              <div class="tab" data-tab="quarterly">Theo quý</div>
+              <div class="tab" data-tab="comparison">So sánh</div>
+            </div>
+            <div class="tab-content">
+              <div id="daily-tab" class="tab-pane active">
+                <h3>Doanh thu theo ngày</h3>
+                <div id="daily-chart" class="chart-container">
+                  <canvas id="dailyRevenueChart"></canvas>
+                </div>
+              </div>
+              <div id="monthly-tab" class="tab-pane">
+                <h3>Doanh thu theo tháng</h3>
+                <div id="monthly-chart" class="chart-container">
+                  <canvas id="monthlyRevenueChart"></canvas>
+                </div>
+              </div>
+              <div id="quarterly-tab" class="tab-pane">
+                <h3>Doanh thu theo quý</h3>
+                <div id="quarterly-chart" class="chart-container">
+                  <canvas id="quarterlyRevenueChart"></canvas>
+                </div>
+              </div>
+              <div id="comparison-tab" class="tab-pane">
+                <h3>So sánh doanh thu và chi phí</h3>
+                <div id="comparison-chart" class="chart-container">
+                  <canvas id="comparisonChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Add Firebase SDK if using Firebase Authentication -->
-  <!-- <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script> -->
+  <!-- Add Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
+  <script src="assets/js/mockData.js"></script>
   <script src="assets/js/main.js"></script>
   <script src="assets/js/dashboard.js"></script>
+  
+  <script>
+    // Cập nhật trạng thái của sân bóng mỗi 30 giây
+    setInterval(function() {
+      if (typeof fetchFieldStatusOverview === 'function') {
+        fetchFieldStatusOverview();
+        console.log('Cập nhật trạng thái sân bóng tự động');
+      }
+    }, 30000);
+    
+    // Tab switching functionality
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        
+        // Add active class to clicked tab
+        this.classList.add('active');
+        document.getElementById(this.dataset.tab + '-tab').classList.add('active');
+      });
+    });
+  </script>
 </body>
 </html>
