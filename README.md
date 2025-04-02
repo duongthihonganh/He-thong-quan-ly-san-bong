@@ -49,11 +49,13 @@ Hệ thống quản lý sân bóng giúp nhân viên, quản lý và chủ sân 
 ### 3.1 Quản lý sân bóng
 #### 3.1.1 Danh sách sân bóng 
 Hiển thị danh sách tất cả các sân có các thông tin mô tả sau:
-- Tên sân
-- Loại sân (Mini, Lớn, tiêu chuẩn, cao cấp)
-- Kích thước sân
-- Giá thuê (theo giờ/buổi/tháng)
-- Trạng thái sân (Trống, Đã đặt, Đang bảo trì)
+- ID: Mã định danh sân
+- Tên sân: Tên sân bóng
+- Loại sân: (Mini, 7 người, 11 người)
+- Kích thước: Kích thước sân (ví dụ: 10m x 20m, 15m x 30m)
+- Chất lượng sân: Mức độ chất lượng sân (Tốt, Trung bình, Kém)
+- Giá thuê theo giờ: Giá thuê sân theo giờ
+- Trạng thái sân: Trạng thái sân (Trống, Đã đặt, Bảo trì)
 #### 3.1.2 Hiển thị trạng thái sân
 Hiển thị trạng thái sân hiện tại:
  - Trống: Có thể đặt sân.
@@ -62,10 +64,49 @@ Hiển thị trạng thái sân hiện tại:
 Nhân viên có thể thay đổi trạng thái sân khi cần.
 #### 3.1.3 Ghép sân 
 Hỗ trợ ghép 2 hoặc 4 sân mini thành 1 sân lớn khi khách có nhu cầu.
-
 Hệ thống sẽ cập nhật lại trạng thái sân mini để tránh trùng lịch.
-#### 3.1.4 Tình trạng sân 
-Chất lượng sân
+#### 3.1.4: Lọc sân bóng
+Người dùng có thể lọc danh sách sân bóng theo:
+-Loại sân (Mini, 7 người, 11 người)
+-Trạng thái sân (Trống, Đã đặt, Bảo trì)
+Hệ thống hiển thị danh sách sân phù hợp với tiêu chí lọc.
+#### 3.1.5: Thêm sân bóng mới
+-Người dùng nhấn vào nút "Thêm sân".
+-Hệ thống hiển thị form nhập thông tin sân mới.
+-Người dùng nhập thông tin sân (Tên, loại, kích thước, chất lượng, giá thuê, trạng thái).
+-Người dùng nhấn nút "Lưu".
+Hệ thống kiểm tra tính hợp lệ thông tin:
+-Các trường không được để trống.
+-Giá thuê phải là số hợp lệ.
+Nếu thông tin hợp lệ:
+-Dữ liệu được thêm vào hệ thống.
+-Hệ thống cập nhật và hiển thị lại danh sách sân.
+Nếu thông tin không hợp lệ:
+Hệ thống hiển thị thông báo lỗi và yêu cầu người dùng sửa lại.
+#### 3.1.6: Sửa thông tin sân
+-chọn sân muốn sửa từ danh sách.
+- chỉnh sửa thông tin sân (tên, loại, kích thước, chất lượng, giá thuê, trạng thái).
+- "Lưu thay đổi".
+Hệ thống kiểm tra tính hợp lệ của thông tin sửa đổi.
+Nếu thông tin hợp lệ:
+Hệ thống cập nhật thông tin sân và danh sách sân bóng.
+Nếu thông tin không hợp lệ.
+Hệ thống hiển thị thông báo lỗi yêu cầu sửa lại
+#### 3.1.7: Xóa sân bóng
+Người dùng chọn sân muốn xóa từ danh sách.
+Hệ thống kiểm tra trạng thái sân:
+Nếu sân đang có lịch đặt, hệ thống sẽ cảnh báo không thể xóa.
+Nếu sân không có lịch đặt, hệ thống yêu cầu người dùng xác nhận trước khi xóa.
+Nếu người dùng xác nhận xóa:
+Hệ thống xóa sân khỏi hệ thống.
+Cập nhật danh sách sân.
+Nếu người dùng từ chối xóa:
+Hệ thống không thực hiện thao tác xóa và quay lại danh sách sân.
+#### 3.1.8: Xem trạng thái sân theo ngày
+Người dùng chọn một ngày cụ thể.
+Hệ thống hiển thị trạng thái của các sân vào ngày đó (Trống, Đã đặt, Bảo trì)
+Nếu không có lịch đặt cho ngày đó, hệ thống hiển thị thông báo “Không có thông tin cho ngày đã chọn
+#### 3.1.9 Tình trạng sân 
 Sân cần bảo trì sửa chữa:
 - Sửa chữa gì
 - Nâng cấp gì
