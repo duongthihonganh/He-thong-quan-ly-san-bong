@@ -3,245 +3,92 @@ import pandas as pd
 import data
 
 def web():
-    st.title("Quản lý dịch vụ đi kèm")
+    st.title("Service Management")
     
     # Check authentication
     if not st.session_state.get('authenticated', False):
-        st.warning("Vui lòng đăng nhập để truy cập trang này.")
+        st.warning("Please login to access this page.")
         st.stop()
-    
-    # Create tabs for different actions
-    tab1, tab2, tab3 = st.tabs(["Xem danh sách dịch vụ", "Thêm dịch vụ mới", "Thống kê dịch vụ"])
-    
-    with tab1:
-        st.header("Danh sách dịch vụ")
+
+    st.header("Services List")
         
-        # Add search functionality
-        search_term = st.text_input("Tìm kiếm dịch vụ theo tên:", "")
-        
-        # Filter controls - horizontal layout
-        col1, col2 = st.columns([2, 2])
-        with col1:
-            status_filter = st.selectbox(
-                "Lọc theo trạng thái:",
-                options=["all", "in_stock", "out_of_stock", "discontinued"],
-                format_func=lambda x: "Tất cả" if x == "all" else data.STATUS_OPTIONS.get(x, x)
-            )
-        
-        with col2:
-            price_range = st.select_slider(
-                "Lọc theo khoảng giá:",
-                options=["Tất cả", "Dưới 50.000đ", "50.000đ - 100.000đ", "100.000đ - 200.000đ", "Trên 200.000đ"]
-            )
-            
-        # Get services and filter by status
-        filtered_services = data.get_filtered_services(status_filter)
-        
-        # Filter by price range
-        if price_range != "Tất cả":
-            if price_range == "Dưới 50.000đ":
-                filtered_services = [s for s in filtered_services if s["price"] < 50000]
-            elif price_range == "50.000đ - 100.000đ":
-                filtered_services = [s for s in filtered_services if 50000 <= s["price"] < 100000]
-            elif price_range == "100.000đ - 200.000đ":
-                filtered_services = [s for s in filtered_services if 100000 <= s["price"] < 200000]
-            elif price_range == "Trên 200.000đ":
-                filtered_services = [s for s in filtered_services if s["price"] >= 200000]
-        
-        # Filter by search term
-        if search_term:
-            filtered_services = [s for s in filtered_services if search_term.lower() in s["name"].lower()]
-        
-        if filtered_services:
-            # Add sorting options
-            sort_option = st.selectbox(
-                "Sắp xếp theo:",
-                options=["name_asc", "name_desc", "price_asc", "price_desc", "update_desc"],
-                format_func=lambda x: {
-                    "name_asc": "Tên (A-Z)",
-                    "name_desc": "Tên (Z-A)",
-                    "price_asc": "Giá (Thấp đến cao)", 
-                    "price_desc": "Giá (Cao đến thấp)",
-                    "update_desc": "Cập nhật gần đây"
-                }.get(x)
-            )
-            
-            # Sort services
-            if sort_option == "name_asc":
-                filtered_services = sorted(filtered_services, key=lambda x: x["name"])
-            elif sort_option == "name_desc":
-                filtered_services = sorted(filtered_services, key=lambda x: x["name"], reverse=True)
-            elif sort_option == "price_asc":
-                filtered_services = sorted(filtered_services, key=lambda x: x["price"])
-            elif sort_option == "price_desc":
-                filtered_services = sorted(filtered_services, key=lambda x: x["price"], reverse=True)
-            elif sort_option == "update_desc":
-                filtered_services = sorted(filtered_services, key=lambda x: x["updated_at"], reverse=True)
-            
-            df = pd.DataFrame(filtered_services)
-            # Reorder and rename columns for display
-            display_df = df[['id', 'name', 'description', 'price', 'status', 'updated_at']].copy()
-            display_df.columns = ['ID', 'Tên dịch vụ', 'Mô tả', 'Giá', 'Trạng thái', 'Cập nhật lúc']
-            
-            # Format prices as VND and status as readable text
-            display_df['Giá'] = display_df['Giá'].apply(data.format_vnd)
-            display_df['Trạng thái'] = display_df['Trạng thái'].apply(lambda x: data.STATUS_OPTIONS.get(x, x))
-            # Format datetime
-            display_df['Cập nhật lúc'] = pd.to_datetime(display_df['Cập nhật lúc']).dt.strftime('%d/%m/%Y %H:%M')
-            
-            st.dataframe(display_df, use_container_width=True)
-            
-            # Display count of services
-            st.write(f"**Hiển thị {len(filtered_services)} dịch vụ**")
-            
-            # Select a service to edit or delete
-            selected_service_id = st.selectbox(
-                "Chọn dịch vụ để chỉnh sửa hoặc xóa",
-                options=[service["id"] for service in filtered_services],
-                format_func=lambda x: next((s["name"] for s in filtered_services if s["id"] == x), x)
-            )
-            
-            if selected_service_id:
-                service = next((s for s in st.session_state.services if s["id"] == selected_service_id), None)
-                if service:
-                    # Create columns for edit and delete buttons
-                    col1, col2 = st.columns(2)
-                    
-                    with col1:
-                        with st.expander("Chỉnh sửa dịch vụ"):
-                            with st.form("edit_service_form"):
-                                name = st.text_input("Tên dịch vụ", value=service["name"])
-                                description = st.text_area("Mô tả", value=service["description"])
-                                price = st.number_input("Giá (VND)", min_value=0.0, value=float(service["price"]), step=10000.0, format="%.0f")
-                                status = st.selectbox(
-                                    "Trạng thái",
-                                    options=list(data.STATUS_OPTIONS.keys()),
-                                    index=list(data.STATUS_OPTIONS.keys()).index(service["status"]) if service["status"] in data.STATUS_OPTIONS else 0,
-                                    format_func=lambda x: data.STATUS_OPTIONS.get(x, x)
-                                )
-                                
-                                submit = st.form_submit_button("Cập nhật dịch vụ")
-                                
-                                if submit:
-                                    if name and price >= 0:
-                                        if data.update_service(selected_service_id, name, description, price, status):
-                                            st.success("Dịch vụ đã được cập nhật thành công!")
-                                            st.rerun()
-                                        else:
-                                            st.error("Không thể cập nhật dịch vụ.")
-                                    else:
-                                        st.error("Vui lòng điền đầy đủ thông tin bắt buộc.")
-                    
-                    with col2:
-                        with st.expander("Xóa dịch vụ"):
-                            st.warning("Bạn có chắc chắn muốn xóa dịch vụ này? Hành động này không thể hoàn tác.")
-                            if st.button("Xóa dịch vụ"):
-                                success, message = data.delete_service(selected_service_id)
-                                if success:
-                                    st.success(message)
-                                    st.rerun()
-                                else:
-                                    st.error(message)
-        else:
-            st.info("Không có dịch vụ nào phù hợp với bộ lọc. Vui lòng thay đổi bộ lọc hoặc thêm dịch vụ mới.")
-    
-    with tab2:
+    # Display services in a table
+    if st.session_state.services:
+        df = pd.DataFrame(st.session_state.services)
+        # Reorder and rename columns for display
+        display_df = df[['id', 'name', 'description', 'price']].copy()            
+        display_df.columns = ['ID', 'Name', 'Description', 'Price']
+        # Format prices as VND
+        display_df['Price'] = display_df['Price'].apply(data.format_vnd)            
+        st.dataframe(display_df, use_container_width=True)    
+    else:
+            st.info("No services available. Please add a service.")
+
+# ---------------- CREATE SERVICES FORM ----------------
+    with st.expander("Thêm dịch vụ mới", expanded=False):
         st.header("Thêm dịch vụ mới")
         
         with st.form("add_service_form"):
-            name = st.text_input("Tên dịch vụ")
-            description = st.text_area("Mô tả")
-            price = st.number_input("Giá (VND)", min_value=0.0, step=10000.0, format="%.0f")
-            status = st.selectbox(
-                "Trạng thái",
-                options=list(data.STATUS_OPTIONS.keys()),
-                format_func=lambda x: data.STATUS_OPTIONS.get(x, x)
-            )
+            name = st.text_input("Service Name")
+            description = st.text_area("Description")
+            price = st.number_input("Price (VND)", min_value=0.0, step=10000.0, format="%.0f")
             
-            # Enhanced form with validation previews
-            if name:
-                st.success("✓ Tên dịch vụ hợp lệ.")
-            
-            submitted = st.form_submit_button("Thêm dịch vụ")
+            submitted = st.form_submit_button("Add Service")
             
             if submitted:
                 if name and price >= 0:
-                    service_id = data.add_service(name, description, price, status)
+                    service_id = data.add_service(name, description, price)
                     if service_id:
-                        st.success(f"Dịch vụ '{name}' đã được thêm thành công!")
+                        st.success(f"Service '{name}' added successfully!")
                         st.rerun()
                     else:
-                        st.error("Không thể thêm dịch vụ.")
+                        st.error("Failed to add service.")
                 else:
-                    st.error("Vui lòng điền đầy đủ thông tin bắt buộc.")
-    
-    with tab3:
-        st.header("Thống kê dịch vụ")
+                    st.error("Please fill in all required fields.")
+
+    # Select a service to edit or delete
+    selected_service_id = st.selectbox(
+        "Select a service to edit or delete",
+        options=[service["id"] for service in st.session_state.services],
+        format_func=lambda x: next((s["name"] for s in st.session_state.services if s["id"] == x), x)
+        )
+            
+    if selected_service_id:
+            service = next((s for s in st.session_state.services if s["id"] == selected_service_id), None)
+            if service:
+                with st.expander("Edit Service"):
+                    with st.form("edit_service_form"):
+                        name = st.text_input("Service Name", value=service["name"])
+                        description = st.text_area("Description", value=service["description"])                            
+                        price = st.number_input("Price (VND)", min_value=0.0, value=float(service["price"]), step=10000.0, format="%.0f")
+                            
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            submit = st.form_submit_button("Update Service")
+                        
+                        if submit:
+                            if name and price >= 0:
+                                if data.update_service(selected_service_id, name, description, price):                                        
+                                    st.success("Service updated successfully!")
+                                    st.rerun()
+                                else:
+                                    st.error("Failed to update service.")
+                            else:
+                                st.error("Please fill in all required fields.")
+                    
+                with st.expander("Delete Service"):
+                        st.warning("Are you sure you want to delete this service? This action cannot be undone.")
+                        if st.button("Delete Service"):
+                            success, message = data.delete_service(selected_service_id)
+                            if success:
+                                st.success(message)
+                                st.rerun()
+                            else:
+                                st.error(message)
+    else:
+            st.info("No service found.")
         
-        # Get all services
-        all_services = data.get_services()
-        
-        if all_services:
-            # Create columns for statistics
-            col1, col2, col3 = st.columns(3)
-            
-            # Calculate statistics
-            total_services = len(all_services)
-            available_services = len([s for s in all_services if s["status"] == "in_stock"])
-            avg_price = sum(s["price"] for s in all_services) / total_services if total_services > 0 else 0
-            
-            with col1:
-                st.metric("Tổng số dịch vụ", total_services)
-            
-            with col2:
-                st.metric("Dịch vụ có sẵn", available_services, delta=f"{int(available_services/total_services*100)}%" if total_services > 0 else "0%")
-            
-            with col3:
-                st.metric("Giá trung bình", data.format_vnd(avg_price))
-            
-            # Status distribution
-            st.subheader("Phân bố trạng thái dịch vụ")
-            status_counts = {}
-            for status in data.STATUS_OPTIONS.keys():
-                count = len([s for s in all_services if s["status"] == status])
-                status_counts[data.STATUS_OPTIONS[status]] = count
-            
-            # Convert to pandas Series for easier plotting
-            status_series = pd.Series(status_counts)
-            st.bar_chart(status_series)
-            
-            # Price range distribution
-            st.subheader("Phân bố theo khoảng giá")
-            price_ranges = {
-                "Dưới 50.000đ": len([s for s in all_services if s["price"] < 50000]),
-                "50.000đ - 100.000đ": len([s for s in all_services if 50000 <= s["price"] < 100000]),
-                "100.000đ - 200.000đ": len([s for s in all_services if 100000 <= s["price"] < 200000]),
-                "Trên 200.000đ": len([s for s in all_services if s["price"] >= 200000])
-            }
-            
-            price_series = pd.Series(price_ranges)
-            st.bar_chart(price_series)
-            
-            # Recent updates
-            st.subheader("Các dịch vụ được cập nhật gần đây")
-            recent_services = sorted(all_services, key=lambda x: x["updated_at"], reverse=True)[:5]
-            
-            if recent_services:
-                for service in recent_services:
-                    with st.container():
-                        cols = st.columns([3, 2, 2])
-                        with cols[0]:
-                            st.write(f"**{service['name']}**")
-                            st.write(service['description'][:50] + "..." if len(service['description']) > 50 else service['description'])
-                        with cols[1]:
-                            st.write(f"Giá: {data.format_vnd(service['price'])}")
-                            st.write(f"Trạng thái: {data.STATUS_OPTIONS.get(service['status'], service['status'])}")
-                        with cols[2]:
-                            updated_at = datetime.fromisoformat(service['updated_at'])
-                            st.write(f"Cập nhật: {updated_at.strftime('%d/%m/%Y %H:%M')}")
-                        st.divider()
-        else:
-            st.info("Không có dịch vụ nào trong hệ thống.")
+
 
 # Run the web
 if __name__ == "__main__":
