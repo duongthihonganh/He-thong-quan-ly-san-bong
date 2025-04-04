@@ -6,73 +6,131 @@ import data
 def web():
     st.title("Booking Management")
     
-    # Check authentication
+    # Kiểm tra đăng nhập
     if not st.session_state.get('authenticated', False):
         st.warning("Please login to access this page.")
         st.stop()
     
-    # Create tabs for different actions
-    tab1, tab2 = st.tabs(["View Bookings", "Create Booking"])
+    # ---------------- VIEW BOOKINGS ----------------
+    st.header("Bookings List")
+
+    # Bộ lọc
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        filter_date = st.date_input("Filter by Date", value=None)
+    with col2:
+        filter_field = st.selectbox(
+            "Filter by Field",
+            options=["All"] + [field["id"] for field in st.session_state.fields],
+            format_func=lambda x: "All" if x == "All" else next((f["name"] for f in st.session_state.fields if f["id"] == x), x)
+        )
+    with col3:
+        filter_status = st.selectbox("Filter by Status", ["All", "Confirmed", "Pending", "Cancelled"])
+
+    # Lọc danh sách đặt sân
+    filtered_bookings = st.session_state.bookings
+    if filter_date:
+        filtered_bookings = [b for b in filtered_bookings if pd.to_datetime(b["date"]).date() == filter_date]
+    if filter_field != "All":
+        filtered_bookings = [b for b in filtered_bookings if b["field_id"] == filter_field]
+    if filter_status != "All":
+        filtered_bookings = [b for b in filtered_bookings if b["status"] == filter_status]
+
+    # Hiển thị danh sách đặt sân
+    if filtered_bookings:
+        df = pd.DataFrame(filtered_bookings)
+        df["customer_name"] = df["customer_id"].apply(
+            lambda x: next((c["name"] for c in st.session_state.customers if c["id"] == x), "Unknown")
+        )
+        df["field_name"] = df["field_id"].apply(
+            lambda x: next((f["name"] for f in st.session_state.fields if f["id"] == x), "Unknown")
+        )
+        df["formatted_cost"] = df["total_cost"].apply(lambda x: data.format_vnd(x))
+
+        display_df = df[["id", "date", "start_time", "end_time", "customer_name", "field_name", "formatted_cost", "status"]]
+        display_df.columns = ["ID", "Date", "Start Time", "End Time", "Customer", "Field", "Total Cost", "Status"]
+        st.dataframe(display_df, use_container_width=True)
+    else:
+        st.info("No bookings found.")
     
-    with tab1:
-        st.header("Bookings List")
+    # ---------------- CREATE BOOKING FORM ----------------
+    with st.expander("Create New Booking", expanded=False):
+        st.header("Create New Booking")
+
+        if not st.session_state.fields:
+            st.warning("No fields available. Please add a field first.")
+            return
         
-        # Filter options
-        col1, col2, col3 = st.columns(3)
-        
+        field_id = st.selectbox(
+            "Field",
+            options=[field["id"] for field in st.session_state.fields],
+            format_func=lambda x: f"{next((f['name'] for f in st.session_state.fields if f['id'] == x), x)} - {data.format_vnd(next((f['hourly_rate'] for f in st.session_state.fields if f['id'] == x), 0))}/hour"
+        )
+
+        customer_type = st.radio("Customer Type", ["Existing Customer", "New Customer"], horizontal=True)
+        customer_id = None
+
+        if customer_type == "Existing Customer":
+            customer_id = st.selectbox(
+                "Select Customer",
+                options=[customer["id"] for customer in st.session_state.customers],
+                format_func=lambda x: next((c["name"] + " (" + c["phone"] + ")" for c in st.session_state.customers if c["id"] == x), x)
+            )
+        else:
+            customer_name = st.text_input("Customer Name")
+            customer_phone = st.text_input("Customer Phone")
+
+        date = st.date_input("Date", min_value=datetime.date.today())
+        col1, col2 = st.columns(2)
         with col1:
-            filter_date = st.date_input("Filter by Date", value=None)
-        
+            start_time = st.time_input("Start Time", value=datetime.time(8, 0))
         with col2:
-            filter_field = st.selectbox(
-                "Filter by Field",
-                options=["All"] + [field["id"] for field in st.session_state.fields],
-                format_func=lambda x: "All" if x == "All" else next((f["name"] for f in st.session_state.fields if f["id"] == x), x)
-            )
-        
-        with col3:
-            filter_status = st.selectbox(
-                "Filter by Status",
-                options=["All", "Confirmed", "Pending", "Cancelled"]
-            )
-        
-        # Apply filters
-        filtered_bookings = st.session_state.bookings
-        
-        if filter_date:
-            filtered_bookings = [b for b in filtered_bookings if pd.to_datetime(b["date"]).date() == filter_date]
-        
-        if filter_field != "All":
-            filtered_bookings = [b for b in filtered_bookings if b["field_id"] == filter_field]
-        
-        if filter_status != "All":
-            filtered_bookings = [b for b in filtered_bookings if b["status"] == filter_status]
-        
-        # Display bookings in a table
-        if filtered_bookings:
-            # Convert to DataFrame for display
-            df = pd.DataFrame(filtered_bookings)
-            
-            # Add customer and field names
-            df["customer_name"] = df["customer_id"].apply(
-                lambda x: next((c["name"] for c in st.session_state.customers if c["id"] == x), "Unknown")
-            )
-            
-            df["field_name"] = df["field_id"].apply(
-                lambda x: next((f["name"] for f in st.session_state.fields if f["id"] == x), "Unknown")
-            )
-            
-            # Select columns to display
-            display_df = df[["id", "date", "start_time", "end_time", "customer_name", "field_name", "total_cost", "status"]]
-            display_df.columns = ["ID", "Date", "Start Time", "End Time", "Customer", "Field", "Total Cost", "Status"]
-            
-            st.dataframe(display_df, use_container_width=True)
-            
-            # Select a booking to edit or delete
+            end_time = st.time_input("End Time", value=datetime.time(9, 0))
+
+        services = st.multiselect(
+            "Additional Services",
+            options=[service["id"] for service in st.session_state.services],
+            format_func=lambda x: f"{next((s['name'] for s in st.session_state.services if s['id'] == x), x)} - {data.format_vnd(next((s['price'] for s in st.session_state.services if s['id'] == x), 0))}"
+        )
+
+        status = st.selectbox("Status", options=["Confirmed", "Pending"])
+
+        if st.button("Submit Booking"):
+            start_time_str = start_time.strftime("%H:%M")
+            end_time_str = end_time.strftime("%H:%M")
+            date_str = date.strftime("%Y-%m-%d")
+
+            if start_time >= end_time:
+                st.error("End time must be after start time.")
+            else:
+                is_available = data.check_field_availability(field_id, date_str, start_time_str, end_time_str)
+                if is_available:
+                    if customer_type == "New Customer":
+                        booking_id, message = data.add_booking(
+                            field_id=field_id, date=date_str, start_time=start_time_str, 
+                            end_time=end_time_str, services=services, status=status,
+                            customer_name=customer_name, customer_phone=customer_phone
+                        )
+                    else:
+                        booking_id, message = data.add_booking(
+                            field_id=field_id, customer_id=customer_id, date=date_str, 
+                            start_time=start_time_str, end_time=end_time_str, services=services, status=status
+                        )
+                    
+                    if booking_id:
+                        st.success("Booking created successfully!")
+                        st.rerun()
+                    else:
+                        st.error(message)
+                else:
+                    st.error("The selected time slot is not available.")
+
+    # Select a booking to edit or delete
+    if st.session_state.fields:
+            df = pd.DataFrame(st.session_state.fields)
             selected_booking_id = st.selectbox(
                 "Select a booking to view, edit or cancel",
                 options=[booking["id"] for booking in filtered_bookings],
-                format_func=lambda x: next((b['date'] + ' - ' + next((c['name'] for c in st.session_state.customers if c['id'] == b['customer_id']), 'Unknown')) for b in filtered_bookings if b['id'] == x)
             )
             
             if selected_booking_id:
@@ -85,11 +143,21 @@ def web():
                             st.write("**Date:**", booking["date"])
                             st.write("**Time:**", f"{booking['start_time']} to {booking['end_time']}")
                             st.write("**Field:**", next((f["name"] for f in st.session_state.fields if f["id"] == booking["field_id"]), "Unknown"))
-                        
-                        with col2:
-                            st.write("**Customer:**", next((c["name"] for c in st.session_state.customers if c["id"] == booking["customer_id"]), "Unknown"))
                             st.write("**Status:**", booking["status"])
                             st.write("**Total Cost:**", data.format_vnd(booking['total_cost']))
+                        
+                        # Tìm thông tin chi tiết của khách hàng
+                        customer = next((c for c in st.session_state.customers if c["id"] == booking["customer_id"]), None)
+                        
+                        with col2:
+                            st.write("### Thông tin khách hàng:")
+                            if customer:
+                                st.write(f"**Họ tên:** {customer['name']}")
+                                st.write(f"**Số điện thoại:** {customer['phone']}")
+                                st.write(f"**Email:** {customer['email']}")
+                                st.write(f"**Địa chỉ:** {customer['address']}")
+                            else:
+                                st.write("Không tìm thấy thông tin khách hàng")
                         
                         if booking.get("services"):
                             services_list = []
@@ -112,12 +180,22 @@ def web():
                                 index=next((i for i, f in enumerate(st.session_state.fields) if f["id"] == booking["field_id"]), 0)
                             )
                             
-                            customer_id = st.selectbox(
-                                "Customer",
-                                options=[customer["id"] for customer in st.session_state.customers],
-                                format_func=lambda x: next((c["name"] for c in st.session_state.customers if c["id"] == x), x),
-                                index=next((i for i, c in enumerate(st.session_state.customers) if c["id"] == booking["customer_id"]), 0)
-                            )
+                            # Lấy thông tin khách hàng hiện tại
+                            current_customer = next((c for c in st.session_state.customers if c["id"] == booking["customer_id"]), None)
+                            
+                            # Hiển thị thông tin khách hàng (chỉ đọc)
+                            st.write("### Thông tin khách hàng:")
+                            if current_customer:
+                                col1, col2 = st.columns(2)
+                                with col1:
+                                    st.write(f"**Họ tên:** {current_customer['name']}")
+                                    st.write(f"**Số điện thoại:** {current_customer['phone']}")
+                                with col2:
+                                    st.write(f"**Email:** {current_customer['email']}")
+                                    st.write(f"**Địa chỉ:** {current_customer['address']}")
+                            
+                            # Vẫn giữ customer_id từ booking ban đầu
+                            customer_id = booking["customer_id"]
                             
                             date = st.date_input("Date", value=pd.to_datetime(booking["date"]))
                             
@@ -187,68 +265,8 @@ def web():
                                 st.rerun()
                             else:
                                 st.error(message)
-        else:
-            st.info("No bookings found.")
-    # Add new booking
-    with st.expander("Create New Booking"):
-        with st.form("add_booking_form"):
-                field_id = st.selectbox(
-                    "Field",
-                    options=[field["id"] for field in st.session_state.fields],
-                    format_func=lambda x: f"{next((f['name'] for f in st.session_state.fields if f['id'] == x), x)} - {data.format_vnd(next((f['hourly_rate'] for f in st.session_state.fields if f['id'] == x), 0))}/giờ"
-                )
-                
-                customer_id = st.selectbox(
-                    "Customer",
-                    options=[customer["id"] for customer in st.session_state.customers],
-                    format_func=lambda x: next((c["name"] for c in st.session_state.customers if c["id"] == x), x)
-                )
-                
-                date = st.date_input("Date", min_value=datetime.date.today())
-                
-                col1, col2 = st.columns(2)
-                with col1:
-                    start_time = st.time_input("Start Time", value=datetime.time(8, 0))
-                with col2:
-                    end_time = st.time_input("End Time", value=datetime.time(9, 0))
-                
-                services = st.multiselect(
-                    "Additional Services",
-                    options=[service["id"] for service in st.session_state.services],
-                    format_func=lambda x: f"{next((s['name'] for s in st.session_state.services if s['id'] == x), x)} - {data.format_vnd(next((s['price'] for s in st.session_state.services if s['id'] == x), 0))}"
-                )
-                
-                status = st.selectbox("Status", options=["Confirmed", "Pending"])
-                
-                submit = st.form_submit_button("Create Booking")
-                
-                if submit:
-                    # Convert time to string format
-                    start_time_str = start_time.strftime("%H:%M")
-                    end_time_str = end_time.strftime("%H:%M")
-                    date_str = date.strftime("%Y-%m-%d")
-                    
-                    # Validate inputs
-                    if start_time >= end_time:
-                        st.error("End time must be after start time.")
-                    else:
-                        # Check availability
-                        is_available = data.check_field_availability(
-                            field_id, date_str, start_time_str, end_time_str
-                        )
-                        
-                        if is_available:
-                            booking_id, message = data.add_booking(
-                                field_id, customer_id, date_str, start_time_str, end_time_str, services, status
-                            )
-                            
-                            if booking_id:
-                                st.success("Booking created successfully!")
-                                st.rerun()
-                            else:
-                                st.error(message)
-                        else:
-                            st.error("The selected time slot is not available. Please choose another time.")
+    else:
+        st.info("No bookings found.")
 
 if __name__ == "__main__":
     web()
