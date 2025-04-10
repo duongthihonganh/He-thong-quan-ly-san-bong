@@ -1,1 +1,99 @@
+import streamlit as st
+import pandas as pd
+import data
+
+def web():
+    st.title("Quản lý nhân viên")
+    
+    # Check authentication
+    if not st.session_state.get('authenticated', False):
+        st.warning("Please login to access this page.")
+        st.stop()
+    
+    # Check user role for additional security
+    if st.session_state.get('user_role') != 'admin':
+        st.warning("You do not have permission to access this page.")
+        st.stop()
+    
+    st.header("Danh sách nhân viên")
+        
+        # Display staff in a table
+    if st.session_state.staff:
+            df = pd.DataFrame(st.session_state.staff)
+            # Reorder and rename columns for display
+            display_df = df[['id', 'name', 'position', 'phone', 'email', 'salary']].copy()
+            display_df.columns = ['ID', 'Name', 'Position', 'Phone', 'Email', 'Salary']
+            # Format salary as VND
+            display_df['Salary'] = display_df['Salary'].apply(data.format_vnd)
+            st.dataframe(display_df, use_container_width=True)
+    else:
+            st.info("No staff available. Please add staff members.")
+    
+    #------------------ CREATE STAFF FORM ----------------
+    with st.expander("Thêm nhân viên mới", expanded=False):
+        st.header("Thêm nhân viên mới")
+        
+        with st.form("add_staff_form"):
+            name = st.text_input("Name")
+            position = st.text_input("Position")
+            phone = st.text_input("Phone")
+            email = st.text_input("Email")
+            salary = st.number_input("Salary (VND)", min_value=0.0, step=500000.0, format="%.0f")
+            submitted = st.form_submit_button("Add Staff")
+            
+            if submitted:
+                if name and position and phone and email:
+                    staff_id = data.add_staff(name, position, phone, email, salary)
+                    if staff_id:
+                        st.success(f"Staff '{name}' added successfully!")
+                        st.rerun()
+                    else:
+                        st.error("Failed to add staff.")
+                else:
+                    st.error("Please fill in all required fields.")
+
+    # Select a staff to edit or delete
+    selected_staff_id = st.selectbox(
+                "Select a staff member to edit or delete",
+                options=[staff["id"] for staff in st.session_state.staff],
+                format_func=lambda x: next((s["name"] for s in st.session_state.staff if s["id"] == x), x)
+            )
+            
+    if selected_staff_id:
+                staff = next((s for s in st.session_state.staff if s["id"] == selected_staff_id), None)
+                if staff:
+                    with st.expander("Edit Staff"):
+                        with st.form("edit_staff_form"):
+                            name = st.text_input("Name", value=staff["name"])
+                            position = st.text_input("Position", value=staff["position"])
+                            phone = st.text_input("Phone", value=staff["phone"])
+                            email = st.text_input("Email", value=staff["email"])
+                            salary = st.number_input("Salary (VND)", min_value=0.0, value=float(staff["salary"]), step=500000.0, format="%.0f")
+                            
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                submit = st.form_submit_button("Update Staff")
+                            
+                            if submit:
+                                if name and position and phone and email:
+                                    if data.update_staff(selected_staff_id, name, position, phone, email, salary):
+                                        st.success("Staff updated successfully!")
+                                        st.rerun()
+                                    else:
+                                        st.error("Failed to update staff.")
+                                else:
+                                    st.error("Please fill in all required fields.")
+                    
+                    with st.expander("Delete Staff"):
+                        st.warning("Are you sure you want to delete this staff member? This action cannot be undone.")
+                        if st.button("Delete Staff"):
+                            if data.delete_staff(selected_staff_id):
+                                st.success("Staff deleted successfully!")
+                                st.rerun()
+                            else:
+                                st.error("Failed to delete staff.")
+
+# Run the web
+if __name__ == "__main__":
+    web()
 
