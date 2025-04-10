@@ -1,1 +1,96 @@
+import streamlit as st
+import pandas as pd
+import data
 
+def web():
+    st.title("Field Management")
+    
+    # Check authentication
+    if not st.session_state.get('authenticated', False):
+        st.warning("Please login to access this page.")
+        st.stop()
+    
+    # Create tabs for different actions
+    tab1 = st.tabs(["View Fields"])[0]
+    
+    with tab1:
+        st.header("Fields List")
+        
+        # Display fields in a table
+        if st.session_state.fields:
+            df = pd.DataFrame(st.session_state.fields)
+            # Reorder and rename columns for display
+            display_df = df[['id', 'name', 'size', 'hourly_rate', 'status']].copy()
+            display_df.columns = ['ID', 'Name', 'Size', 'Hourly Rate', 'Status']
+            # Format prices as VND
+            display_df['Hourly Rate'] = display_df['Hourly Rate'].apply(data.format_vnd)
+            st.dataframe(display_df, use_container_width=True)
+            
+            # Select a field to edit or delete
+            selected_field_id = st.selectbox(
+                "Select a field to edit or delete",
+                options=[field["id"] for field in st.session_state.fields],
+                format_func=lambda x: next((f["name"] for f in st.session_state.fields if f["id"] == x), x)
+            )
+            
+            if selected_field_id:
+                field = next((f for f in st.session_state.fields if f["id"] == selected_field_id), None)
+                if field:
+                    with st.expander("Edit Field"):
+                        with st.form("edit_field_form"):
+                            name = st.text_input("Field Name", value=field["name"])
+                            size = st.text_input("Size", value=field["size"])
+                            hourly_rate = st.number_input("Hourly Rate (VND)", min_value=0.0, value=float(field["hourly_rate"]), step=10000.0, format="%.0f")
+                            description = st.text_area("Description", value=field.get("description", ""))
+                            status = st.selectbox(
+                                "Status", 
+                                options=["Available", "Maintenance", "Reserved"],
+                                index=["Available", "Maintenance", "Reserved"].index(field["status"]) if field["status"] in ["Available", "Maintenance", "Reserved"] else 0
+                            )
+                            
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                submit = st.form_submit_button("Update Field")
+                            
+                            if submit:
+                                if data.update_field(selected_field_id, name, size, hourly_rate, description, status):
+                                    st.success("Field updated successfully!")
+                                    st.rerun()
+                                else:
+                                    st.error("Failed to update field.")
+                    
+                    with st.expander("Delete Field"):
+                        st.warning("Are you sure you want to delete this field? This action cannot be undone.")
+                        if st.button("Delete Field"):
+                            success, message = data.delete_field(selected_field_id)
+                            if success:
+                                st.success(message)
+                                st.rerun()
+                            else:
+                                st.error(message)
+        else:
+            st.info("No fields available. Please add a field.")
+        
+        # Add new field button
+        with st.expander("Add New Field"):
+            with st.form("add_field_form"):
+                name = st.text_input("Field Name")
+                size = st.text_input("Size")
+                hourly_rate = st.number_input("Hourly Rate (VND)", min_value=0.0, step=10000.0, format="%.0f")
+                description = st.text_area("Description")
+                status = st.selectbox("Status", options=["Available", "Maintenance", "Reserved"])
+                
+                submitted = st.form_submit_button("Add Field")
+                
+                if submitted:
+                    if name and size and hourly_rate >= 0:
+                        field_id = data.add_field(name, size, hourly_rate, description, status)
+                        if field_id:
+                            st.success(f"Field '{name}' added successfully!")
+                            st.rerun()
+                    else:
+                        st.error("Please fill in all required fields.")
+
+# Run the app
+if __name__ == "__main__":
+    web()
