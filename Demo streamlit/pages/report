@@ -1,1 +1,210 @@
+import streamlit as st
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import datetime
+import data
+import plotly.express as px
+import plotly.graph_objects as go
+
+def web():
+    st.title("Reports and Statistics")
+    
+    # Check authentication
+    if not st.session_state.get('authenticated', False):
+        st.warning("Please login to access this page.")
+        st.stop()
+    
+    # Create tabs for different reports
+    tab1, tab2, tab3 = st.tabs(["Booking Statistics", "Field Utilization", "Customer Analysis"])
+    
+    with tab1:
+        st.header("Booking Statistics")
+        
+        # Date range selector
+        col1, col2 = st.columns(2)
+        with col1:
+            start_date = st.date_input("Start Date", value=datetime.date.today() - datetime.timedelta(days=30))
+        with col2:
+            end_date = st.date_input("End Date", value=datetime.date.today())
+        
+        if start_date > end_date:
+            st.error("End date must be after start date.")
+        else:
+            # Get booking statistics
+            stats = data.get_booking_statistics(start_date, end_date)
+            
+            # Display metrics
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Total Bookings", stats["total_bookings"])
+            with col2:
+                st.metric("Total Revenue", data.format_vnd(stats['total_revenue']))
+            with col3:
+                st.metric("Average Booking Value", data.format_vnd(stats['avg_booking_value']))
+            
+            # Display daily stats chart
+            if stats["daily_stats"]:
+                daily_stats_df = pd.DataFrame(stats["daily_stats"])
+                daily_stats_df["date"] = pd.to_datetime(daily_stats_df["date"])
+                daily_stats_df = daily_stats_df.sort_values("date")
+                
+                # Chart for daily bookings
+                st.subheader("Daily Bookings")
+                fig = px.bar(
+                    daily_stats_df,
+                    x="date",
+                    y="bookings",
+                    labels={"date": "Date", "bookings": "Number of Bookings"},
+                    color_discrete_sequence=["#1f77b4"]
+                )
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Chart for daily revenue
+                st.subheader("Daily Revenue")
+                fig = px.line(
+                    daily_stats_df,
+                    x="date",
+                    y="revenue",
+                    labels={"date": "Date", "revenue": "Revenue ($)"},
+                    color_discrete_sequence=["#ff7f0e"]
+                )
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.info("No booking data available for the selected date range.")
+    
+    with tab2:
+        st.header("Field Utilization")
+        
+        # Get field utilization data
+        field_stats = data.get_field_utilization()
+        
+        if field_stats:
+            field_stats_df = pd.DataFrame(field_stats)
+            
+            # Metrics
+            col1, col2 = st.columns(2)
+            with col1:
+                most_booked_field = field_stats_df.loc[field_stats_df["total_bookings"].idxmax()]
+                st.metric("Most Booked Field", most_booked_field["name"])
+            
+            with col2:
+                highest_revenue_field = field_stats_df.loc[field_stats_df["total_revenue"].idxmax()]
+                st.metric("Highest Revenue Field", highest_revenue_field["name"])
+            
+            # Bookings by field chart
+            st.subheader("Bookings by Field")
+            fig = px.pie(
+                field_stats_df,
+                values="total_bookings",
+                names="name",
+                title="Distribution of Bookings by Field",
+                color_discrete_sequence=px.colors.qualitative.Pastel
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Hours utilized by field chart
+            st.subheader("Hours Utilized by Field")
+            fig = px.bar(
+                field_stats_df,
+                x="name",
+                y="total_hours",
+                labels={"name": "Field", "total_hours": "Total Hours"},
+                color="name"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Revenue by field chart
+            st.subheader("Revenue by Field")
+            fig = px.bar(
+                field_stats_df,
+                x="name",
+                y="total_revenue",
+                labels={"name": "Field", "total_revenue": "Total Revenue (VND)"},
+                color="name"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Detailed field stats
+            st.subheader("Detailed Field Statistics")
+            display_df = field_stats_df[["name", "total_bookings", "total_hours", "total_revenue"]]
+            display_df.columns = ["Field", "Total Bookings", "Total Hours", "Total Revenue (VND)"]
+            st.dataframe(display_df, use_container_width=True)
+        else:
+            st.info("No field utilization data available.")
+    
+    with tab3:
+        st.header("Customer Analysis")
+        
+        # Get customer statistics
+        customer_stats = data.get_customer_statistics()
+        
+        if customer_stats:
+            customer_stats_df = pd.DataFrame(customer_stats)
+            
+            # Metrics
+            col1, col2 = st.columns(2)
+            with col1:
+                top_customer = customer_stats_df.loc[customer_stats_df["total_bookings"].idxmax()]
+                st.metric("Most Frequent Customer", top_customer["name"])
+            
+            with col2:
+                highest_spending = customer_stats_df.loc[customer_stats_df["total_spending"].idxmax()]
+                st.metric("Highest Spending Customer", highest_spending["name"])
+            
+            # Top customers by bookings
+            st.subheader("Top Customers by Number of Bookings")
+            top_booking_customers = customer_stats_df.sort_values("total_bookings", ascending=False).head(10)
+            fig = px.bar(
+                top_booking_customers,
+                x="name",
+                y="total_bookings",
+                labels={"name": "Customer", "total_bookings": "Total Bookings"},
+                color="total_bookings",
+                color_continuous_scale="Viridis"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Top customers by spending
+            st.subheader("Top Customers by Spending")
+            top_spending_customers = customer_stats_df.sort_values("total_spending", ascending=False).head(10)
+            fig = px.bar(
+                top_spending_customers,
+                x="name",
+                y="total_spending",
+                labels={"name": "Customer", "total_spending": "Total Spending (VND)"},
+                color="total_spending",
+                color_continuous_scale="Viridis"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Customer loyalty distribution
+            st.subheader("Customer Loyalty Distribution")
+            loyalty_bins = [0, 1, 3, 5, 10, float('inf')]
+            loyalty_labels = ['1 booking', '2-3 bookings', '4-5 bookings', '6-10 bookings', '10+ bookings']
+            
+            customer_stats_df['loyalty_group'] = pd.cut(
+                customer_stats_df['total_bookings'], 
+                bins=loyalty_bins, 
+                labels=loyalty_labels, 
+                right=False
+            )
+            
+            loyalty_counts = customer_stats_df['loyalty_group'].value_counts().reset_index()
+            loyalty_counts.columns = ['Loyalty Group', 'Number of Customers']
+            
+            fig = px.pie(
+                loyalty_counts,
+                values='Number of Customers',
+                names='Loyalty Group',
+                title="Customer Loyalty Distribution",
+                color_discrete_sequence=px.colors.qualitative.Pastel
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("No customer analysis data available.")
+
+# Run the web
+if __name__ == "__main__":
+    web()
 
